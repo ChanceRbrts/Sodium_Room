@@ -1,8 +1,25 @@
 #include "level.h"
 
-/**
- * Build a level from a file directory.
- */
+Level::Level(){
+   filePath = "";
+   createdShaderboxes = false;
+   insts = nullptr;
+}
+
+Level::~Level(){
+   // Deallocate out shader boxes here.
+   for (int i = 0; i < shades.size(); i++){
+      delete shades[i];
+   }
+   shades.clear();
+   // Deallocate our level here.
+   while (insts != nullptr){
+      Instances* del = insts;
+      insts = insts->next;
+      delete del;
+   }
+}
+
 std::vector<Instance*> Level::createLevel(){
    std::vector<Instance*> instances;
    if (filePath.length() > 0){
@@ -47,17 +64,24 @@ std::vector<Instance*> Level::createLevel(){
    return makeLevel(instances);
 }
 
-/**
- * This function returns all of the objects in the room.
- */
 std::vector<Instance*> Level::makeLevel(std::vector<Instance*> previous){
    return previous;
 }
 
-/**
- * This functions returns all of the shader boxes that are in the room.
- */
 std::vector<ShaderBox*> Level::createShaderBoxes(GLUtil* glu){
    std::vector<ShaderBox*> empty;
    return empty;
+}
+
+void Level::moveInstance(Instances* move, Level* otherLev){
+   if (move->prev == nullptr){
+      // We got the head of our linked list
+      insts = move->next;
+   } else {
+      move->prev->next = move->next;
+   }
+   // Move this to the beginning of the other linked list.
+   move->prev = nullptr;
+   move->next = otherLev->insts;
+   otherLev->insts = move->next;
 }
