@@ -130,21 +130,8 @@ void GameLogic::draw(GLUtil* glu){
       FontBook::loadFont("Courier New");
       createdFonts = true;
    }
-   // Make the shader boxes if a level was just loaded.
-   if (!madeBoxes){
-      createShaderBoxes(glu);
-      madeBoxes = true;
-   }
-   // Draw everything to the screen first.
-   drawObjects(glu, 0);
-   // Draw everything to each of the shader boxes, then draw that shaderbox.
-   for (int i = 0; i < shaderboxes.size(); i++){
-      ShaderBox* shade = shaderboxes[i];
-      shade->drawOnBox();
-      drawObjects(glu, 0);
-      shade->drawOutBox();
-      shade->draw();
-   }
+   // TODO: Add support for multiple levels.
+   currentLevel->draw(glu, player);
    // We want the HUD to be static on the screen.
    GLDraw* gld = glu->draw;
    gld->pushCameraMem(0, 0, gld->getWidth(), gld->getHeight());

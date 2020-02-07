@@ -20,18 +20,22 @@ Level::~Level(){
    }
 }
 
-std::vector<Instance*> Level::createLevel(){
+pointDouble Level::createLevel(){
+   pointDouble defaultPoint = (pointDouble){-1, -1, -1};
    std::vector<Instance*> instances;
+   // First, load any solid map associated with the level.
    if (filePath.length() > 0){
+      // Looks for the solid map here.
       FILE* f = fopen((std::string("gameFiles/levels/levelData/")+filePath+".txt").c_str(), "r");
       if (f == nullptr){
          fprintf(stderr, "ERROR: %s doesn't exist.\n", (filePath+".txt").c_str());
-         return makeLevel(instances);
+         return defaultPoint;
       } 
       std::string line = "";
       int mode = DEFAULT;
       int yVal = 0;
       int wid = 0;
+      // Parse through our solid map.
       while (!feof(f)){
          char c = fgetc(f);
          if (c == '\n' || feof(f)){
@@ -61,7 +65,36 @@ std::vector<Instance*> Level::createLevel(){
       w = wid;
       h = yVal;
    }
-   return makeLevel(instances);
+   instances = makeLevel(instances);
+   while (insts != nullptr){
+      Instances* del = insts;
+      insts = insts->next;
+      delete del;
+   }
+   Instances* is = nullptr;
+   // Let's make sure really quickly that we didn't add a memory leak in inst
+   for (int i = 0; i < instances.size(); i++){
+      if (instances[i]->isPlayer()){
+         // If it's a player, return their coordinates.
+         defaultPoint.x = instances[i]->x;
+         defaultPoint.y = instances[i]->y;
+      } else {
+         // Otherwise, put it in the doubly linked list.
+         Instances* inst = new Instances();
+         inst->i = instances[i];
+         if (is == nullptr){
+            inst = is;
+            // We are at the start of the linked list.
+            insts = inst;
+         } else {
+            // Add stuff to the next part of the linked list.
+            is->next = inst;
+            inst->prev = is;
+            is = inst;
+         }
+      }
+   }
+   return defaultPoint;
 }
 
 std::vector<Instance*> Level::makeLevel(std::vector<Instance*> previous){
@@ -71,6 +104,45 @@ std::vector<Instance*> Level::makeLevel(std::vector<Instance*> previous){
 std::vector<ShaderBox*> Level::createShaderBoxes(GLUtil* glu){
    std::vector<ShaderBox*> empty;
    return empty;
+}
+
+void Level::draw(GLUtil* glu, Instance* player){
+   // Make sure we're drawing our shaderboxes first.
+   if (!createdShaderboxes){
+      shades = createShaderBoxes(glu);
+      createdShaderboxes = true;
+   }
+   // Draw our objects once.
+   drawObjects(glu, player, 0);
+   // Draw everything to each of the shader boxes, then draw that shaderbox.
+   for (int i = 0; i < shades.size(); i++){
+      ShaderBox* shade = shades[i];
+      shade->drawOnBox();
+      drawObjects(glu, player, 0);
+      shade->drawOutBox();
+      shade->draw();
+   }
+}
+
+void Level::drawObjects(GLUtil* glu, Instance* player, int mode){
+   double wid = glu->draw->getWidth();
+   double hei = glu->draw->getHeight();
+   double cX = glu->draw->camX;
+   double cY = glu->draw->camY;
+   if (player != nullptr){
+      if (player->x < cX+wid && player->x+player->w > cX && player->y < cY+hei && player->y+player->h > cY){
+            player->draw(glu);
+         }
+   }
+   if (insts != nullptr){
+      for (Instances* i = insts; i != nullptr; i = i->next){
+         Instance* in = i->i;
+         // Check if the instance is in the bounds of the screen.
+         if (in->x < cX+wid && in->x+in->w > cX && in->y < cY+hei && in->y+in->h > cY){
+            in->draw(glu);
+         }
+      }
+   }
 }
 
 void Level::moveInstance(Instances* move, Level* otherLev){
@@ -83,5 +155,8 @@ void Level::moveInstance(Instances* move, Level* otherLev){
    // Move this to the beginning of the other linked list.
    move->prev = nullptr;
    move->next = otherLev->insts;
+   Instance* i = move->i;
+   i->x += otherLev->xOff-xOff;
+   i->y += otherLev->yOff-yOff;
    otherLev->insts = move->next;
 }

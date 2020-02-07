@@ -23,6 +23,10 @@ class Level{
        * @param otherLev The other level that we're comparing this to.
        */
       void moveInstance(Instances* move, Level* otherLev);
+      // This function returns all of the shaderboxes in the room.
+      virtual std::vector<ShaderBox*> createShaderBoxes(GLUtil* glu);
+      // This draws the objects in the room.
+      void drawObjects(GLUtil* glu, Instance* player, int mode);
    public:
       int w, h;
       float xOff, yOff;
@@ -33,9 +37,8 @@ class Level{
       Level();
       ~Level();
       /** Build a level from a file directory. */
-      std::vector<Instance*> createLevel();
-      // This function returns all of the shaderboxes in the room.
-      virtual std::vector<ShaderBox*> createShaderBoxes(GLUtil* glu);
+      pointDouble createLevel();
+      void draw(GLUtil* glu, Instance* player);
 };
 
 /**
