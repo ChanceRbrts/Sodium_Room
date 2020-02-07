@@ -12,15 +12,11 @@
  */
 class GameLogic{
    private:
-      bool madeBoxes, createdFonts;
+      bool createdFonts;
       // The list of levels.
       Levels* levels;
       // The current level.
       Level* currentLevel;
-      // The list of shaderboxes in the current level.
-      std::vector<ShaderBox *> shaderboxes;
-      // Instances are a linked list, so this is the start of it.
-      Instances* head;
       // The player character.
       Instance* player;
       // Instances that are in the HUD.
@@ -52,17 +48,6 @@ class GameLogic{
        * @param glu The GLUtil used to draw to the screen.
        */
       void draw(GLUtil* glu);
-      /**
-       * Draws things to the current camera.
-       * @param glu The GLUtil used to draw to the screen.
-       * @param mode I guess this does nothing right now? :\ Should determine whether or not to draw the player.
-       */
-      void drawObjects(GLUtil* glu, int mode);
-      /**
-       * Has the game create the shaderboxes for the current level.
-       * @param glu The GLUtil that the shaderboxes will use for their drawing.
-       */ 
-      void createShaderBoxes(GLUtil* glu);
 };
 
 #endif

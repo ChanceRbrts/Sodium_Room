@@ -3,8 +3,6 @@
 GameLogic::GameLogic(){
    levels = new Levels();
    currentLevel = levels->lev[2];
-   head = nullptr;
-   madeBoxes = false;
    createdFonts = false;
    loadLevel();
 }
@@ -19,18 +17,13 @@ void GameLogic::loadLevel(){
    */
    
    // Get the instance list and turns it into a linked list.
-   std::vector<Instance *> insts = currentLevel->createLevel();
-   bool headIsNull = true;
-   Instances* last = nullptr;
+   pointDouble playerLoc = currentLevel->createLevel();
+   if (player == nullptr){
+      player = new Player(playerLoc.x/32, playerLoc.y/32);
+   }
    hud = new Instances();
    lastHud = hud;
-   for (int i = 0; i < insts.size(); i++){
-      // printf("%f, %f\n", insts[i]->x, insts[i]->y);
-      last = addToList(last, insts[i]);
-      if (insts[i]->isPlayer()) player = insts[i];
-      if (headIsNull) head = last;
-      headIsNull = false;
-   }
+   
    /*
    // Start of Removal.
    // This is just a test for a text box.
@@ -40,12 +33,6 @@ void GameLogic::loadLevel(){
    lastHud = addToList(lastHud, new TextBox(lines));
    // End of Removal
    */
-   madeBoxes = false;
-}
-
-void GameLogic::createShaderBoxes(GLUtil* glu){
-   // shaderboxes.push_back(new ShaderBox(0, 0, 10, 15, "", "testShader", glu));
-   shaderboxes = currentLevel->createShaderBoxes(glu);
 }
 
 void GameLogic::update(double deltaTime, GLUtil* glu){
@@ -141,22 +128,6 @@ void GameLogic::draw(GLUtil* glu){
       }
    }
    gld->popCameraMem();
-}
-
-void GameLogic::drawObjects(GLUtil* glu, int mode){
-   double wid = glu->draw->getWidth();
-   double hei = glu->draw->getHeight();
-   double cX = glu->draw->camX;
-   double cY = glu->draw->camY;
-   if (head != nullptr){
-      for (Instances* i = head; i != nullptr; i = i->next){
-         Instance* in = i->i;
-         // Check if the instance is in the bounds of the screen.
-         if (in->x < cX+wid && in->x+in->w > cX && in->y < cY+hei && in->y+in->h > cY){
-            in->draw(glu);
-         }
-      }
-   }
 }
 
 /**
