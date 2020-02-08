@@ -38,6 +38,7 @@ class Level{
       ~Level();
       /** Build a level from a file directory. */
       pointDouble createLevel();
+      void destroyLevel();
       void draw(GLUtil* glu, Instance* player);
 };
 
@@ -46,8 +47,8 @@ class Level{
  */
 struct LevelList{
    Level* lev;
-   Level* prev;
-   Level* next;
+   LevelList* prev;
+   LevelList* next;
 };
 
 #endif

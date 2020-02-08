@@ -2,28 +2,35 @@
 
 GameLogic::GameLogic(){
    levels = new Levels();
-   currentLevel = levels->lev[2];
    createdFonts = false;
-   loadLevel();
+   loadLevel(levels->lev[2]);
 }
 
 GameLogic::~GameLogic(){
    FontBook::destroy();
 }
 
-void GameLogic::loadLevel(){
+void GameLogic::loadLevel(Level* l){
    /*head = addToList(nullptr, new Solid(5,10));
    addToList(head, new Player(5, 3));
    */
    
    // Get the instance list and turns it into a linked list.
-   pointDouble playerLoc = currentLevel->createLevel();
+   pointDouble playerLoc = l->createLevel();
    if (player == nullptr){
       player = new Player(playerLoc.x/32, playerLoc.y/32);
    }
+   LevelList* lev = new LevelList();
+   lev->lev = l;
+   if (loadedLevels == nullptr){
+      loadedLevels = lev;
+   } else {
+      lastLoaded->next = lev;
+      lev->prev = lastLoaded;
+   }
+   lastLoaded = lev;
    hud = new Instances();
    lastHud = hud;
-   
    /*
    // Start of Removal.
    // This is just a test for a text box.
@@ -35,50 +42,76 @@ void GameLogic::loadLevel(){
    */
 }
 
+void GameLogic::unloadLevel(LevelList* l){
+   // Remove stuff from the level.
+   l->lev->destroyLevel();
+   if (l->prev != nullptr) l->prev->next = l->next;
+   if (l->next != nullptr) l->next->prev = l->prev;
+   // We don't want to actually deallocate the level here.
+   delete l;
+}
+
 void GameLogic::update(double deltaTime, GLUtil* glu){
    // Key our controls.
    bool* keyPressed = glu->control->getKeyPressed();
    bool* keyHeld = glu->control->getKeyHeld();
    if (keyPressed[BUTTON_END]) exit(0);
    // Update each of the objects.
-   if (head != nullptr){
-      for (Instances* i = head; i != nullptr; i = i->next){
-         // Update with the player.
-         i->i->upd(deltaTime, keyPressed, keyHeld, player);
+   LevelList* lList = loadedLevels;
+   if (player != nullptr) player->upd(deltaTime, keyPressed, keyHeld, player);
+   // collObjs is used for collision checking.
+   std::vector<Instance *> collObjs;
+   collObjs.push_back(player);
+   while (lList != nullptr){
+      Level* l = lList->lev;
+      Instances* in = l->insts;
+      while (in != nullptr){
+         in->i->upd(deltaTime, keyPressed, keyHeld, player);
+         Instances* next = in->next;
          // If an object is destroyed, destroy it.
-         if (i->i->canRemove()){
-            i = i->prev;
-            removeFromList(i->next);
+         if (in->i->canRemove()){
+            removeFromList(in);
+         } else collObjs.push_back(in->i);
+         in = next;
+      }
+      lList = lList->next;
+   }
+   // Collision
+   // Run this loop twice, one without checking corners, and one with.
+   for (int cCorners = 0; cCorners < 2; cCorners++){
+      for (int i = 0; i < collObjs.size(); i++){
+         Instance* in = collObjs[i];
+         for (int j = i+1; j < collObjs.size(); j++){
+            in->collision(collObjs[j], deltaTime, cCorners > 0);
          }
       }
-      // Collision
-      for (int cCorners = 0; cCorners < 2; cCorners++){
-         for (Instances* i = head; i != nullptr; i = i->next){
-            Instance* in = i->i;
-            if (i->next != nullptr){
-               for (Instances* j = head->next; j != nullptr; j = j->next){
-                  in->collision(j->i, deltaTime, cCorners > 0);
-               }
+   }
+   collObjs.clear();
+   // Finish the Update Loop (Change position here, basically.)
+   lList = loadedLevels;
+   while (lList != nullptr){
+      Level* l = lList->lev;
+      Instances* in = l->insts;
+      while (in != nullptr){
+         in->i->finishUpdate(deltaTime);
+         // Add objects that may have been added by our object.
+         if (in->i->toAdd.size() > 0){
+            for (int i = 0; i < in->i->toAdd.size(); i++){
+               addToList(in, in->i->toAdd[i]);
             }
-         }
-      }
-      // Change positions here, basically.
-      for (Instances* i = head; i != nullptr; i = i->next){
-         i->i->finishUpdate(deltaTime);
-         // If an object has a few objects that it needs to add, add them to the list.
-         if (i->i->toAdd.size() > 0){
-            for (int j = 0; j < i->i->toAdd.size(); j++){ 
-               addToList(i, i->i->toAdd[j]);
-            }
-            i->i->toAdd.clear();
+            in->i->toAdd.clear();
          }
       }
    }
    // Update the camera.
    followPlayer(glu);
    // Update the shaderboxes that need updating.
-   for (int i = 0; i < shaderboxes.size(); i++){
-      shaderboxes[i]->moveShaderBox(player->x+player->w/2, player->y+player->h/2);
+   if (loadedLevels != nullptr){
+      for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+         for (int i = 0; i < l->lev->shades.size(); i++){
+            l->lev->shades[i]->moveShaderBox(player->x+player->w/2, player->y+player->h/2);
+         }
+      }
    }
    // Update the HUD
    if (hud != nullptr && hud->next != nullptr){
@@ -98,14 +131,23 @@ void GameLogic::followPlayer(GLUtil* glu){
    // Very simple following the player code; Might be changed later?
    double cX = player->x+player->w/2-glu->draw->getWidth()/2;
    double cY = player->y+player->h/2-glu->draw->getHeight()/2;
-   if (cX > 32*currentLevel->w-glu->draw->getWidth()){
-      cX = 32*currentLevel->w-glu->draw->getWidth();
-   } 
-   if (cY > 32*currentLevel->h-glu->draw->getHeight()){
-      cY = 32*currentLevel->h-glu->draw->getHeight();
+   double minX = 0;
+   double maxX = 0;
+   double minY = 0;
+   double maxY = 0;
+   // You know what? Let's just have a whole bunch of std::mins and std::maxs here to avoid a ton of conditionals.
+   if (loadedLevels != nullptr){
+      for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+         double xVal = l->lev->xOff+l->lev->w-glu->draw->getWidth();
+         double yVal = l->lev->yOff+l->lev->h-glu->draw->getHeight();
+         minX = std::min(minX, (double)(l->lev->xOff));
+         maxX = std::max(maxX, xVal);
+         minY = std::min(minY, (double)(l->lev->yOff));
+         maxY = std::max(maxY, yVal);
+      }
    }
-   if (cX < 0) cX = 0;
-   if (cY < 0) cY = 0;
+   cX = std::max(minX, std::min(cX, maxX));
+   cY = std::max(minY, std::min(cY, maxY));
    glu->draw->camX = cX;
    glu->draw->camY = cY;
 }
@@ -118,7 +160,11 @@ void GameLogic::draw(GLUtil* glu){
       createdFonts = true;
    }
    // TODO: Add support for multiple levels.
-   currentLevel->draw(glu, player);
+   if (loadedLevels != nullptr){
+      for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+         l->lev->draw(glu, player);
+      }
+   }
    // We want the HUD to be static on the screen.
    GLDraw* gld = glu->draw;
    gld->pushCameraMem(0, 0, gld->getWidth(), gld->getHeight());

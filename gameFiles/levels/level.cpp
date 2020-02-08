@@ -7,17 +7,7 @@ Level::Level(){
 }
 
 Level::~Level(){
-   // Deallocate out shader boxes here.
-   for (int i = 0; i < shades.size(); i++){
-      delete shades[i];
-   }
-   shades.clear();
-   // Deallocate our level here.
-   while (insts != nullptr){
-      Instances* del = insts;
-      insts = insts->next;
-      delete del;
-   }
+   destroyLevel();
 }
 
 pointDouble Level::createLevel(){
@@ -95,6 +85,22 @@ pointDouble Level::createLevel(){
       }
    }
    return defaultPoint;
+}
+
+void Level::destroyLevel(){
+   // Deallocate out shader boxes here.
+   for (int i = 0; i < shades.size(); i++){
+      delete shades[i];
+   }
+   shades.clear();
+   // Deallocate our level here.
+   while (insts != nullptr){
+      Instances* del = insts;
+      insts = insts->next;
+      delete del;
+   }
+   // In case we remake this level, we should have it remake our shaderboxes.
+   createdShaderboxes = false;
 }
 
 std::vector<Instance*> Level::makeLevel(std::vector<Instance*> previous){

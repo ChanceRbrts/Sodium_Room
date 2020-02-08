@@ -6,6 +6,7 @@
 #include "../main/shaderBox.h"
 #include "levels/levels.h"
 #include <map>
+#include <algorithm>
 
 /**
  * This manages the game, going through update and draw loops.
@@ -15,8 +16,9 @@ class GameLogic{
       bool createdFonts;
       // The list of levels.
       Levels* levels;
-      // The current level.
-      Level* currentLevel;
+      // The loaded levels.
+      LevelList* loadedLevels;
+      LevelList* lastLoaded;
       // The player character.
       Instance* player;
       // Instances that are in the HUD.
@@ -31,7 +33,8 @@ class GameLogic{
       GameLogic();
       ~GameLogic();
       // Loads a level.
-      void loadLevel();
+      void loadLevel(Level* l);
+      void unloadLevel(LevelList* l);
       /**
        * The actual update loop. It goes through the current level and updates everything.
        * @param deltaTime The time in seconds since the previous frame.
