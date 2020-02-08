@@ -39,7 +39,7 @@ class ShaderBox{
        */
       ShaderBox(double X, double Y, double W, double H, std::string vertShader, std::string fragShader, GLUtil* GLU);
       // Deconstructor.
-      ~ShaderBox();
+      virtual ~ShaderBox();
       // Tells the engine to draw to this frame buffer.
       void drawOnBox();
       // Tells the engine to stop drawing to this frame buffer.

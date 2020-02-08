@@ -4,7 +4,7 @@ GameLogic::GameLogic(){
    levels = new Levels();
    createdFonts = false;
    loadedLevels = nullptr;
-   loadLevel(levels->lev[0]);
+   loadLevel(levels->lev[2]);
 }
 
 GameLogic::~GameLogic(){
@@ -12,10 +12,6 @@ GameLogic::~GameLogic(){
 }
 
 void GameLogic::loadLevel(Level* l){
-   /*head = addToList(nullptr, new Solid(5,10));
-   addToList(head, new Player(5, 3));
-   */
-   
    // Get the instance list and turns it into a linked list.
    pointDouble playerLoc = l->createLevel();
    if (player == nullptr){
@@ -107,6 +103,12 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          }
          in = in->next;
       }
+      lList = lList->next;
+   }
+   // Finally, make sure instances are in their right levels!
+   lList = loadedLevels;
+   while (lList != nullptr){
+      lList->lev->moveOutOfBounds(loadedLevels);
       lList = lList->next;
    }
    // Update the camera.

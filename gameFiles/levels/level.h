@@ -40,6 +40,7 @@ class Level{
       pointDouble createLevel();
       void destroyLevel();
       void draw(GLUtil* glu, Instance* player);
+      void moveOutOfBounds(void* lev);
 };
 
 /**

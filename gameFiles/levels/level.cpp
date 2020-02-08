@@ -84,6 +84,7 @@ pointDouble Level::createLevel(){
          }
       }
    }
+   instances.clear();
    return defaultPoint;
 }
 
@@ -165,4 +166,35 @@ void Level::moveInstance(Instances* move, Level* otherLev){
    i->x += otherLev->xOff-xOff;
    i->y += otherLev->yOff-yOff;
    otherLev->insts = move->next;
+}
+
+void Level::moveOutOfBounds(void* lv){
+   LevelList* lev = (LevelList *)lv;
+   if (lev == nullptr) return;
+   // For now, this is a simple out of bounds checker.
+   Instances* i = insts;
+   while (i != nullptr){
+      // Consider the midpoint of an instance.
+      double pointX = i->i->x+i->i->w/2;
+      double pointY = i->i->y+i->i->h/2;
+      Instances* next = i->next;
+      // If that midpoint is outside of the current level, we need to move it to another level.
+      if (pointX < xOff || pointX > xOff+w*32 || pointY < yOff || pointY > yOff+h*32){
+         exit(1);
+         for (LevelList* l = lev; l != nullptr; l = l->next){
+            if (l->lev != this){
+               Level* level = l->lev;
+               if (pointX >= level->xOff && pointX <= level->xOff+level->w*32 &&
+                     pointY >= level->yOff && pointY <= level->yOff+level->h*32){
+                  // Move the instance to this level.
+                  moveInstance(i, level);
+                  break;
+               }
+            }
+         }
+      }
+      i = next;
+   }
+   // TODO(?): Greedy checker to see if an object from an enclosing room has fallen into bounds.
+   return;
 }
