@@ -3,6 +3,7 @@
 GameLogic::GameLogic(){
    levels = new Levels();
    createdFonts = false;
+   loadedLevels = nullptr;
    loadLevel(levels->lev[2]);
 }
 
@@ -58,10 +59,12 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    if (keyPressed[BUTTON_END]) exit(0);
    // Update each of the objects.
    LevelList* lList = loadedLevels;
-   if (player != nullptr) player->upd(deltaTime, keyPressed, keyHeld, player);
    // collObjs is used for collision checking.
    std::vector<Instance *> collObjs;
-   collObjs.push_back(player);
+   if (player != nullptr){ 
+      player->upd(deltaTime, keyPressed, keyHeld, player);
+      collObjs.push_back(player);
+   }
    while (lList != nullptr){
       Level* l = lList->lev;
       Instances* in = l->insts;
@@ -89,6 +92,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    collObjs.clear();
    // Finish the Update Loop (Change position here, basically.)
    lList = loadedLevels;
+   if (player != nullptr) player->finishUpdate(deltaTime);
    while (lList != nullptr){
       Level* l = lList->lev;
       Instances* in = l->insts;
@@ -101,10 +105,12 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
             }
             in->i->toAdd.clear();
          }
+         in = in->next;
       }
+      lList = lList->next;
    }
    // Update the camera.
-   followPlayer(glu);
+   if (player != nullptr) followPlayer(glu);
    // Update the shaderboxes that need updating.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
@@ -159,7 +165,6 @@ void GameLogic::draw(GLUtil* glu){
       FontBook::loadFont("Courier New");
       createdFonts = true;
    }
-   // TODO: Add support for multiple levels.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
          l->lev->draw(glu, player);

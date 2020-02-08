@@ -73,7 +73,7 @@ pointDouble Level::createLevel(){
          Instances* inst = new Instances();
          inst->i = instances[i];
          if (is == nullptr){
-            inst = is;
+            is = inst;
             // We are at the start of the linked list.
             insts = inst;
          } else {
