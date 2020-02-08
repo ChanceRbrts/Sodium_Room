@@ -4,7 +4,7 @@ GameLogic::GameLogic(){
    levels = new Levels();
    createdFonts = false;
    loadedLevels = nullptr;
-   loadLevel(levels->lev[2]);
+   loadLevel(levels->lev[0]);
 }
 
 GameLogic::~GameLogic(){
@@ -144,8 +144,8 @@ void GameLogic::followPlayer(GLUtil* glu){
    // You know what? Let's just have a whole bunch of std::mins and std::maxs here to avoid a ton of conditionals.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
-         double xVal = l->lev->xOff+l->lev->w-glu->draw->getWidth();
-         double yVal = l->lev->yOff+l->lev->h-glu->draw->getHeight();
+         double xVal = l->lev->xOff+l->lev->w*32-glu->draw->getWidth();
+         double yVal = l->lev->yOff+l->lev->h*32-glu->draw->getHeight();
          minX = std::min(minX, (double)(l->lev->xOff));
          maxX = std::max(maxX, xVal);
          minY = std::min(minY, (double)(l->lev->yOff));
