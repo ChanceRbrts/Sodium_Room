@@ -222,7 +222,7 @@ void Level::moveRoom(float newXOff, float newYOff, bool relative){
    }
 }
 
-void Level::bisectLevel(bool horizontal, float splitLocation, float offset){
+void Level::bisectLevel(bool horizontal, float splitLocation, float offset, Instance* cause){
    if (horizontal){ 
       w += offset;
    } else{
@@ -230,9 +230,9 @@ void Level::bisectLevel(bool horizontal, float splitLocation, float offset){
    } 
    if (insts == nullptr) return;
    for (Instances* i = insts; i != nullptr; i = i->next){
-      if (horizontal && i->i->x-xOff > splitLocation){
+      if (i->i != cause && horizontal && i->i->x-xOff >= splitLocation){
          i->i->x += offset;
-      } else if (!horizontal && i->i->y-yOff > splitLocation) {
+      } else if (i->i != cause && !horizontal && i->i->y-yOff >= splitLocation) {
          i->i->y += offset;
       }
    }

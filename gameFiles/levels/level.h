@@ -46,7 +46,7 @@ class Level{
       float getXOff();
       float getYOff();
       void moveRoom(float newXOff, float newYOff, bool relative);
-      void bisectLevel(bool horizontal, float splitLocation, float offset);
+      void bisectLevel(bool horizontal, float splitLocation, float offset, Instance* cause);
 };
 
 /**

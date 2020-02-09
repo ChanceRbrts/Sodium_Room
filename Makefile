@@ -75,3 +75,4 @@ clean:
 	cd gameFiles/gsObjects && rm -f *.o *.a
 	cd gameFiles/levels && rm -f *.o *.a
 	cd gameFiles/levels/testLevels && rm -f *.o *.a
+	cd gameFiles/shaderboxes && rm -f *.o *.a

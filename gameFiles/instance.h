@@ -39,6 +39,7 @@ class Instance{
       // Velocity (Pixels per seconds)
       double dX, dY;
       double w, h;
+      virtual bool canMessWithLevel(){return false;};
       // See if the object needs to be deleted.
       double getR(){return r;};
       double getG(){return g;};
