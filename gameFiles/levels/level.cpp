@@ -56,8 +56,8 @@ pointDouble Level::createLevel(){
             line += c;
          }
       }
-      w = wid;
-      h = yVal;
+      w = wid*32;
+      h = yVal*32;
    }
    instances = makeLevel(instances);
    while (insts != nullptr){
@@ -190,8 +190,8 @@ void Level::moveOutOfBounds(void* lv){
          for (LevelList* l = lev; l != nullptr; l = l->next){
             if (l->lev != this){
                Level* level = l->lev;
-               if (pointX >= level->xOff && pointX <= level->xOff+level->w*32 &&
-                     pointY >= level->yOff && pointY <= level->yOff+level->h*32){
+               if (pointX >= level->xOff && pointX <= level->xOff+level->w &&
+                     pointY >= level->yOff && pointY <= level->yOff+level->h){
                   // Move the instance to this level.
                   moveInstance(i, level);
                   break;
@@ -203,4 +203,37 @@ void Level::moveOutOfBounds(void* lv){
    }
    // TODO(?): Greedy checker to see if an object from an enclosing room has fallen into bounds.
    return;
+}
+
+float Level::getXOff(){ return xOff; }
+
+float Level::getYOff(){ return yOff; }
+
+void Level::moveRoom(float newXOff, float newYOff, bool relative){
+   float oldXOff = xOff;
+   float oldYOff = yOff;
+   xOff = relative ? xOff+newXOff : newXOff;
+   yOff = relative ? yOff+newYOff : newYOff;
+   // Move all of the instances to the level's new offsets.
+   if (insts == nullptr) return;
+   for (Instances* i = insts; i != nullptr; i = i->next){
+      insts->i->x += xOff-oldXOff;
+      insts->i->y += yOff-oldYOff;
+   }
+}
+
+void Level::bisectLevel(bool horizontal, float splitLocation, float offset){
+   if (horizontal){ 
+      w += offset;
+   } else{
+      h += offset;
+   } 
+   if (insts == nullptr) return;
+   for (Instances* i = insts; i != nullptr; i = i->next){
+      if (horizontal && i->i->x-xOff > splitLocation){
+         i->i->x += offset;
+      } else if (!horizontal && i->i->y-yOff > splitLocation) {
+         i->i->y += offset;
+      }
+   }
 }
