@@ -4,6 +4,10 @@ Level::Level(){
    filePath = "";
    createdShaderboxes = false;
    insts = nullptr;
+   hasBackground = false;
+   r = 0.5;
+   g = 0.5;
+   b = 0.5;
 }
 
 Level::~Level(){
@@ -114,6 +118,9 @@ std::vector<ShaderBox*> Level::createShaderBoxes(GLUtil* glu){
 }
 
 void Level::draw(GLUtil* glu, Instance* player){
+   if (hasBackground){
+      // TODO: Draw the background.
+   }
    // Make sure we're drawing our shaderboxes first.
    if (!createdShaderboxes){
       shades = createShaderBoxes(glu);
@@ -180,7 +187,6 @@ void Level::moveOutOfBounds(void* lv){
       Instances* next = i->next;
       // If that midpoint is outside of the current level, we need to move it to another level.
       if (pointX < xOff || pointX > xOff+w*32 || pointY < yOff || pointY > yOff+h*32){
-         exit(1);
          for (LevelList* l = lev; l != nullptr; l = l->next){
             if (l->lev != this){
                Level* level = l->lev;

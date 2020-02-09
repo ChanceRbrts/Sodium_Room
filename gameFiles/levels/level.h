@@ -30,6 +30,8 @@ class Level{
    public:
       int w, h;
       float xOff, yOff;
+      bool hasBackground;
+      float r, g, b;
       bool createdShaderboxes;
       std::string filePath;
       Instances* insts;
