@@ -7,6 +7,7 @@
 class EnclosedLevel : public InstanceLev {
     private:
         bool open, openHorizontally;
+        bool pushLevel;
         bool prevLevelUp, levelUp;
         float openTime, maxOpenTime;
         double trueW, lastW;

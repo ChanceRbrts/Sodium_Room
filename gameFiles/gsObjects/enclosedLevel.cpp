@@ -12,6 +12,7 @@ EnclosedLevel::EnclosedLevel(double X, double Y, double W, double H, Level* l) :
         h = 0;
     }
     name = "Enclosed Level";
+    messWithLevel = true;
 }
 
 void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
@@ -30,7 +31,7 @@ void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, In
     }
     if (openHorizontally) w = trueW*openTime/maxOpenTime;
     else h = trueW*openTime/maxOpenTime;
-    messWithLevel = abs(lastW-(openHorizontally?w:h)) < 0.0001;
+    pushLevel = abs(lastW-(openHorizontally?w:h)) < 0.0001;
 }
 
 void EnclosedLevel::draw(GLDraw* gld, GLShaders* gls){
@@ -53,7 +54,7 @@ void EnclosedLevel::messWithLevels(LevelList* levs, Instance* player){
     for (LevelList* ll = levs; ll != nullptr; ll = ll->next){
         Level* l = ll->lev;
         // Move/split levels to make room for the new level if they're on the right/bottom.
-        // For moving the level right, let's say the midpoint of the level is where we want to say we want to move it.
+        // For moving the level right, let's say the midpoint of the level is where we decide if we should move it.
         if (openHorizontally){
             if (l->getXOff() <= x && l->getXOff()+l->w >= x 
                 && l->getYOff() <= y+h && l->getYOff()+l->h >= y){
