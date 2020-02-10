@@ -55,14 +55,22 @@ gameFiles/instances.a:gameFiles/instance.o gameFiles/solid.o gameFiles/player.o\
 		gameFiles/gsObjects/fakeSolid.o
 	ar -rcs $@ $^
 
-gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/levelExample.o gameFiles/levels/levels.o\
+gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/levelExample.o\
 		gameFiles/levels/testLevels/testRain.o gameFiles/levels/testLevels/testFalseBlocks.o
+	ar -rcs $@ $^
+
+gameFiles/instancesext.a:gameFiles/instancelev.o gameFiles/gsObjects/enclosedLevel.o
+	ar -rcs $@ $^
+
+# If a level includes instancesExt.h, it belongs here.
+gameFiles/levelsext.a:gameFiles/levels/levels.o gameFiles/levels/testLevels/testHorizontalEnclosed.o
 	ar -rcs $@ $^
 
 gameFiles/game.a:gameFiles/gameLogic.o 
 	ar -rcs $@ $^
 
-game:main/game.o gameFiles/game.a gameFiles/levels.a gameFiles/instances.a utils/util.a glutils/glutil.a
+game:main/game.o gameFiles/game.a gameFiles/levelsext.a gameFiles/instancesext.a gameFiles/levels.a\
+		gameFiles/instances.a utils/util.a glutils/glutil.a
 	g++ -std=c++11 -O3 -o $@ $^ $(LIBS)
 
 clean:
@@ -75,3 +83,4 @@ clean:
 	cd gameFiles/gsObjects && rm -f *.o *.a
 	cd gameFiles/levels && rm -f *.o *.a
 	cd gameFiles/levels/testLevels && rm -f *.o *.a
+	cd gameFiles/shaderboxes && rm -f *.o *.a

@@ -27,9 +27,11 @@ class Level{
       virtual std::vector<ShaderBox*> createShaderBoxes(GLUtil* glu);
       // This draws the objects in the room.
       void drawObjects(GLUtil* glu, Instance* player, int mode);
-   public:
-      int w, h;
       float xOff, yOff;
+   public:
+      float w, h;
+      bool hasBackground;
+      float r, g, b;
       bool createdShaderboxes;
       std::string filePath;
       Instances* insts;
@@ -41,6 +43,11 @@ class Level{
       void destroyLevel();
       void draw(GLUtil* glu, Instance* player);
       void moveOutOfBounds(void* lev);
+      float getXOff();
+      float getYOff();
+      virtual void updateLevel(double deltaTime, Instance* player);
+      void moveRoom(float newXOff, float newYOff, bool relative);
+      void bisectLevel(bool horizontal, float splitLocation, float offset, Instance* cause);
 };
 
 /**

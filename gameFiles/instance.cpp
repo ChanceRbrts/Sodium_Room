@@ -19,6 +19,7 @@ Instance::Instance(double X, double Y, double W, double H){
    playerRef = false;
    solid = true;
    hidden = false;
+   needExtra = false;
    name = "Instance";
 }
 
@@ -44,9 +45,23 @@ void Instance::hide(bool h){
 }
 
 void Instance::draw(GLUtil* glu){
-   if (!hidden){
+   if (!hidden && !needExtra){
       draw(glu->draw, glu->shade);
+   } else if (!hidden){
+      drawEX(glu);
    }
+}
+
+void Instance::drawEX(GLUtil* glu){
+   GLDraw* gld = glu->draw;
+   gld->color(r,g,b);
+   // Draws a rectangle with colors r, g, and b.
+   gld->begin("QUADS");
+   gld->vertW(x,y);
+   gld->vertW(x,y+h);
+   gld->vertW(x+w,y+h);
+   gld->vertW(x+w,y);
+   gld->end();
 }
 
 void Instance::draw(GLDraw* gld, GLShaders* gls){

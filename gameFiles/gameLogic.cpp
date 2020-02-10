@@ -4,7 +4,7 @@ GameLogic::GameLogic(){
    levels = new Levels();
    createdFonts = false;
    loadedLevels = nullptr;
-   loadLevel(levels->lev[2]);
+   loadLevel(levels->lev[3]);
 }
 
 GameLogic::~GameLogic(){
@@ -63,6 +63,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    }
    while (lList != nullptr){
       Level* l = lList->lev;
+      l->updateLevel(deltaTime, player);
       Instances* in = l->insts;
       while (in != nullptr){
          in->i->upd(deltaTime, keyPressed, keyHeld, player);
@@ -71,6 +72,11 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          if (in->i->canRemove()){
             removeFromList(in);
          } else collObjs.push_back(in->i);
+         // If an instance can mess with the levels, allow it here.
+         if (in->i->canMessWithLevel()){
+            InstanceLev* iL = (InstanceLev *)(in->i);
+            iL->messWithLevels(loadedLevels, player);
+         }
          in = next;
       }
       lList = lList->next;
@@ -146,11 +152,11 @@ void GameLogic::followPlayer(GLUtil* glu){
    // You know what? Let's just have a whole bunch of std::mins and std::maxs here to avoid a ton of conditionals.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
-         double xVal = l->lev->xOff+l->lev->w*32-glu->draw->getWidth();
-         double yVal = l->lev->yOff+l->lev->h*32-glu->draw->getHeight();
-         minX = std::min(minX, (double)(l->lev->xOff));
+         double xVal = l->lev->getXOff()+l->lev->w-glu->draw->getWidth();
+         double yVal = l->lev->getYOff()+l->lev->h-glu->draw->getHeight();
+         minX = std::min(minX, (double)(l->lev->getXOff()));
          maxX = std::max(maxX, xVal);
-         minY = std::min(minY, (double)(l->lev->yOff));
+         minY = std::min(minY, (double)(l->lev->getYOff()));
          maxY = std::max(maxY, yVal);
       }
    }

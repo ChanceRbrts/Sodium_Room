@@ -5,10 +5,10 @@
 
 class TestRain : public Level {
     private:
-      std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
-   public:
-      TestRain();
-      std::vector<ShaderBox *> createShaderBoxes(GLUtil* glu);
+        std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
+    public:
+        TestRain();
+        std::vector<ShaderBox *> createShaderBoxes(GLUtil* glu);
 };
 
 #endif

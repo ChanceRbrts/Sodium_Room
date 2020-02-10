@@ -1,10 +1,13 @@
 #ifndef dos_obj_levels
 #define dos_obj_levels
-#include "levels.h"
-// This is where DoS puts its generated levels.
+
+#include "level.h"
+
+// This is where DoS would put its generated levels.
 #include "levelExample.h"
 #include "testLevels/testRain.h"
 #include "testLevels/testFalseBlocks.h"
+#include "testLevels/testHorizontalEnclosed.h"
 
 class Levels{
    public:

@@ -4,6 +4,14 @@ Level::Level(){
    filePath = "";
    createdShaderboxes = false;
    insts = nullptr;
+   hasBackground = false;
+   r = 0.5;
+   g = 0.5;
+   b = 0.5;
+   w = 0;
+   h = 0;
+   xOff = 0;
+   yOff = 0;
 }
 
 Level::~Level(){
@@ -52,8 +60,8 @@ pointDouble Level::createLevel(){
             line += c;
          }
       }
-      w = wid;
-      h = yVal;
+      w = wid*32;
+      h = yVal*32;
    }
    instances = makeLevel(instances);
    while (insts != nullptr){
@@ -114,6 +122,18 @@ std::vector<ShaderBox*> Level::createShaderBoxes(GLUtil* glu){
 }
 
 void Level::draw(GLUtil* glu, Instance* player){
+   if (hasBackground){
+      GLDraw* gld = glu->draw;
+      // TODO: Draw the background.
+      gld->color(r,g,b);
+      // Draws a rectangle with colors r, g, and b.
+      gld->begin("QUADS");
+      gld->vertW(xOff,yOff);
+      gld->vertW(xOff,yOff+h);
+      gld->vertW(xOff+w,yOff+h);
+      gld->vertW(xOff+w,yOff);
+      gld->end();
+   }
    // Make sure we're drawing our shaderboxes first.
    if (!createdShaderboxes){
       shades = createShaderBoxes(glu);
@@ -131,6 +151,9 @@ void Level::draw(GLUtil* glu, Instance* player){
    }
 }
 
+void Level::updateLevel(double deltaTime, Instance* player){
+}
+
 void Level::drawObjects(GLUtil* glu, Instance* player, int mode){
    double wid = glu->draw->getWidth();
    double hei = glu->draw->getHeight();
@@ -144,10 +167,13 @@ void Level::drawObjects(GLUtil* glu, Instance* player, int mode){
    if (insts != nullptr){
       for (Instances* i = insts; i != nullptr; i = i->next){
          Instance* in = i->i;
+         /*if (in->getName().compare("Enclosed Level") == 0){
+            printf("%f, %f, %f, %f\n", in->x, in->y, in->w, in->h);
+         }*/
          // Check if the instance is in the bounds of the screen.
          if (in->x < cX+wid && in->x+in->w > cX && in->y < cY+hei && in->y+in->h > cY){
             in->draw(glu);
-         }
+         } 
       }
    }
 }
@@ -180,12 +206,13 @@ void Level::moveOutOfBounds(void* lv){
       Instances* next = i->next;
       // If that midpoint is outside of the current level, we need to move it to another level.
       if (pointX < xOff || pointX > xOff+w*32 || pointY < yOff || pointY > yOff+h*32){
-         exit(1);
+         printf("%f, %f, %s\n", pointX, xOff, i->i->getName().c_str());
+         exit(0);
          for (LevelList* l = lev; l != nullptr; l = l->next){
             if (l->lev != this){
                Level* level = l->lev;
-               if (pointX >= level->xOff && pointX <= level->xOff+level->w*32 &&
-                     pointY >= level->yOff && pointY <= level->yOff+level->h*32){
+               if (pointX >= level->xOff && pointX <= level->xOff+level->w &&
+                     pointY >= level->yOff && pointY <= level->yOff+level->h){
                   // Move the instance to this level.
                   moveInstance(i, level);
                   break;
@@ -197,4 +224,41 @@ void Level::moveOutOfBounds(void* lv){
    }
    // TODO(?): Greedy checker to see if an object from an enclosing room has fallen into bounds.
    return;
+}
+
+float Level::getXOff(){ return xOff; }
+
+float Level::getYOff(){ return yOff; }
+
+void Level::moveRoom(float newXOff, float newYOff, bool relative){
+   float oldXOff = xOff;
+   float oldYOff = yOff;
+   xOff = relative ? xOff+newXOff : newXOff;
+   yOff = relative ? yOff+newYOff : newYOff;
+   // Move all of the instances to the level's new offsets.
+   if (insts == nullptr) return;
+   for (Instances* i = insts; i != nullptr; i = i->next){
+      i->i->x += xOff-oldXOff;
+      i->i->y += yOff-oldYOff;
+   }
+}
+
+void Level::bisectLevel(bool horizontal, float splitLocation, float offset, Instance* cause){
+   if (horizontal){ 
+      w += offset;
+   } else{
+      h += offset;
+   } 
+   if (insts == nullptr) return;
+   for (Instances* i = insts; i != nullptr; i = i->next){
+      if (i->i != cause && horizontal && i->i->x-xOff >= splitLocation){
+         i->i->x += offset;
+         // Probably a bad solution to this; could cause some unusual contracting.
+         if (i->i->x-xOff < splitLocation) i->i->x = splitLocation+xOff;
+      } else if (i->i != cause && !horizontal && i->i->y-yOff >= splitLocation) {
+         i->i->y += offset;
+         // Probably a bad solution to this; could cause some unusual contracting.
+         if (i->i->y-yOff < splitLocation) i->i->y = splitLocation+yOff;
+      }
+   }
 }

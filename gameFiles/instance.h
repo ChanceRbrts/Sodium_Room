@@ -25,6 +25,8 @@ class Instance{
       bool playerRef;
       bool remove;
       bool hidden;
+      // The boolean to say whether or not you need the GLUtil class and not just GLDraw and GLShaders for drawing.
+      bool needExtra;
       // Some objects need to do solid collisions with only some objects.
       // If solid is true, this is a blacklist; if solid is false, this is a whitelist for solid object collisions.
       std::vector<std::string> colList;
@@ -39,6 +41,7 @@ class Instance{
       // Velocity (Pixels per seconds)
       double dX, dY;
       double w, h;
+      virtual bool canMessWithLevel(){return false;};
       // See if the object needs to be deleted.
       double getR(){return r;};
       double getG(){return g;};
@@ -117,6 +120,13 @@ class Instance{
        * @param gls The GLUtil's shader functions.
        */
       virtual void draw(GLDraw* gld, GLShaders* gls);
+      /**
+       * The code to draw the instance. (This you want to implement.)
+       * I recommend you use GLDraw.
+       * This is ONLY if you need to use GLUtil for something other than drawing or shading.
+       * @param glu The GLUtil to use for drawing.
+       */
+      virtual void drawEX(GLUtil* glu);
       /**
        * The code to draw the instance.
        * @param glu The GLUtil to use for drawing.
