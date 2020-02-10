@@ -4,15 +4,18 @@ EnclosedLevel::EnclosedLevel(double X, double Y, double W, double H, Level* l) :
     lev = l;
     levelUp = false;
     prevLevelUp = levelUp;
-    if (openHorizontally){
-        trueW = w;
-        w = 0;
-    } else {
-        trueW = h;
-        h = 0;
+    if (W == 0) openHorizontally = true;
+    else if (H == 0) openHorizontally = false;
+    else {
+        fprintf(stderr, "WARNING for EnclosedLevel: w or h expected to be 0");
+        openHorizontally = true;
     }
+    trueW = openHorizontally ? l->w : l->h;
     name = "Enclosed Level";
     messWithLevel = true;
+    openTime = 0;
+    maxOpenTime = 1;
+    open = false;
 }
 
 void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
@@ -29,17 +32,27 @@ void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, In
         openTime -= deltaTime;
         if (openTime < 0) openTime = 0;
     }
+    solid = openTime > 0 && openTime < maxOpenTime;
     if (openHorizontally) w = trueW*openTime/maxOpenTime;
     else h = trueW*openTime/maxOpenTime;
     pushLevel = abs(lastW-(openHorizontally?w:h)) < 0.0001;
 }
 
 void EnclosedLevel::draw(GLDraw* gld, GLShaders* gls){
-    // If the level's invisible, don't do anything.
-    if (openTime > maxOpenTime || openTime <= 0) return;
+    // If the level's visible, don't do anything.
+    if (openTime > maxOpenTime) return;
+    gld->color(lev->r, lev->g, lev->b);
+    if (openTime <= 0){
+        // If the enclosed level's just 0, let's make it a dotted line.
+        gld->begin("LINES");
+        gld->vertW(x, y);
+        if (openHorizontally) gld->vertW(x, y+h);
+        else gld->vertW(x+w, y);
+        gld->end();
+        return;
+    }
     // Otherwise, we're going to have to draw the entire level in this...
     // Let's start with a rectangle being the background of the level.
-    gld->color(lev->r, lev->g, lev->b);
     gld->begin("QUADS");
     gld->vertW(x,y);
     gld->vertW(x,y+h);

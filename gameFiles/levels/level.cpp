@@ -151,10 +151,13 @@ void Level::drawObjects(GLUtil* glu, Instance* player, int mode){
    if (insts != nullptr){
       for (Instances* i = insts; i != nullptr; i = i->next){
          Instance* in = i->i;
+         /*if (in->getName().compare("Enclosed Level") == 0){
+            printf("%f, %f, %f, %f\n", in->x, in->y, in->w, in->h);
+         }*/
          // Check if the instance is in the bounds of the screen.
          if (in->x < cX+wid && in->x+in->w > cX && in->y < cY+hei && in->y+in->h > cY){
             in->draw(glu);
-         }
+         } 
       }
    }
 }

@@ -63,7 +63,7 @@ gameFiles/instancesext.a:gameFiles/instancelev.o gameFiles/gsObjects/enclosedLev
 	ar -rcs $@ $^
 
 # If a level includes instancesExt.h, it belongs here.
-gameFiles/levelsext.a:gameFiles/levels/levels.o 
+gameFiles/levelsext.a:gameFiles/levels/levels.o gameFiles/levels/testLevels/testHorizontalEnclosed.o
 	ar -rcs $@ $^
 
 gameFiles/game.a:gameFiles/gameLogic.o 

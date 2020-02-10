@@ -5,7 +5,8 @@ TestHorizontalEnclosed::TestHorizontalEnclosed(){
 }
 
 std::vector<Instance *> TestHorizontalEnclosed::makeLevel(std::vector<Instance*> previous){
-    previous.push_back(new EnclosedLevel(4, 0, 0, h/32, new TestHorizontalInner()));
+    previous.push_back(new Player(17, 13));
+    previous.push_back(new EnclosedLevel(5, 0, 0, h/32, new TestHorizontalInner()));
     return previous;
 }
 
@@ -16,6 +17,10 @@ std::vector<ShaderBox *> TestHorizontalEnclosed::createShaderBoxes(GLUtil* glu){
 
 TestHorizontalInner::TestHorizontalInner(){
     filePath = "testHorizontalInner";
+    r = 0.75;
+    g = 0.75;
+    b = 0.75;
+    hasBackground = true;
 }
 
 std::vector<Instance *> TestHorizontalInner::makeLevel(std::vector<Instance*> previous){
