@@ -123,7 +123,16 @@ std::vector<ShaderBox*> Level::createShaderBoxes(GLUtil* glu){
 
 void Level::draw(GLUtil* glu, Instance* player){
    if (hasBackground){
+      GLDraw* gld = glu->draw;
       // TODO: Draw the background.
+      gld->color(r,g,b);
+      // Draws a rectangle with colors r, g, and b.
+      gld->begin("QUADS");
+      gld->vertW(xOff,yOff);
+      gld->vertW(xOff,yOff+h);
+      gld->vertW(xOff+w,yOff+h);
+      gld->vertW(xOff+w,yOff);
+      gld->end();
    }
    // Make sure we're drawing our shaderboxes first.
    if (!createdShaderboxes){
@@ -197,6 +206,8 @@ void Level::moveOutOfBounds(void* lv){
       Instances* next = i->next;
       // If that midpoint is outside of the current level, we need to move it to another level.
       if (pointX < xOff || pointX > xOff+w*32 || pointY < yOff || pointY > yOff+h*32){
+         printf("%f, %f, %s\n", pointX, xOff, i->i->getName().c_str());
+         exit(0);
          for (LevelList* l = lev; l != nullptr; l = l->next){
             if (l->lev != this){
                Level* level = l->lev;
@@ -220,15 +231,17 @@ float Level::getXOff(){ return xOff; }
 float Level::getYOff(){ return yOff; }
 
 void Level::moveRoom(float newXOff, float newYOff, bool relative){
+   printf("%f, %f\n", newXOff, newYOff);
    float oldXOff = xOff;
    float oldYOff = yOff;
    xOff = relative ? xOff+newXOff : newXOff;
    yOff = relative ? yOff+newYOff : newYOff;
    // Move all of the instances to the level's new offsets.
    if (insts == nullptr) return;
+   printf("Offsets, %f, %f\n", oldXOff, xOff);
    for (Instances* i = insts; i != nullptr; i = i->next){
-      insts->i->x += xOff-oldXOff;
-      insts->i->y += yOff-oldYOff;
+      i->i->x += xOff-oldXOff;
+      i->i->y += yOff-oldYOff;
    }
 }
 

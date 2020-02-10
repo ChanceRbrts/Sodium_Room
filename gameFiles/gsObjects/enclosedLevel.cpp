@@ -12,6 +12,7 @@ EnclosedLevel::EnclosedLevel(double X, double Y, double W, double H, Level* l) :
     }
     if (l->w == 0 && l->h == 0){
         l->createLevel();
+        l->moveRoom(x, y, false);
     }
     trueW = openHorizontally ? l->w : l->h;
     name = "Enclosed Level";
@@ -23,6 +24,7 @@ EnclosedLevel::EnclosedLevel(double X, double Y, double W, double H, Level* l) :
 }
 
 void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
+    prevLevelUp = levelUp;
     lastW = openHorizontally ? w : h;
     prevLevelUp = levelUp;
     if (open && openTime < maxOpenTime){
@@ -69,9 +71,9 @@ void EnclosedLevel::drawEX(GLUtil* glu){
     float transY = gld->camY-y;
     float scale = maxOpenTime/openTime;
     if (openHorizontally){
-        gld->pushCameraMem(transX*scale, gld->camY, scale*gld->getWidth(), gld->getHeight());
+        gld->pushCameraMem(x+transX*scale, gld->camY, scale*gld->getWidth(), gld->getHeight());
     } else {
-        gld->pushCameraMem(gld->camX, transY*scale, gld->getWidth(), scale*gld->getHeight());
+        gld->pushCameraMem(gld->camX, y+transY*scale, gld->getWidth(), scale*gld->getHeight());
     }
     // Now, draw the contained level!
     lev->draw(glu, nullptr);
@@ -81,17 +83,40 @@ void EnclosedLevel::drawEX(GLUtil* glu){
 void EnclosedLevel::messWithLevels(LevelList* levs, Instance* player){
     // If we have no levels to move, then we should do nothing.
     if (levs == nullptr) return;
+    if (levelUp && !prevLevelUp){
+        // Add our level if we need to.
+        LevelList* ll = levs;
+        while (ll->next != nullptr){
+            ll = ll->next;
+        }
+        LevelList* ourLevel = new LevelList();
+        ourLevel->lev = lev;
+        ourLevel->prev = ll;
+        ll->next = ourLevel;
+    } else if (!levelUp && prevLevelUp){
+        // Remove our level if we need to.
+        LevelList* ll = levs;
+        while (ll != nullptr){
+            LevelList* next = ll->next;
+            if (ll->lev == lev){
+                if (ll->prev != nullptr) ll->prev->next = ll->next;
+                if (ll->next != nullptr) ll->next->prev = ll->prev;
+                delete ll;
+            }
+            ll = next;
+        }
+    }
     if (!pushLevel) return;
     for (LevelList* ll = levs; ll != nullptr; ll = ll->next){
         Level* l = ll->lev;
         // Move/split levels to make room for the new level if they're on the right/bottom.
         // For moving the level right, let's say the midpoint of the level is where we decide if we should move it.
-        if (openHorizontally){
+        if (openHorizontally && l != lev){
             if (l->getXOff() <= x && l->getXOff()+l->w >= x 
                 && l->getYOff() <= y+h && l->getYOff()+l->h >= y){
                 l->bisectLevel(true, x-l->getXOff(), w-lastW, this);
             } else if (l->getXOff()+l->w/2 >= x) l->moveRoom(w-lastW, 0, true);
-        } else {
+        } else if (l != lev) {
             if (l->getYOff() <= y && l->getYOff()+l->h >= y
                 && l->getXOff() <= x+w && l->getXOff()+l->w >= x){
                 l->bisectLevel(false, y-l->getYOff(), h-lastW, this);

@@ -72,6 +72,11 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          if (in->i->canRemove()){
             removeFromList(in);
          } else collObjs.push_back(in->i);
+         // If an instance can mess with the levels, allow it here.
+         if (in->i->canMessWithLevel()){
+            InstanceLev* iL = (InstanceLev *)(in->i);
+            iL->messWithLevels(loadedLevels, player);
+         }
          in = next;
       }
       lList = lList->next;
@@ -101,11 +106,6 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
                addToList(in, in->i->toAdd[i]);
             }
             in->i->toAdd.clear();
-         }
-         // If an instance can mess with the levels, allow it here.
-         if (in->i->canMessWithLevel()){
-            InstanceLev* iL = (InstanceLev *)(in->i);
-            iL->messWithLevels(loadedLevels, player);
          }
          in = in->next;
       }
