@@ -29,7 +29,7 @@ void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, In
     prevLevelUp = levelUp;
     if (open && openTime < maxOpenTime){
         openTime += deltaTime;
-        if (openTime > maxOpenTime){ 
+        if (openTime >= maxOpenTime){ 
             openTime = maxOpenTime;
             levelUp = true;
         }
