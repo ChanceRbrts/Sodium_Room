@@ -231,14 +231,12 @@ float Level::getXOff(){ return xOff; }
 float Level::getYOff(){ return yOff; }
 
 void Level::moveRoom(float newXOff, float newYOff, bool relative){
-   printf("%f, %f\n", newXOff, newYOff);
    float oldXOff = xOff;
    float oldYOff = yOff;
    xOff = relative ? xOff+newXOff : newXOff;
    yOff = relative ? yOff+newYOff : newYOff;
    // Move all of the instances to the level's new offsets.
    if (insts == nullptr) return;
-   printf("Offsets, %f, %f\n", oldXOff, xOff);
    for (Instances* i = insts; i != nullptr; i = i->next){
       i->i->x += xOff-oldXOff;
       i->i->y += yOff-oldYOff;
@@ -255,8 +253,12 @@ void Level::bisectLevel(bool horizontal, float splitLocation, float offset, Inst
    for (Instances* i = insts; i != nullptr; i = i->next){
       if (i->i != cause && horizontal && i->i->x-xOff >= splitLocation){
          i->i->x += offset;
+         // Probably a bad solution to this; could cause some unusual contracting.
+         if (i->i->x-xOff < splitLocation) i->i->x = splitLocation+xOff;
       } else if (i->i != cause && !horizontal && i->i->y-yOff >= splitLocation) {
          i->i->y += offset;
+         // Probably a bad solution to this; could cause some unusual contracting.
+         if (i->i->y-yOff < splitLocation) i->i->y = splitLocation+yOff;
       }
    }
 }

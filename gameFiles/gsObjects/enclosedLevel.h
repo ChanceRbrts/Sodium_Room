@@ -6,12 +6,15 @@
 
 class EnclosedLevel : public InstanceLev {
     private:
+        bool shaderCheck;
         bool openHorizontally;
         bool pushLevel;
         bool prevLevelUp, levelUp;
         float openTime, maxOpenTime;
         double trueW, lastW;
+        double time;
         Level* lev;
+        void checkShaders(GLShaders* gls);
     public:
         bool open;
         EnclosedLevel(double X, double Y, double W, double H, Level* l);

@@ -2,6 +2,8 @@
 
 EnclosedLevel::EnclosedLevel(double X, double Y, double W, double H, Level* l) : InstanceLev(X, Y, W, H){
     lev = l;
+    shaderCheck = true;
+    time = 0;
     levelUp = false;
     prevLevelUp = levelUp;
     if (W == 0) openHorizontally = true;
@@ -24,6 +26,7 @@ EnclosedLevel::EnclosedLevel(double X, double Y, double W, double H, Level* l) :
 }
 
 void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
+    time = fmod(time+deltaTime, 1);
     prevLevelUp = levelUp;
     lastW = openHorizontally ? w : h;
     prevLevelUp = levelUp;
@@ -44,18 +47,42 @@ void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, In
     pushLevel = abs(lastW-(openHorizontally?w:h)) > 0.0001;
 }
 
+void EnclosedLevel::checkShaders(GLShaders* gls){
+    if (!gls->programExists("dottedLine")){
+        gls->createProgram("", "gameFiles/shaders/dotted", "dottedLine");
+    }
+    if (!gls->programExists("diamond")){
+        gls->createProgram("", "gameFiles/shaders/enclosedDiamond", "diamond");
+    }
+}
+
 void EnclosedLevel::drawEX(GLUtil* glu){
     GLDraw* gld = glu->draw;
+    GLShaders* gls = glu->shade;
+    // Check if the necessary shaders are loaded in.
+    if (shaderCheck){
+        checkShaders(gls);
+        shaderCheck = false;
+    }
     // If the level's visible, don't do anything.
     if (levelUp) return;
     gld->color(lev->r, lev->g, lev->b);
     if (openTime <= 0){
-        // If the enclosed level's has a width of 0, let's make it a line. (Dotted in the future?)
+        // If the enclosed level's has a width of 0, let's make it a dotted line.
+        int program = gls->bindShader("dottedLine");
+        // TODO: Make xScale and yScale correspond to resolution to window size.
+        gls->addUniform(program, "xScale", 1);
+        gls->addUniform(program, "yScale", 1);
+        gls->addUniform(program, "camX", gld->camX);
+        gls->addUniform(program, "camY", gld->camY);
+        gls->addUniform(program, "horizontal", !openHorizontally);
+        gls->addUniform(program, "time", time);
         gld->begin("LINES");
         gld->vertW(x, y);
         if (openHorizontally) gld->vertW(x, y+h);
         else gld->vertW(x+w, y);
         gld->end();
+        gls->unbindShader();
         return;
     }
     // Otherwise, we're going to have to draw the entire level in this...
@@ -78,6 +105,24 @@ void EnclosedLevel::drawEX(GLUtil* glu){
     // Now, draw the contained level!
     lev->draw(glu, nullptr);
     gld->popCameraMem();
+    // Now, draw the diamond.
+    gld->color(lev->r*0.75, lev->g*0.75, lev->b*0.75, 0.5);
+    int program = gls->bindShader("diamond");
+    // TODO: Make xScale and yScale correspond to resolution to window size.
+    gls->addUniform(program, "xScale", 1);
+    gls->addUniform(program, "yScale", 1);
+    gls->addUniform(program, "camX", gld->camX);
+    gls->addUniform(program, "camY", gld->camY);
+    gls->addUniform(program, "horizontal", !openHorizontally);
+    gls->addUniform(program, "time", time);
+    gls->addUniform(program, "open", 1-openTime/maxOpenTime);
+    gld->begin("QUADS");
+    gld->vertW(x,y,0.01);
+    gld->vertW(x,y+h,0.01);
+    gld->vertW(x+w,y+h,0.01);
+    gld->vertW(x+w,y,0.01);
+    gld->end();
+    gls->unbindShader();
 }
 
 void EnclosedLevel::messWithLevels(LevelList* levs, Instance* player){
