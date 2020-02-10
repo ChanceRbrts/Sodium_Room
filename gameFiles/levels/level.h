@@ -45,6 +45,7 @@ class Level{
       void moveOutOfBounds(void* lev);
       float getXOff();
       float getYOff();
+      virtual void updateLevel(double deltaTime, Instance* player);
       void moveRoom(float newXOff, float newYOff, bool relative);
       void bisectLevel(bool horizontal, float splitLocation, float offset, Instance* cause);
 };

@@ -63,6 +63,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    }
    while (lList != nullptr){
       Level* l = lList->lev;
+      l->updateLevel(deltaTime, player);
       Instances* in = l->insts;
       while (in != nullptr){
          in->i->upd(deltaTime, keyPressed, keyHeld, player);
@@ -100,6 +101,11 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
                addToList(in, in->i->toAdd[i]);
             }
             in->i->toAdd.clear();
+         }
+         // If an instance can mess with the levels, allow it here.
+         if (in->i->canMessWithLevel()){
+            InstanceLev* iL = (InstanceLev *)(in->i);
+            iL->messWithLevels(loadedLevels, player);
          }
          in = in->next;
       }

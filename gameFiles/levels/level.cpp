@@ -8,6 +8,10 @@ Level::Level(){
    r = 0.5;
    g = 0.5;
    b = 0.5;
+   w = 0;
+   h = 0;
+   xOff = 0;
+   yOff = 0;
 }
 
 Level::~Level(){
@@ -136,6 +140,9 @@ void Level::draw(GLUtil* glu, Instance* player){
       shade->drawOutBox();
       shade->draw();
    }
+}
+
+void Level::updateLevel(double deltaTime, Instance* player){
 }
 
 void Level::drawObjects(GLUtil* glu, Instance* player, int mode){

@@ -10,12 +10,16 @@ EnclosedLevel::EnclosedLevel(double X, double Y, double W, double H, Level* l) :
         fprintf(stderr, "WARNING for EnclosedLevel: w or h expected to be 0");
         openHorizontally = true;
     }
+    if (l->w == 0 && l->h == 0){
+        l->createLevel();
+    }
     trueW = openHorizontally ? l->w : l->h;
     name = "Enclosed Level";
     messWithLevel = true;
     openTime = 0;
     maxOpenTime = 1;
     open = false;
+    needExtra = true;
 }
 
 void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
@@ -35,15 +39,16 @@ void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, In
     solid = openTime > 0 && openTime < maxOpenTime;
     if (openHorizontally) w = trueW*openTime/maxOpenTime;
     else h = trueW*openTime/maxOpenTime;
-    pushLevel = abs(lastW-(openHorizontally?w:h)) < 0.0001;
+    pushLevel = abs(lastW-(openHorizontally?w:h)) > 0.0001;
 }
 
-void EnclosedLevel::draw(GLDraw* gld, GLShaders* gls){
+void EnclosedLevel::drawEX(GLUtil* glu){
+    GLDraw* gld = glu->draw;
     // If the level's visible, don't do anything.
-    if (openTime > maxOpenTime) return;
+    if (levelUp) return;
     gld->color(lev->r, lev->g, lev->b);
     if (openTime <= 0){
-        // If the enclosed level's just 0, let's make it a dotted line.
+        // If the enclosed level's has a width of 0, let's make it a line. (Dotted in the future?)
         gld->begin("LINES");
         gld->vertW(x, y);
         if (openHorizontally) gld->vertW(x, y+h);
@@ -59,11 +64,24 @@ void EnclosedLevel::draw(GLDraw* gld, GLShaders* gls){
     gld->vertW(x+w,y+h);
     gld->vertW(x+w,y);
     gld->end();
+    // Now, we need to do a translation to the corner of the screen for this.
+    float transX = gld->camX-x;
+    float transY = gld->camY-y;
+    float scale = maxOpenTime/openTime;
+    if (openHorizontally){
+        gld->pushCameraMem(transX*scale, gld->camY, scale*gld->getWidth(), gld->getHeight());
+    } else {
+        gld->pushCameraMem(gld->camX, transY*scale, gld->getWidth(), scale*gld->getHeight());
+    }
+    // Now, draw the contained level!
+    lev->draw(glu, nullptr);
+    gld->popCameraMem();
 }
 
 void EnclosedLevel::messWithLevels(LevelList* levs, Instance* player){
     // If we have no levels to move, then we should do nothing.
     if (levs == nullptr) return;
+    if (!pushLevel) return;
     for (LevelList* ll = levs; ll != nullptr; ll = ll->next){
         Level* l = ll->lev;
         // Move/split levels to make room for the new level if they're on the right/bottom.
@@ -82,7 +100,7 @@ void EnclosedLevel::messWithLevels(LevelList* levs, Instance* player){
     }
     // Move the player if applicable.
     if (player != nullptr){
-        if (openHorizontally && player->x > x) x += w-lastW;
-        else if (!openHorizontally && player->y > y) y += h-lastW;
+        if (openHorizontally && player->x > x) player->x += w-lastW;
+        else if (!openHorizontally && player->y > y) player->y += h-lastW;
     }
 }
