@@ -23,7 +23,7 @@ std::vector<ShaderBox *> TestHorizontalEnclosed::createShaderBoxes(GLUtil* glu){
 void TestHorizontalEnclosed::updateLevel(double deltaTime, Instance* player){
     if (player == nullptr) return;
     if (!encLev->open && prevX > w/2&& player->x <= w/2) encLev->open = true;
-    if (encLev->open && prevX < 3*32 && player->x >= 3*32) encLev->open = false;
+    if (encLev->open && prevX < 3*32 && player->x <= 3*32) encLev->open = false;
     prevX = player->x-getXOff();
 }
 

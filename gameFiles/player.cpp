@@ -17,6 +17,7 @@ void Player::update(double deltaTime, bool* keyPressed, bool* keyHeld){
    if (locked) return;
    if (onGround) onGroundTime = 0.1;
    onGroundTime = onGroundTime>0?onGroundTime-deltaTime:0;
+   aPressTime = aPressTime>0?aPressTime-deltaTime:0;
    jumpTime = jumpTime>0?jumpTime-deltaTime:0;
    // Moving Horizontally
    if (keyHeld[BUTTON_LEFT] && !keyHeld[BUTTON_RIGHT]){
@@ -34,8 +35,11 @@ void Player::update(double deltaTime, bool* keyPressed, bool* keyHeld){
          if (dX > 0) dX = 0;
       }
    }
+   if (keyPressed[BUTTON_A]){
+      aPressTime = 0.15;
+   }
    // Jumping
-   if (keyPressed[BUTTON_A] && onGroundTime > 0){
+   if (aPressTime > 0 && onGroundTime > 0){
       onGroundTime = 0;
       jumpTime = 0.2;
    }

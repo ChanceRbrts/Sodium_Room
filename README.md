@@ -57,7 +57,7 @@ A screen that's cut into four parts, but which is seamless to get in and out of.
 ## Anti-Chamber Portals (Not Started)
 Of course, to make it non-euclidean, we should have seamless portals. This could also be used to do different variations of each room to make slight alterations anytime someone visits that room?
 
-## Hidden Chambers (Not Started)
+## Hidden Chambers (Mostly Done)
 Parts of the level that stretch and depress from the view of the player. If you're in one of these rooms, you either go to a void or you see a fade in for another part of the level? Either that, or the player could enter these areas as a form of fast travel?
 
 ## Walls that close and open up to something different (Not Started)

@@ -11,6 +11,7 @@ class Player : public Instance{
       bool locked;
       double onGroundTime;
       double jumpTime;
+      double aPressTime;
       double prevdY;
       double prevdX;
    public:
