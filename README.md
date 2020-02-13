@@ -70,7 +70,7 @@ This could be an interesting set of rooms to explore.
 A button that you push to reset the state of the room (except for your position). Could make it so we could make some interesting non-euclidean puzzles without horribly soft locking the player.
 
 ## Visual Shader Effects (Not Started)
-So stuff like the sin wave effect could show up a little later in the game or something. (Maybe caused by some sort of emitter?)
+So stuff like the sine wave effect could show up a little later in the game or something. (Maybe caused by some sort of emitter?)
 
 ## Doors that you can only enter when they're formed. (Not Started)
 Doors that are normally not there but can be entered if the light is shined just right or everything aligns to create a door. Could help with the dream logic of this all. (Need to add some sort of texture first or something.)

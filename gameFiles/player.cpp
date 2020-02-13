@@ -45,7 +45,8 @@ void Player::update(double deltaTime, bool* keyPressed, bool* keyHeld){
    }
    // This allows us to jump with conditional height.
    if (keyHeld[BUTTON_A] && onGroundTime <= 0){
-      dY = jumpTime>0?-384:dY>0?dY-128*deltaTime:dY;
+      // Was 384.
+      dY = jumpTime>0?-340:dY>0?dY-128*deltaTime:dY;
    }
    // Keep dX and dY before collision checks here.
    prevdX = dX;
