@@ -8,8 +8,8 @@
  * This will most likely be extended to to include textures and stuff.
  */
 class Solid : public Instance{
-   public:
-      Solid(double X, double Y);
+    public:
+        Solid(double X, double Y);
 };
 
 #endif
