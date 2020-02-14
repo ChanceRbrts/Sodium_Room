@@ -9,6 +9,7 @@ GameLogic::GameLogic(){
 
 GameLogic::~GameLogic(){
    FontBook::destroy();
+   TexBook::destroy();
 }
 
 void GameLogic::loadLevel(Level* l){

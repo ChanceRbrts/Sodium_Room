@@ -1,5 +1,6 @@
 #include "config.h"
 #include "../glutils/glUtil.h"
+#include "../utils/texBook.h"
 #include "../gameFiles/gameLogic.h"
 
 GLUtil* glu;
@@ -44,6 +45,7 @@ void draw(){
  */
 int main(int argv, char** argc){
    glu = new GLUtil();
+   TexBook::initialize(glu);
    gLog = new GameLogic();
    glu->initialize(&argv, argc, idle, draw);
    glu->reshapeWindow(def_width, def_height);

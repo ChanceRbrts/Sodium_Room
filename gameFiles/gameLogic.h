@@ -4,6 +4,7 @@
 #include <fstream>
 #include "instances.h"
 #include "../main/shaderBox.h"
+#include "../utils/texBook.h"
 #include "levels/levels.h"
 #include <map>
 #include <algorithm>
