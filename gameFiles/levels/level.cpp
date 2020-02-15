@@ -40,7 +40,7 @@ pointDouble Level::createLevel(){
          if (c == '\n' || feof(f)){
             if (mode == TEXTURES){
                // Parsed as C Picture
-               if (line.length() > 2){
+               if (line.length() > 2 && line[1] == ' '){
                   char rep = line[0];
                   // Get the integer corresponding to the texture (Adding it in if necessary.)
                   std::string texPath = "resources/solids/"+line.substr(2);
