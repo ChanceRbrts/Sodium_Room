@@ -20,9 +20,9 @@ class TexBook{
         /**
          * Puts a texture into the texture book.
          * @param tex The texture to put in the texture book.
-         * @return Whether the texture has loaded.
+         * @return The texture ID. (-1 if texture wasn't created properly.)
          */
-        static bool loadTexture(std::string tex);
+        static int loadTexture(std::string tex);
         /**
          * See if we have the texture we need.
          * @param tex The texture that we're searching for.

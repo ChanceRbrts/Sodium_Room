@@ -33,18 +33,31 @@ pointDouble Level::createLevel(){
       int mode = DEFAULT;
       int yVal = 0;
       int wid = 0;
+      std::map<char, int> textureMap;
       // Parse through our solid map.
       while (!feof(f)){
          char c = fgetc(f);
          if (c == '\n' || feof(f)){
             if (mode == TEXTURES){
-               // Look for textures layout. (TODO)
+               // Parsed as C Picture
+               if (line.length() > 2){
+                  char rep = line[0];
+                  // Get the integer corresponding to the texture (Adding it in if necessary.)
+                  std::string texPath = "resources/solids/"+line.substr(2);
+                  int pTex = TexBook::loadTexture(texPath);
+                  int tex = pTex > -1 ? pTex : TexBook::loadTexture(texPath);
+                  if (tex > -1) textureMap.insert({rep, tex});
+               }
             } else if (mode == LAYOUT){
                // Look for the layout of the build.
                for (int i = 0; i < line.length(); i++){
                   if (line[i] != ' '){
-                     // TODO: Add textures to this solid object?
-                     instances.push_back(new Solid(i,yVal));
+                     Solid* s = new Solid(i, yVal);
+                     // Add textures to this solid object. (If they exist.)
+                     if (textureMap.find(line[i]) != textureMap.end()){
+                        s->changeTexture(textureMap.at(line[i]), true);
+                     }
+                     instances.push_back(s);
                   }
                }
                if (line.length() > wid) wid = line.length();

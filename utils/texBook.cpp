@@ -13,18 +13,19 @@ void TexBook::initialize(GLUtil* glu){
 }
 
 bool TexBook::hasTexture(std::string tex){
-    return texBook.contains(tex);
+    std::map<std::string, unsigned int>::iterator it = texBook.find(tex);
+    return it != texBook.end();
 }
 
-bool TexBook::loadTexture(std::string tex){
+int TexBook::loadTexture(std::string tex){
     if (glt == nullptr){
         fprintf(stderr, "Error: The Fontbook isn't initialized.");
-        return false;
+        return -1;
     }
     unsigned int t = glt->loadImage(tex);
-    if (t == -1) return false;
+    if (t == -1) return -1;
     texBook.insert({tex, t});
-    return true;
+    return t;
 }
 
 void TexBook::unloadTexture(std::string tex){

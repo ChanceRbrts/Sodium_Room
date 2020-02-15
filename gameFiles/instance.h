@@ -2,6 +2,7 @@
 #define dos_obj_instance
 
 #include "../glutils/glUtil.h"
+#include "../utils/texBook.h"
 
 /**
  * The Object Class; these are the instances that we are updating!
