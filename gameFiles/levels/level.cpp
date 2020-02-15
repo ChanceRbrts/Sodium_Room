@@ -219,8 +219,6 @@ void Level::moveOutOfBounds(void* lv){
       Instances* next = i->next;
       // If that midpoint is outside of the current level, we need to move it to another level.
       if (pointX < xOff || pointX > xOff+w*32 || pointY < yOff || pointY > yOff+h*32){
-         printf("%f, %f, %s\n", pointX, xOff, i->i->getName().c_str());
-         exit(0);
          for (LevelList* l = lev; l != nullptr; l = l->next){
             if (l->lev != this){
                Level* level = l->lev;

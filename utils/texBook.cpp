@@ -40,3 +40,7 @@ int TexBook::getTexture(std::string tex){
     if (!hasTexture(tex)) return -1;
     return texBook.at(tex);
 }
+
+void TexBook::destroy(){
+    texBook.clear();
+}
