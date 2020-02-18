@@ -15,6 +15,7 @@ unsigned int GLTextureGen::loadImage(std::string img){
    glGenTextures(1, &tex);
    glBindTexture(GL_TEXTURE_2D, tex);
    int bpp = image->format->BytesPerPixel;
+   // int mod = bpp == 4 ? GL_RGBA : GL_RGB;
    int mod = bpp == 4 ? GL_RGBA : GL_RGB;
    glTexImage2D(GL_TEXTURE_2D, 0, mod, image->w, image->h, 0, mod, GL_UNSIGNED_BYTE, image->pixels);
    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);

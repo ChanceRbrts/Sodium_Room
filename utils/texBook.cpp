@@ -19,7 +19,7 @@ bool TexBook::hasTexture(std::string tex){
 
 int TexBook::loadTexture(std::string tex){
     if (glt == nullptr){
-        fprintf(stderr, "Error: The Fontbook isn't initialized.");
+        fprintf(stderr, "Error: The TexBook isn't initialized.");
         return -1;
     }
     unsigned int t = glt->loadImage(tex);

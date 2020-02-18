@@ -43,7 +43,7 @@ pointDouble Level::createLevel(){
                if (line.length() > 2 && line[1] == ' '){
                   char rep = line[0];
                   // Get the integer corresponding to the texture (Adding it in if necessary.)
-                  std::string texPath = "resources/solids/"+line.substr(2);
+                  std::string texPath = "resources/solids/"+line.substr(2)+".png";
                   int pTex = TexBook::loadTexture(texPath);
                   int tex = pTex > -1 ? pTex : TexBook::loadTexture(texPath);
                   if (tex > -1) textureMap.insert({rep, tex});

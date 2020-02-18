@@ -46,11 +46,11 @@ void draw(){
 int main(int argv, char** argc){
    glu = new GLUtil();
    TexBook::initialize(glu);
-   gLog = new GameLogic();
    glu->initialize(&argv, argc, idle, draw);
    glu->reshapeWindow(def_width, def_height);
    glu->setResolution(def_width, def_height);
    glu->renameWindow(dos_title);
+   gLog = new GameLogic();
    glu->start();
    return 0;
 }
