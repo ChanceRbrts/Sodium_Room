@@ -6,6 +6,14 @@ GLTextureGen::GLTextureGen(void* eInfo){
 }
 
 unsigned int GLTextureGen::loadImage(std::string img){
+   // Enable Tex2D and Blending
+   bool glTextureEn = glIsEnabled(GL_TEXTURE_2D);
+   bool glBlendEn = glIsEnabled(GL_BLEND);
+   if (!glTextureEn) glEnable(GL_TEXTURE_2D);
+   if (!glBlendEn){
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   }
    unsigned int tex;
    SDL_Surface *image = IMG_Load(img.c_str());
    if (!image){
@@ -16,12 +24,23 @@ unsigned int GLTextureGen::loadImage(std::string img){
    glBindTexture(GL_TEXTURE_2D, tex);
    int bpp = image->format->BytesPerPixel;
    // int mod = bpp == 4 ? GL_RGBA : GL_RGB;
-   int mod = bpp == 4 ? GL_RGBA : GL_RGB;
-   glTexImage2D(GL_TEXTURE_2D, 0, mod, image->w, image->h, 0, mod, GL_UNSIGNED_BYTE, image->pixels);
-   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+   int mod = 0;
+   if (image->format->Rmask == 255){
+      mod = bpp == 4 ? GL_RGBA : GL_RGB;
+   } else {
+      mod = bpp == 4 ? GL_BGRA : GL_BGR;
+   }
+   glTexImage2D(GL_TEXTURE_2D, 0, bpp, image->w, image->h, 0, mod, GL_UNSIGNED_BYTE, image->pixels);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
    // We want to keep the surface so we actually have data being pointed to.
    SDL_FreeSurface(image);
+   // Disable Tex2D and Blending if they were disabled.
+   glBindTexture(GL_TEXTURE_2D, 0);
+   if (!glTextureEn) glDisable(GL_TEXTURE_2D);
+   if (!glBlendEn) glDisable(GL_BLEND);
    return tex;
 }
 

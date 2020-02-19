@@ -86,6 +86,7 @@ void Instance::draw(GLDraw* gld, GLShaders* gls){
    gld->vertW(x+w,y);
    gld->end();
    if (hasTexture){
+      gld->bindTexture(0);
       gld->disableTextures();
    }
 }
