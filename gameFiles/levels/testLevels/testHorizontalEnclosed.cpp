@@ -10,7 +10,7 @@ TestHorizontalEnclosed::TestHorizontalEnclosed(){
 std::vector<Instance *> TestHorizontalEnclosed::makeLevel(std::vector<Instance*> previous){
     previous.push_back(new Player(17, 13));
     prevX = 17*32;
-    encLev = new EnclosedLevel(5, 0, 0, h/32, new TestHorizontalInner());
+    encLev = new EnclosedLevel(4, 0, 0, h/32, new TestHorizontalInner());
     previous.push_back(encLev);
     return previous;
 }
@@ -23,7 +23,7 @@ std::vector<ShaderBox *> TestHorizontalEnclosed::createShaderBoxes(GLUtil* glu){
 void TestHorizontalEnclosed::updateLevel(double deltaTime, Instance* player){
     if (player == nullptr) return;
     if (!encLev->open && prevX > w/2&& player->x <= w/2) encLev->open = true;
-    if (encLev->open && prevX < 3*32 && player->x <= 3*32) encLev->open = false;
+    if (encLev->open && prevX < 2*32 && player->x <= 2*32) encLev->open = false;
     prevX = player->x-getXOff();
 }
 
