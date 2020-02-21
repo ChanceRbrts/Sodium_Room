@@ -72,8 +72,9 @@ void Instance::draw(GLDraw* gld, GLShaders* gls){
    if (hasTexture){
       gld->enableTextures();
       gld->bindTexture(textureID);
+      gld->color(r,g,b,1);
    }
-   gld->color(r,g,b);
+   else gld->color(r,g,b);
    // Draws a rectangle with colors r, g, and b.
    gld->begin("QUADS");
    gld->texCoords(0, 0);
