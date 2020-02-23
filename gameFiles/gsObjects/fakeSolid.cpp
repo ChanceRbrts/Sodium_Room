@@ -22,8 +22,8 @@ FakeSolid::FakeSolid(float X, float Y) : Instance(X, Y, 1, 1){
                 colors.push_back(0);
             }
             offsets.push_back(rand()*10.0/RAND_MAX-5.0);
-            texs.push_back(i/32.0);
-            texs.push_back(j/32.0);
+            texts.push_back(i/32.0);
+            texts.push_back(j/32.0);
         }
     }
     pX = 0;
@@ -35,11 +35,12 @@ FakeSolid::~FakeSolid(){
     vertices.clear();
     colors.clear();
     offsets.clear();
+    texts.clear();
 }
 
 void FakeSolid::checkShader(GLShaders* gls){
     if (!gls->programExists("fakeSolid")){
-        gls->createProgram("gameFiles/shaders/fakeSolid", "", "fakeSolid");
+        gls->createProgram("gameFiles/shaders/fakeSolid", "gameFiles/shaders/texturePoints", "fakeSolid");
     }
 }
 
@@ -90,8 +91,10 @@ void FakeSolid::draw(GLDraw* gld, GLShaders* gls){
     gls->addUniform(program, "time", time);
     gls->addUniform(program, "proximity", solid == swap ? 0 : 1);
     int att = gls->addAttribute(program, "offset", &offsets[0], 1);
-    gld->drawArray(&vertices[0], &colors[0], &texs[0], vertices.size()/3, 3, 3, "POINTS");
+    int texs = gls->addAttribute(program, "texture", texts.data(), 2);
+    gld->drawArray(&vertices[0], &colors[0], nullptr, vertices.size()/3, 3, 3, "POINTS");
     gls->removeAttribute(program, att);
+    gls->removeAttribute(program, texs);
     gls->unbindShader();
     if (hasTexture){
       gld->bindTexture(0);

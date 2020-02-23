@@ -108,7 +108,8 @@ void GLDraw::drawArray(float* verts, float* cols, float* texs, int size, int ver
       glEnableClientState(GL_COLOR_ARRAY);
       glColorPointer(colGap, GL_FLOAT, 0, cols);
    }
-   if (texs != 0){ 
+   if (texs != 0){
+      glClientActiveTexture(GL_TEXTURE0);
       glEnableClientState(GL_TEXTURE_COORD_ARRAY);
       glTexCoordPointer(2, GL_FLOAT, 0, texs);
    }

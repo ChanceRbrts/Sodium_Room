@@ -8,7 +8,7 @@ class FakeSolid : public Instance{
         std::vector<float> vertices;
         std::vector<float> colors;
         std::vector<float> offsets;
-        std::vector<float> texs;
+        std::vector<float> texts;
         bool loadedShader;
         bool swap;
         float pX, pY, time;
