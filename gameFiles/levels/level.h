@@ -37,7 +37,7 @@ class Level{
       Instances* insts;
       std::vector<ShaderBox*> shades;
       Level();
-      ~Level();
+      virtual ~Level();
       /** Build a level from a file directory. */
       pointDouble createLevel();
       void destroyLevel();

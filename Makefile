@@ -51,19 +51,20 @@ utils/util.a:utils/fontBook.o utils/texBook.o
 
 gameFiles/instances.a:gameFiles/instance.o gameFiles/solid.o gameFiles/player.o\
 		main/shaderBox.o gameFiles/shaderboxes/longShaderbox.o gameFiles/textBox.o\
-		gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o\
-		gameFiles/gsObjects/fakeSolid.o
+		gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o
 	ar -rcs $@ $^
 
 gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/levelExample.o\
-		gameFiles/levels/testLevels/testRain.o gameFiles/levels/testLevels/testFalseBlocks.o
+		gameFiles/levels/testLevels/testRain.o
 	ar -rcs $@ $^
 
-gameFiles/instancesext.a:gameFiles/instancelev.o gameFiles/gsObjects/enclosedLevel.o
+gameFiles/instancesext.a:gameFiles/instancelev.o gameFiles/gsObjects/enclosedLevel.o\
+		gameFiles/gsObjects/fakeSolid.o
 	ar -rcs $@ $^
 
 # If a level includes instancesExt.h, it belongs here.
-gameFiles/levelsext.a:gameFiles/levels/levels.o gameFiles/levels/testLevels/testHorizontalEnclosed.o
+gameFiles/levelsext.a:gameFiles/levels/levels.o gameFiles/levels/testLevels/testHorizontalEnclosed.o\
+		gameFiles/levels/testLevels/testFalseBlocks.o
 	ar -rcs $@ $^
 
 gameFiles/game.a:gameFiles/gameLogic.o 

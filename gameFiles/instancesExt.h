@@ -11,5 +11,6 @@
 
 // Objects that are not part of the engine but are added to the game go here.
 #include "gsObjects/enclosedLevel.h"
+#include "gsObjects/fakeSolid.h"
 
 #endif
