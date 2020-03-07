@@ -2,6 +2,7 @@
 #define dos_obj_instance
 
 #include "../glutils/glUtil.h"
+#include "../utils/texBook.h"
 
 /**
  * The Object Class; these are the instances that we are updating!
@@ -10,7 +11,9 @@
 class Instance{
    protected:
       // The list of textures for the class. Probably will be used for animations?
-      std::vector<int> textures;
+      //std::vector<int> textures;
+      // Whether or not we have a texture to use.
+      bool hasTexture;
       // The current textureID that we want to use.
       int textureID;
       // Terminal Velocity
@@ -41,12 +44,14 @@ class Instance{
       // Velocity (Pixels per seconds)
       double dX, dY;
       double w, h;
+      int texID(){return textureID;};
       virtual bool canMessWithLevel(){return false;};
       // See if the object needs to be deleted.
       double getR(){return r;};
       double getG(){return g;};
       double getB(){return b;};
       void hide(bool h);
+      void changeTexture(int tex, bool untint);
       bool canRemove(){return remove;};
       bool isPlayer(){return playerRef;};
       // Check the whitelist/blacklist with the other index. 

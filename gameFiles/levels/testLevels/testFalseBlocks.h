@@ -2,6 +2,7 @@
 #define dwr_testFalseBlocks
 
 #include "../level.h"
+#include "../../instancesExt.h"
 
 class TestFalseBlocks : public Level {
     private:

@@ -12,6 +12,8 @@ Instance::Instance(double X, double Y, double W, double H){
    g = 1;
    b = 1;
    termY = 1024;
+   textureID = -1;
+   hasTexture = false;
    gravity = false;
    onGround = false;
    immovable = false;
@@ -40,6 +42,16 @@ void Instance::finishUpdate(double deltaTime){
    fUpdate(deltaTime);
 }
 
+void Instance::changeTexture(int tex, bool untint){
+   textureID = tex;
+   hasTexture = true;
+   if (untint){
+      r = 1;
+      g = 1;
+      b = 1;
+   }
+}
+
 void Instance::hide(bool h){
    hidden = h;
 }
@@ -53,26 +65,31 @@ void Instance::draw(GLUtil* glu){
 }
 
 void Instance::drawEX(GLUtil* glu){
-   GLDraw* gld = glu->draw;
-   gld->color(r,g,b);
-   // Draws a rectangle with colors r, g, and b.
-   gld->begin("QUADS");
-   gld->vertW(x,y);
-   gld->vertW(x,y+h);
-   gld->vertW(x+w,y+h);
-   gld->vertW(x+w,y);
-   gld->end();
+   draw(glu->draw, glu->shade);
 }
 
 void Instance::draw(GLDraw* gld, GLShaders* gls){
-   gld->color(r,g,b);
+   if (hasTexture){
+      gld->enableTextures();
+      gld->bindTexture(textureID);
+      gld->color(r,g,b,1);
+   }
+   else gld->color(r,g,b);
    // Draws a rectangle with colors r, g, and b.
    gld->begin("QUADS");
+   gld->texCoords(0, 0);
    gld->vertW(x,y);
+   gld->texCoords(0, 1);
    gld->vertW(x,y+h);
+   gld->texCoords(1, 1);
    gld->vertW(x+w,y+h);
+   gld->texCoords(1, 0);
    gld->vertW(x+w,y);
    gld->end();
+   if (hasTexture){
+      gld->bindTexture(0);
+      gld->disableTextures();
+   }
 }
 
 bool Instance::isSolid(std::string other){

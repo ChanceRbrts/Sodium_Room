@@ -4,11 +4,12 @@ GameLogic::GameLogic(){
    levels = new Levels();
    createdFonts = false;
    loadedLevels = nullptr;
-   loadLevel(levels->lev[3]);
+   loadLevel(levels->lev[2]);
 }
 
 GameLogic::~GameLogic(){
    FontBook::destroy();
+   TexBook::destroy();
 }
 
 void GameLogic::loadLevel(Level* l){
@@ -70,7 +71,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          Instances* next = in->next;
          // If an object is destroyed, destroy it.
          if (in->i->canRemove()){
-            removeFromList(in);
+            removeFromList(in, l->insts);
          } else collObjs.push_back(in->i);
          // If an instance can mess with the levels, allow it here.
          if (in->i->canMessWithLevel()){
@@ -133,7 +134,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          i->i->update(deltaTime, keyPressed, keyHeld);
          if (i->i->canRemove()){
             i = i->prev;
-            removeFromList(i->next);
+            removeFromList(i->next, hud);
          }
       }
    }
@@ -206,11 +207,13 @@ Instances* GameLogic::addToList(Instances* prev, Instance* i){
 /**
  * Yeah, this is just a pretty simple double linked list removal.
  * */
-void GameLogic::removeFromList(Instances* i){
+void GameLogic::removeFromList(Instances* i, Instances* start){
    Instances* prev = i->prev;
    Instances* next = i->next;
    if (prev != nullptr) prev->next = next;
    if (next != nullptr) next->prev = prev;
+   // Make sure we aren't removing the first thing in the linked list.
+   if (start == i) start = i->next;
    delete i->i;
    delete i;
 }

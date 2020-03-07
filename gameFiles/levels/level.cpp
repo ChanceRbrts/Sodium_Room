@@ -33,18 +33,31 @@ pointDouble Level::createLevel(){
       int mode = DEFAULT;
       int yVal = 0;
       int wid = 0;
+      std::map<char, int> textureMap;
       // Parse through our solid map.
       while (!feof(f)){
          char c = fgetc(f);
          if (c == '\n' || feof(f)){
             if (mode == TEXTURES){
-               // Look for textures layout. (TODO)
+               // Parsed as C Picture
+               if (line.length() > 2 && line[1] == ' '){
+                  char rep = line[0];
+                  // Get the integer corresponding to the texture (Adding it in if necessary.)
+                  std::string texPath = "resources/solids/"+line.substr(2)+".png";
+                  int pTex = TexBook::loadTexture(texPath);
+                  int tex = pTex > -1 ? pTex : TexBook::loadTexture(texPath);
+                  if (tex > -1) textureMap.insert({rep, tex});
+               }
             } else if (mode == LAYOUT){
                // Look for the layout of the build.
                for (int i = 0; i < line.length(); i++){
                   if (line[i] != ' '){
-                     // TODO: Add textures to this solid object?
-                     instances.push_back(new Solid(i,yVal));
+                     Solid* s = new Solid(i, yVal);
+                     // Add textures to this solid object. (If they exist.)
+                     if (textureMap.find(line[i]) != textureMap.end()){
+                        s->changeTexture(textureMap.at(line[i]), true);
+                     }
+                     instances.push_back(s);
                   }
                }
                if (line.length() > wid) wid = line.length();
@@ -60,6 +73,7 @@ pointDouble Level::createLevel(){
             line += c;
          }
       }
+      textureMap.clear();
       w = wid*32;
       h = yVal*32;
    }
@@ -167,9 +181,6 @@ void Level::drawObjects(GLUtil* glu, Instance* player, int mode){
    if (insts != nullptr){
       for (Instances* i = insts; i != nullptr; i = i->next){
          Instance* in = i->i;
-         /*if (in->getName().compare("Enclosed Level") == 0){
-            printf("%f, %f, %f, %f\n", in->x, in->y, in->w, in->h);
-         }*/
          // Check if the instance is in the bounds of the screen.
          if (in->x < cX+wid && in->x+in->w > cX && in->y < cY+hei && in->y+in->h > cY){
             in->draw(glu);
@@ -206,8 +217,6 @@ void Level::moveOutOfBounds(void* lv){
       Instances* next = i->next;
       // If that midpoint is outside of the current level, we need to move it to another level.
       if (pointX < xOff || pointX > xOff+w*32 || pointY < yOff || pointY > yOff+h*32){
-         printf("%f, %f, %s\n", pointX, xOff, i->i->getName().c_str());
-         exit(0);
          for (LevelList* l = lev; l != nullptr; l = l->next){
             if (l->lev != this){
                Level* level = l->lev;

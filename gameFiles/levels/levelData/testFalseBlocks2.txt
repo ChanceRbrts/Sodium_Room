@@ -1,0 +1,18 @@
+Textures
+1 placeholder_floor
+2 placeholder_ceiling
+5 placeholder_fl_l
+6 placeholder_fl_r
+7 placeholder_ce_l
+8 placeholder_ce_r
+
+Layout
+                   
+                   
+                   
+                   
+                   
+                   
+                   
+         5111111116
+         7222222228

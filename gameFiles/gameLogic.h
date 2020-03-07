@@ -4,6 +4,7 @@
 #include <fstream>
 #include "instances.h"
 #include "../main/shaderBox.h"
+#include "../utils/texBook.h"
 #include "levels/levels.h"
 #include <map>
 #include <algorithm>
@@ -28,7 +29,7 @@ class GameLogic{
       // This allows you to add another instance to the linked list.
       Instances* addToList(Instances* prev, Instance* i);
       // This removes an instance from the linked list.
-      void removeFromList(Instances* i);
+      void removeFromList(Instances* i, Instances* start);
    public:
       GameLogic();
       ~GameLogic();
