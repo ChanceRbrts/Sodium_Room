@@ -15,6 +15,8 @@ I want this project to be two things.
 ## Gameplay Loop
 Each area has a thing at the end which you need, but which alters the other areas. For example, the top of the tower could have a switch that swaps some kind of hidden blocks or something.
 Taking a page from Celeste and teaching you mechanics as you go through which allows you to explore other areas.
+
+The main mechanic will be the color lights that are going around; These lights will highlight different areas and change properties of different objects.
 ???
 
 ### Possible Mechanics
@@ -63,7 +65,7 @@ Parts of the level that stretch and depress from the view of the player. If you'
 ## Walls that close and open up to something different (Not Started)
 A different version of the hidden chambers, perhaps?
 
-## Rooms that act different when illuminated in different light (Not Started)
+## Rooms that act different when illuminated in different light (Not Started) (MAIN MECHANIC: Next on TODO)
 This could be an interesting set of rooms to explore.
 
 ## Reset Rooms (Not Started)
