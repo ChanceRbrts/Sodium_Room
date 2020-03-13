@@ -122,5 +122,5 @@ FakeSolids::FakeSolids(std::string textureMap) : InstanceLev(0, 0, 0, 0){
 }
 
 void FakeSolids::fUpdate(double deltaTime){
-    // remove = true;
+    remove = true;
 }

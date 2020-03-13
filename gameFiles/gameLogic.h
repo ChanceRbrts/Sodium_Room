@@ -29,7 +29,7 @@ class GameLogic{
       // This allows you to add another instance to the linked list.
       Instances* addToList(Instances* prev, Instance* i);
       // This removes an instance from the linked list.
-      void removeFromList(Instances* i, Instances* start);
+      void removeFromList(Instances* i, Instances** start);
    public:
       GameLogic();
       ~GameLogic();
