@@ -109,8 +109,15 @@ class Instance{
        * Checks and handles collisions between another object.
        * @param o The instance that's being checked for collision
        * @param deltaTime The time in between this frame and the previous frame.
+       * @param cornerCheck Whether we check the corners for solid objects or just the edges.
        */
       void collision(Instance* o, double deltaTime, bool cornerCheck);
+      /**
+       * Checks and handles collisions with arcs.
+       * @param o The instance that defines the arc.
+       * @param deltaTime The time inbetween this frame and the previous frame.
+       */
+      // void arcCollision(Instance* o, double deltaTime);
       /**
        * If a collision happens, this function gets called.
        * This is code you want to get called if something collides with the object.

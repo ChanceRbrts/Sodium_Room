@@ -110,3 +110,7 @@ void ShaderBox::setXOffset(double xoffset){
 void ShaderBox::setYOffset(double yoffset){
    yOffset = yoffset;
 }
+
+void ShaderBox::addUniform(std::string name, float value){
+   uniforms[name] = value;
+}

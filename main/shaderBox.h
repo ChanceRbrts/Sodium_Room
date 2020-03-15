@@ -62,5 +62,11 @@ class ShaderBox{
        * @param yoffset How many pixels down the frame buffer actually draws itself to.
        */
       void setYOffset(double yoffset);
+      /**
+       * Adds a uniform value to the shader.
+       * @param name The identifier of the uniform.
+       * @param value The value of the uniform.
+       */
+      void addUniform(std::string name, float value);
 };
 #endif
