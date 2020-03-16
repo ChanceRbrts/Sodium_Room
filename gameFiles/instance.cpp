@@ -165,11 +165,38 @@ void Instance::arcCollision(Arc* o, double deltaTime){
    // If the instance is just out of reach of the circle of the arc, don't do anything.
    if (fX > r || fX+w < -r || fY > r || fY+h < -r) return;
    // Get arc degrees
-   double d1 = o->getD1();
-   double d2 = o->getD2();
-   // Convert corners into polar coordinates.
-   double rO = sqrt(fX*fX+fY*fY);
-   double dO = atan2(fY, fX);
+   double d1 = fmod(o->getD1()+M_PI, M_2_PI)-M_PI;
+   double d2 = fmod(o->getD2()+M_PI, M_2_PI)-M_PI;
+   bool adjusted = false;
+   // d2 should always be larger than d1. Adjust things accordingly.
+   if (d1 >= d2){
+      d2 += M_2_PI;
+      adjusted = true;
+   }
+   // TODO: Checks for both < 180 degrees and > 180 degrees for optimization.
+   // Compare the four corners of the hitbox to the arc in polar coordinates
+   for (int i = 0; i < 4; i++){
+      double xi = fX+w*(i%2);
+      double yi = fY+h*(int)(i/2);
+      // Convert corners into polar coordinates.
+      double ri = sqrt(xi*xi+yi*yi);
+      if (ri == 0){
+         // If we're right on the center of the circle, we don't need to do anything else.
+         arcCollided(o);
+         return;
+      }
+      double di = atan2(yi, xi);
+      // if (adjusted && di < d1) di += M_2_PI;
+      if (di >= d1 && di <= d2 && ri <= r){
+         // If a point is in the arc, then we can stop checking.
+         arcCollided(o);
+         return;
+      }
+   }
    // See if those coordinates go into the rectangle created by the arc.
+   
+}
 
+void Instance::arcCollided(Arc* o){
+   // TODO: Add arc information to a list of some sort.
 }

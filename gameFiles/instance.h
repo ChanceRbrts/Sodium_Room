@@ -121,6 +121,11 @@ class Instance{
        */
       void arcCollision(Arc* o, double deltaTime);
       /**
+       * Deals with the collision with arcs.
+       * @param o The arc that was collided with.
+       */
+      void arcCollided(Arc* o);
+      /**
        * If a collision happens, this function gets called.
        * This is code you want to get called if something collides with the object.
        * @param o The instance that has been collided with
