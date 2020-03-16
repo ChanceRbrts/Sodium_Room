@@ -3,6 +3,8 @@
 
 #include "../glutils/glUtil.h"
 #include "../utils/texBook.h"
+#include "arc.h"
+#include <math.h>
 
 /**
  * The Object Class; these are the instances that we are updating!
@@ -117,7 +119,7 @@ class Instance{
        * @param o The instance that defines the arc.
        * @param deltaTime The time inbetween this frame and the previous frame.
        */
-      // void arcCollision(Instance* o, double deltaTime);
+      void arcCollision(Arc* o, double deltaTime);
       /**
        * If a collision happens, this function gets called.
        * This is code you want to get called if something collides with the object.

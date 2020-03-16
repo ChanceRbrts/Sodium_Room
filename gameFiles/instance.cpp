@@ -155,3 +155,21 @@ void Instance::collision(Instance* o, double deltaTime, bool cornerCheck){
       }
    }
 }
+
+void Instance::arcCollision(Arc* o, double deltaTime){
+   double oX = o->getX();
+   double oY = o->getY();
+   double r = o->getR();
+   double fX = x-oX+dX*deltaTime;
+   double fY = y-oY+dY*deltaTime;
+   // If the instance is just out of reach of the circle of the arc, don't do anything.
+   if (fX > r || fX+w < -r || fY > r || fY+h < -r) return;
+   // Get arc degrees
+   double d1 = o->getD1();
+   double d2 = o->getD2();
+   // Convert corners into polar coordinates.
+   double rO = sqrt(fX*fX+fY*fY);
+   double dO = atan2(fY, fX);
+   // See if those coordinates go into the rectangle created by the arc.
+
+}

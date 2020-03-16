@@ -33,4 +33,9 @@ void Arc::draw(GLUtil* glu){
     if (shade == nullptr){
         shade = new ShaderBox(0, 0, maxR, maxR, "", "", glu);
     }
+    shade->addUniform("x", x);
+    shade->addUniform("y", y);
+    shade->addUniform("r", r);
+    shade->addUniform("d1", d1);
+    shade->addUniform("d2", d2);
 }
