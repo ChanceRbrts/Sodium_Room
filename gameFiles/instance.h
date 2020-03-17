@@ -119,12 +119,12 @@ class Instance{
        * @param o The instance that defines the arc.
        * @param deltaTime The time inbetween this frame and the previous frame.
        */
-      void arcCollision(Arc* o, double deltaTime);
+      bool arcCollision(Arc* o, double deltaTime);
       /**
        * Deals with the collision with arcs.
        * @param o The arc that was collided with.
        */
-      void arcCollided(Arc* o);
+      void arcCol(Arc* o, double deltaTime);
       /**
        * If a collision happens, this function gets called.
        * This is code you want to get called if something collides with the object.
