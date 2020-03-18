@@ -172,10 +172,13 @@ bool Instance::arcCollision(Arc* o, double deltaTime){
    // Get arc degrees
    double d1 = fmod(o->getD1()+M_PI, 2*M_PI)-M_PI;
    double d2 = fmod(o->getD2()+M_PI, 2*M_PI)-M_PI;
+   double d2A = d1 > d2 ? d2 + 2*M_PI : d2;
    // If d1 > d2, then there's wrap around that we have to deal with.
    // Compare the four corners of the hitbox to the arc in polar coordinates.
-   /*
-   double lastPoint = 0;
+   bool q1 = false;
+   bool q2 = false;
+   bool q3 = false;
+   bool q4 = false;
    for (int i = 0; i < 4; i++){
       // Go through each corner in connecting location.
       double xi = fX+w*int(i/2);
@@ -183,32 +186,39 @@ bool Instance::arcCollision(Arc* o, double deltaTime){
       // We don't need to worry about this being 0.
       double ri = sqrt(xi*xi+yi*yi);
       double di = atan2(yi, xi);
-      double diA = (di < d1 && d1 > d2) ? di + 2*M_PI : di;
-      double d2A = d1 > d2 ? d2 + 2*M_PI : d2;
-      if (diA >= d1 && diA <= d2A && ri <= r) return true;
-      if (i > 0){
-         // A line in polar coordinates is both continuous AND <= PI in length.
-         // This lets us find ranges to potentially test.
-         
-      }
-      lastPoint = di;
+      di += (di < d1 && d1 > d2) ? 2*M_PI : 0;
+      if (di >= d1 && di <= d2A && ri <= r) return true;
+      // Find the quadrant this is in and make a note to check that quadrant.
+      if (di <= -M_PI_2) q3 = true;
+      else if (di <= 0) q4 = true;
+      else if (di <= M_PI_2) q1 = true;
+      else q2 = true;
    }
-   */
+   
    // Check in 2 degree rays past the arc.
    // (4 degrees at a 320 px radius takes about 32 px. (2*pi*320/(360/4)))
    d2 += (d1 >= d2) ? 2*M_PI : 0;
-   for (double di = d1; di < d2; di += M_PI/45){
+   for (double di = d1; di <= d2; di += M_PI/45){
+      double fX2 = fX;
+      double fY2 = fY;
+      // If the ray is in the wrong quadrant, move on to the next ray.
+      // TODO: The actual line/rectangle collision stuff.
+      if (di <= -M_PI_2 && !q3) break;
+      if (di > -M_PI_2 && di <= 0 && !q4) break;
+      if (di > 0 && di < M_PI_2 && !q1) break;
+      if (di > M_PI_2 && !q2) break;
       double cDI = cos(di);
       double sDI = sin(di);
-      if (cDI == 0){
-         double slope = sDI/cDI;
-         bool sign = cDI > 0;
+      if (cDI != 0){
+         double slope = abs(sDI/cDI);
+         
+      } else {
+         if (fX > 0 || fX+w < 0 ) break;
          
       }
    }
-
-   // See if those coordinates go into the rectangle created by the arc.
-   
+   // If there is no intersection, then we have not found anything.
+   return false;
 }
 
 void Instance::arcCol(Arc* o, double deltaTime){

@@ -38,4 +38,5 @@ void Arc::draw(GLUtil* glu){
     shade->addUniform("r", r);
     shade->addUniform("d1", d1);
     shade->addUniform("d2", d2);
+    shade->draw();
 }
