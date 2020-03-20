@@ -199,22 +199,58 @@ bool Instance::arcCollision(Arc* o, double deltaTime){
    // (4 degrees at a 320 px radius takes about 32 px. (2*pi*320/(360/4)))
    d2 += (d1 >= d2) ? 2*M_PI : 0;
    for (double di = d1; di <= d2; di += M_PI/45){
-      double fX2 = fX;
-      double fY2 = fY;
+      double fXN = fX;
+      double fXF = fX+w;
+      double fYN = fY;
+      double fYF = fY+h;
       // If the ray is in the wrong quadrant, move on to the next ray.
       // TODO: The actual line/rectangle collision stuff.
-      if (di <= -M_PI_2 && !q3) break;
-      if (di > -M_PI_2 && di <= 0 && !q4) break;
-      if (di > 0 && di < M_PI_2 && !q1) break;
-      if (di > M_PI_2 && !q2) break;
+      if (di <= -M_PI_2){
+         // Check Bottom and Right.
+         if (!q3) continue;
+         fXN = -(fX+w);
+         fXF = -fX;
+         fYN = -(fY+h);
+         fYF = -fY;
+      }
+      else if (di > -M_PI_2 && di <= 0){
+         if (!q4) continue;
+         // Check Bottom and Left
+         fYN = -(fY+h);
+         fYF = -fY;
+      }
+      if (di > 0 && di < M_PI_2 && !q1){
+         if (!q1) continue;
+         // Check Top and Left (No Change)
+      }
+      if (di > M_PI_2){
+         if (!q2) continue;
+         // Check Top and Right
+         fXN = -(fX+w);
+         fXF = -fX;
+      }
       double cDI = cos(di);
       double sDI = sin(di);
       if (cDI != 0){
          double slope = abs(sDI/cDI);
-         
+         if (slope == 0){
+            // Either continues or returns true.
+            // We only need to check the x-axis in this case.
+            if (fY > 0 || fY+h < 0) continue;
+            if (cDI > 0 && fX > 0 && fX < r) return true;
+            if (cDI < 0 && fX+w < 0 && fX+w > -r) return true;
+         }
+         // Check if there's an intersection horizontally. (Only need to check closest wall.)
+         float testY = slope*fXN;
+         if (testY >= fYN && testY <= fYF) return true;
+         // Check if there's an intersection vertically. (Only need to check closest wall.)
+         float testX = fYN/slope;
+         if (testX >= fXN && testX <= fXF) return true;
       } else {
-         if (fX > 0 || fX+w < 0 ) break;
-         
+         // We only need to check the y-axis in this case.
+         if (fX > 0 || fX+w < 0 ) continue;
+         if (sDI > 0 && fY > 0 && fY < r) return true;
+         if (sDI < 0 && fY+h < 0 && fY+h > -r) return true;
       }
    }
    // If there is no intersection, then we have not found anything.

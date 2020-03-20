@@ -25,5 +25,6 @@ void main(void){
     d += tPI*float(d < d1 && d2 <= d1);
     bool dis = fullDist > rad && (d1 > d || d2 < d);
     if (dis) discard;
-        
+    vec4 col = gl_Color*texture2D(tex, gl_TexCoord[0].xy);
+    gl_FragCoord = vec4(r, g, b, 1)*col;
 }

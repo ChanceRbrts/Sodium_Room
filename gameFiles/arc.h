@@ -7,6 +7,7 @@ class Arc{
     protected:
         ShaderBox* shade;
         double x, y, r;
+        double rCol, gCol, bCol;
         double maxR;
         double d1, d2;
     public:
