@@ -31,7 +31,7 @@ void Arc::setAngle(double D1, double D2){
 
 void Arc::draw(GLUtil* glu){
     if (shade == nullptr){
-        shade = new ShaderBox(0, 0, maxR, maxR, "", "", glu);
+        shade = new ShaderBox(0, 0, maxR, maxR, "", "arc", glu);
     }
     shade->addUniform("x", x);
     shade->addUniform("y", y);
@@ -42,4 +42,8 @@ void Arc::draw(GLUtil* glu){
     shade->addUniform("g", gCol);
     shade->addUniform("b", bCol);
     shade->draw();
+}
+
+ArcInfo Arc::getInfo(int id){
+    return (ArcInfo){id, rCol, gCol, bCol};
 }

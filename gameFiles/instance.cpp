@@ -40,6 +40,7 @@ void Instance::finishUpdate(double deltaTime){
    x += dX*deltaTime;
    y += dY*deltaTime;
    fUpdate(deltaTime);
+   arcList.clear();
 }
 
 void Instance::changeTexture(int tex, bool untint){
@@ -257,7 +258,7 @@ bool Instance::arcCollision(Arc* o, double deltaTime){
    return false;
 }
 
-void Instance::arcCol(Arc* o, double deltaTime){
-   // TODO: Add arc information to a list of some sort.
+void Instance::arcCol(Arc* o, double deltaTime, int id){
    if (!arcCollision(o, deltaTime)) return;
+   arcList.push_back(o->getInfo(id));
 }

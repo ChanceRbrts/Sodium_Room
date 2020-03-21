@@ -3,6 +3,11 @@
 
 #include "../main/shaderBox.h"
 
+struct ArcInfo{
+    int id;
+    double r, g, b;
+};
+
 class Arc{
     protected:
         ShaderBox* shade;
@@ -22,6 +27,7 @@ class Arc{
         double getD2(){return d2;};
         void setAngle(double D1, double D2);
         void draw(GLUtil* glu);
+        ArcInfo getInfo(int id);
 };
 
 #endif

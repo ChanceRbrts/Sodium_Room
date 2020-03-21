@@ -35,6 +35,7 @@ class Instance{
       // Some objects need to do solid collisions with only some objects.
       // If solid is true, this is a blacklist; if solid is false, this is a whitelist for solid object collisions.
       std::vector<std::string> colList;
+      std::vector<ArcInfo> arcList;
       // Useful for identifying different objects
       std::string name;
       // Simple gravity calculations.
@@ -124,7 +125,7 @@ class Instance{
        * Deals with the collision with arcs.
        * @param o The arc that was collided with.
        */
-      void arcCol(Arc* o, double deltaTime);
+      void arcCol(Arc* o, double deltaTime, int id);
       /**
        * If a collision happens, this function gets called.
        * This is code you want to get called if something collides with the object.
