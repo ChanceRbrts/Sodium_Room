@@ -19,11 +19,13 @@
  */
 class ShaderBox{
    protected:
+      bool remove;
       double x, y, w, h;
       double xOffset, yOffset;
       unsigned int frameID, texID, renID;
       std::map<std::string, float> uniforms;
       std::string fullID, solidID, drawID;
+      bool follow;
       GLUtil* glu;
    public:
       /**
@@ -42,12 +44,19 @@ class ShaderBox{
       virtual ~ShaderBox();
       // Tells the engine to draw to this frame buffer.
       void drawOnBox();
+      // Flags the shaderbox as needing to be removed.
+      void removeMe();
+      // Show whether or not we can remove this object.
+      bool canRemove(){ return remove; }
       // Tells the engine to stop drawing to this frame buffer.
       void drawOutBox();
       // Draw the frame buffer to the screen.
       void draw();
+      // Whether or not this shaderbox follows the player.
+      bool followPlayer(){ return follow; }
       // Draw a red sqaure where the frame buffer would be. (Used for debugging)
       void drawBoundary();
+      bool canDraw();
       /**
        * 
        */

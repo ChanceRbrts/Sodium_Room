@@ -78,6 +78,7 @@ pointDouble Level::createLevel(){
       h = yVal*32;
    }
    instances = makeLevel(instances);
+   arcs = createArcs();
    while (insts != nullptr){
       Instances* del = insts;
       insts = insts->next;
@@ -111,7 +112,12 @@ pointDouble Level::createLevel(){
 }
 
 void Level::destroyLevel(){
-   // Deallocate out shader boxes here.
+   // Deallocate our arcs here.
+   for (int i = 0; i < arcs.size(); i++){
+      delete arcs[i];
+   }
+   arcs.clear();
+   // Deallocate our shader boxes here.
    for (int i = 0; i < shades.size(); i++){
       delete shades[i];
    }
@@ -135,6 +141,11 @@ std::vector<ShaderBox*> Level::createShaderBoxes(GLUtil* glu){
    return empty;
 }
 
+std::vector<Arc*> Level::createArcs(){
+   std::vector<Arc*> empty;
+   return empty;
+}
+
 void Level::draw(GLUtil* glu, Instance* player){
    if (hasBackground){
       GLDraw* gld = glu->draw;
@@ -151,13 +162,21 @@ void Level::draw(GLUtil* glu, Instance* player){
    // Make sure we're drawing our shaderboxes first.
    if (!createdShaderboxes){
       shades = createShaderBoxes(glu);
+      for (int i = 0; i < arcs.size(); i++){
+         shades.push_back(arcs[i]->getShaderBox());
+      }
       createdShaderboxes = true;
+   }
+   // Update our arcs here.
+   for (int i = 0; i < arcs.size(); i++){
+      arcs[i]->draw(glu);
    }
    // Draw our objects once.
    drawObjects(glu, player, 0);
    // Draw everything to each of the shader boxes, then draw that shaderbox.
    for (int i = 0; i < shades.size(); i++){
       ShaderBox* shade = shades[i];
+      if (!(shade->canDraw())) continue;
       shade->drawOnBox();
       drawObjects(glu, player, 0);
       shade->drawOutBox();

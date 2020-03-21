@@ -62,6 +62,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
       player->upd(deltaTime, keyPressed, keyHeld, player);
       collObjs.push_back(player);
    }
+   int levID = 0;
    while (lList != nullptr){
       Level* l = lList->lev;
       l->updateLevel(deltaTime, player);
@@ -69,6 +70,10 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
       while (in != nullptr){
          in->i->upd(deltaTime, keyPressed, keyHeld, player);
          Instances* next = in->next;
+         // Levels have arcs that may collide with objects in there.
+         for (int a = 0; a < l->arcs.size(); a++){
+            in->i->arcCol(l->arcs[a], deltaTime, a+levID);
+         }
          // If an instance can mess with the levels, allow it here.
          if (in->i->canMessWithLevel()){
             InstanceLev* iL = (InstanceLev *)(in->i);
@@ -81,6 +86,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          } else collObjs.push_back(in->i);
          in = next;
       }
+      levID += l->arcs.size();
       lList = lList->next;
    }
    // Collision
@@ -125,7 +131,9 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
          for (int i = 0; i < l->lev->shades.size(); i++){
-            l->lev->shades[i]->moveShaderBox(player->x+player->w/2, player->y+player->h/2);
+            if (l->lev->shades[i]->followPlayer){
+               l->lev->shades[i]->moveShaderBox(player->x+player->w/2, player->y+player->h/2);
+            }
          }
       }
    }

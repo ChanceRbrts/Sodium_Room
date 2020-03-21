@@ -25,7 +25,8 @@ class Level{
       void moveInstance(Instances* move, Level* otherLev);
       // This function returns all of the shaderboxes in the room.
       virtual std::vector<ShaderBox*> createShaderBoxes(GLUtil* glu);
-      virtual std::vector<Arc*> createArcs(GLUtil* glu);
+      // This function returns all of the arcs in the room.
+      virtual std::vector<Arc*> createArcs();
       // This draws the objects in the room.
       void drawObjects(GLUtil* glu, Instance* player, int mode);
       float xOff, yOff;

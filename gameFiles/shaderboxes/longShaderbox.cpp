@@ -7,6 +7,7 @@ LongShaderbox::LongShaderbox(double X, double xPoint, double Y, double drawW, do
     xScrollStart = (x+xPoint)*32;
     xScrollEnd = (x+endW)*32;
     drawX = 0;
+    follow = true;
     uniforms["endX"] = (xScrollEnd-firstX)/glu->draw->getWidth();
 }
 

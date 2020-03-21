@@ -15,9 +15,11 @@ class Arc{
         double rCol, gCol, bCol;
         double maxR;
         double d1, d2;
+        bool connected;
     public:
         Arc(double X, double Y, double R, double D1, double D2);
         ~Arc();
+        void changeConnection(bool c){ connected = c; }
         double getX(){return x;};
         double getY(){return y;};
         void setPosition(double X, double Y);
@@ -25,6 +27,7 @@ class Arc{
         void setR(double R);
         double getD1(){return d1;};
         double getD2(){return d2;};
+        ShaderBox* getShaderBox(){ return shade; }
         void setAngle(double D1, double D2);
         void draw(GLUtil* glu);
         ArcInfo getInfo(int id);

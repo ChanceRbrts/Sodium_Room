@@ -66,7 +66,27 @@ void Rain::collided(Instance *o, double deltaTime){
         return;
     }
     p = (Player *)o;
-    bool stillCheck = !p->isLocked() && ((abs(p->dX) < 0.01 && abs(p->dY) < 0.01) || hardMode);
+    bool fall = hardMode;
+    std::vector<ArcInfo> oList = o->getArcList();
+    // Now, we need to get the arcs that this is affected by.
+    for (int i = 0; i < arcList.size(); i++){
+        ArcInfo aI = arcList[i];
+        // Look at the player's arcs and see if they're affected by the same ID.
+        bool keepGoing = false;
+        for (int j = 0; j < oList.size(); j++){
+            if (aI.id == oList[j].id){
+                keepGoing = true;
+                break;
+            }
+        }
+        if (!keepGoing) continue;
+        if (aI.r > 0.5 && aI.g < 0.5 && aI.b < 0.5){ // Red Rain
+            fall = true;
+        } else if (aI.r < 0.5 && aI.g < 0.5 && aI.b > 0.5){ // Blue Rain
+            fall = false;
+        }
+    }
+    bool stillCheck = !p->isLocked() && ((abs(p->dX) < 0.01 && abs(p->dY) < 0.01) || fall);
     // The player's bounds should actually be inside the rain.
     if (o->x >= x && o->x+o->w <= x+w && o->y >= y && o->y+o->h < y+h && stillCheck){
         p->lockPlayer(true);

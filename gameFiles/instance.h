@@ -53,6 +53,7 @@ class Instance{
       double getR(){return r;};
       double getG(){return g;};
       double getB(){return b;};
+      std::vector<ArcInfo> getArcList(){return arcList;};
       void hide(bool h);
       void changeTexture(int tex, bool untint);
       bool canRemove(){return remove;};
