@@ -8,6 +8,8 @@ TestRain::TestRain(){
    w = 20*32;
    h = 15*32;
    filePath = "testRain";
+   time = 0;
+   maxTime = 4;
 }
 
 std::vector<ShaderBox *> TestRain::createShaderBoxes(GLUtil* glu){
@@ -31,6 +33,10 @@ std::vector<Arc *> TestRain::createArcs(){
 }
 
 void TestRain::updateLevel(double deltaTime, Instance* player){
-   // Arc* a = arcs[0];
-   // a->setAngle(a->getD1()-M_PI*deltaTime, a->getD2()-M_PI*deltaTime);
+   Arc* a = arcs[0];
+   time += deltaTime;
+   if (time > maxTime) time -= maxTime;
+   double dR = M_PI/4*cos(M_PI*2*time/maxTime)*deltaTime;
+   a->setAngle(a->getD1()+dR, a->getD2()+dR);
+   // a->setAngle(a->getD1()-M_PI/2*deltaTime, a->getD2()-M_PI/2*deltaTime);
 }

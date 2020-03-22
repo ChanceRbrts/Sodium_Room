@@ -33,9 +33,6 @@ void Arc::setR(double R){
 void Arc::setAngle(double D1, double D2){
     d1 = fmod(D1+3*M_PI, M_PI*2)-M_PI;
     d2 = fmod(D2+3*M_PI, M_PI*2)-M_PI;
-    //d1 = fmod(D1, M_PI*2);
-    //d2 = fmod(D2, M_PI*2);
-    printf("%f, %f\n", d1, d2);
 }
 
 void Arc::draw(GLUtil* glu){
