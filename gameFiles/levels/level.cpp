@@ -159,6 +159,11 @@ void Level::draw(GLUtil* glu, Instance* player){
       gld->vertW(xOff+w,yOff);
       gld->end();
    }
+   // Update our arcs here. 
+   // (Doing this before creating the shaderboxes so we don't have a ton of nullptrs.)
+   for (int i = 0; i < arcs.size(); i++){
+      arcs[i]->draw(glu);
+   }
    // Make sure we're drawing our shaderboxes first.
    if (!createdShaderboxes){
       shades = createShaderBoxes(glu);
@@ -166,10 +171,6 @@ void Level::draw(GLUtil* glu, Instance* player){
          shades.push_back(arcs[i]->getShaderBox());
       }
       createdShaderboxes = true;
-   }
-   // Update our arcs here.
-   for (int i = 0; i < arcs.size(); i++){
-      arcs[i]->draw(glu);
    }
    // Draw our objects once.
    drawObjects(glu, player, 0);

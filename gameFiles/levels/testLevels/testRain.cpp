@@ -23,3 +23,14 @@ std::vector<Instance *>  TestRain::makeLevel(std::vector<Instance*> previous){
    // previous.push_back(new Rain(17, 1, 2, true));
    return previous;
 }
+
+std::vector<Arc *> TestRain::createArcs(){
+   std::vector<Arc *> arcs;
+   arcs.push_back(new Arc(9.5, 7, 10, -M_PI/8, M_PI/8, 1, 0, 0));
+   return arcs;
+}
+
+void TestRain::updateLevel(double deltaTime, Instance* player){
+   // Arc* a = arcs[0];
+   // a->setAngle(a->getD1()-M_PI*deltaTime, a->getD2()-M_PI*deltaTime);
+}

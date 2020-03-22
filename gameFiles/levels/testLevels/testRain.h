@@ -9,6 +9,8 @@ class TestRain : public Level {
     public:
         TestRain();
         std::vector<ShaderBox *> createShaderBoxes(GLUtil* glu);
+        std::vector<Arc *> createArcs();
+        void updateLevel(double deltaTime, Instance* player);
 };
 
 #endif

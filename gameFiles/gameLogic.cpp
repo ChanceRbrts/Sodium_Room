@@ -4,7 +4,7 @@ GameLogic::GameLogic(){
    levels = new Levels();
    createdFonts = false;
    loadedLevels = nullptr;
-   loadLevel(levels->lev[3]);
+   loadLevel(levels->lev[1]);
 }
 
 GameLogic::~GameLogic(){
@@ -131,7 +131,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
          for (int i = 0; i < l->lev->shades.size(); i++){
-            if (l->lev->shades[i]->followPlayer){
+            if (l->lev->shades[i]->followPlayer()){
                l->lev->shades[i]->moveShaderBox(player->x+player->w/2, player->y+player->h/2);
             }
          }

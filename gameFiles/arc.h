@@ -2,6 +2,7 @@
 #define dos_obj_arc
 
 #include "../main/shaderBox.h"
+#include <math.h>
 
 struct ArcInfo{
     int id;
@@ -17,7 +18,7 @@ class Arc{
         double d1, d2;
         bool connected;
     public:
-        Arc(double X, double Y, double R, double D1, double D2);
+        Arc(double X, double Y, double R, double D1, double D2, double RC, double GC, double BC);
         ~Arc();
         void changeConnection(bool c){ connected = c; }
         double getX(){return x;};

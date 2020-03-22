@@ -1,13 +1,17 @@
 #include "arc.h"
 
-Arc::Arc(double X, double Y, double R, double D1, double D2){
-    x = X;
-    y = Y;
-    r = R;
+Arc::Arc(double X, double Y, double R, double D1, double D2, double RC, double GC, double BC){
+    x = X*32;
+    y = Y*32;
+    r = R*32;
     maxR = r;
     d1 = D1;
     d2 = D2;
     connected = true;
+    shade = nullptr;
+    rCol = RC;
+    gCol = GC;
+    bCol = BC;
 }
 
 Arc::~Arc(){
@@ -27,13 +31,16 @@ void Arc::setR(double R){
 }
 
 void Arc::setAngle(double D1, double D2){
-    d1 = D1;
-    d2 = D2;
+    d1 = fmod(D1+3*M_PI, M_PI*2)-M_PI;
+    d2 = fmod(D2+3*M_PI, M_PI*2)-M_PI;
+    //d1 = fmod(D1, M_PI*2);
+    //d2 = fmod(D2, M_PI*2);
+    printf("%f, %f\n", d1, d2);
 }
 
 void Arc::draw(GLUtil* glu){
     if (shade == nullptr){
-        shade = new ShaderBox(0, 0, maxR*2, maxR*2, "", "arc", glu);
+        shade = new ShaderBox(0, 0, maxR/16, maxR/16, "", "arc", glu);
     }
     shade->addUniform("x", x);
     shade->addUniform("y", y);
@@ -43,6 +50,8 @@ void Arc::draw(GLUtil* glu){
     shade->addUniform("r", rCol);
     shade->addUniform("g", gCol);
     shade->addUniform("b", bCol);
+    shade->addUniform("xScale", 1);
+    shade->addUniform("yScale", 1);
     shade->addUniform("camX", glu->draw->camX);
     shade->addUniform("camY", glu->draw->camY);
     shade->addUniform("unitX", 2/glu->draw->getWidth());
