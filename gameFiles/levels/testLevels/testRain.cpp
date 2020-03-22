@@ -36,7 +36,7 @@ void TestRain::updateLevel(double deltaTime, Instance* player){
    Arc* a = arcs[0];
    time += deltaTime;
    if (time > maxTime) time -= maxTime;
-   double dR = M_PI/4*cos(M_PI*2*time/maxTime)*deltaTime;
-   a->setAngle(a->getD1()+dR, a->getD2()+dR);
-   // a->setAngle(a->getD1()-M_PI/2*deltaTime, a->getD2()-M_PI/2*deltaTime);
+   // double dR = M_PI/4*cos(M_PI*2*time/maxTime)*deltaTime;
+   // a->setAngle(a->getD1()+dR, a->getD2()+dR);
+   a->setAngle(a->getD1()-M_PI/2*deltaTime, a->getD2()-M_PI/2*deltaTime);
 }

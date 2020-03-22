@@ -56,7 +56,6 @@ bool ShaderBox::canDraw(){
 }
 
 void ShaderBox::draw(){
-   GLDraw* gld = glu->draw;
    // Draw only if we're within the bounds of the screen.
    if (canDraw()){
       // Get Shaders ready if we need them.

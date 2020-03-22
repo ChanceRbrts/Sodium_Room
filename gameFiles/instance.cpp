@@ -187,15 +187,15 @@ bool Instance::arcCollision(Arc* o, double deltaTime){
       // We don't need to worry about this being 0.
       double ri = sqrt(xi*xi+yi*yi);
       double di = atan2(yi, xi);
-      di += (di < d1 && d1 > d2) ? 2*M_PI : 0;
-      if (di >= d1 && di <= d2A && ri <= r) return true;
+      double dj = di;
+      dj += (di < d1 && d1 > d2) ? 2*M_PI : 0;
+      if (dj >= d1 && dj <= d2A && ri <= r) return true;
       // Find the quadrant this is in and make a note to check that quadrant.
       if (di <= -M_PI_2) q3 = true;
       else if (di <= 0) q4 = true;
       else if (di <= M_PI_2) q1 = true;
       else q2 = true;
    }
-   
    // Check in 2 degree rays past the arc.
    // (4 degrees at a 320 px radius takes about 32 px. (2*pi*320/(360/4)))
    d2 += (d1 >= d2) ? 2*M_PI : 0;
@@ -204,9 +204,11 @@ bool Instance::arcCollision(Arc* o, double deltaTime){
       double fXF = fX+w;
       double fYN = fY;
       double fYF = fY+h;
+      // Move stuff to -PI to PI (3*PI is added to avoid negative numbers)
+      double dj = fmod(di+3*M_PI, M_PI*2)-M_PI;
       // If the ray is in the wrong quadrant, move on to the next ray.
       // TODO: The actual line/rectangle collision stuff.
-      if (di <= -M_PI_2){
+      if (dj <= -M_PI_2){
          // Check Bottom and Right.
          if (!q3) continue;
          fXN = -(fX+w);
@@ -214,17 +216,17 @@ bool Instance::arcCollision(Arc* o, double deltaTime){
          fYN = -(fY+h);
          fYF = -fY;
       }
-      else if (di > -M_PI_2 && di <= 0){
+      else if (dj > -M_PI_2 && dj <= 0){
          if (!q4) continue;
          // Check Bottom and Left
          fYN = -(fY+h);
          fYF = -fY;
       }
-      if (di > 0 && di < M_PI_2 && !q1){
+      else if (dj > 0 && dj <= M_PI_2){
          if (!q1) continue;
          // Check Top and Left (No Change)
       }
-      if (di > M_PI_2){
+      else { // if (dj > M_PI_2)
          if (!q2) continue;
          // Check Top and Right
          fXN = -(fX+w);
