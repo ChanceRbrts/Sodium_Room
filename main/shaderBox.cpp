@@ -73,7 +73,7 @@ void ShaderBox::draw(){
       glu->draw->enableTextures();
       glu->draw->bindTexture(texID);
       // Actually draw the textures.
-      glu->draw->color(1, 1, 1);
+      glu->draw->color(1, 1, 1, 1);
       glu->draw->begin("QUADS");
       glu->draw->texCoords(0, 1);
       glu->draw->vertW(x+xOffset, y+yOffset);

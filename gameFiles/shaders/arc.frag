@@ -23,10 +23,18 @@ void main(void){
     float distX = realX-x;
     float distY = realY-y;
     float fullDist = sqrt(distX*distX+distY*distY);
+    float d1X = d1 - tPI/48;
+    float d2X = d2 + tPI/48;
     float d = atan(distY, distX);
     float D2 = d2;
     D2 += tPI*float(d2 <= d1);
-    d += tPI*float(d < d1 && d2 <= d1);
-    if (fullDist > rad || d1 > d || D2 < d) discard;
-    gl_FragColor = vec4(r, 0, 0, 1)*gl_Color*texture2D(tex, gl_TexCoord[0].xy);
+    d2X += tPI*float(d2 <= d1);
+    d += tPI*float(d < d1X && d2 <= d1);
+    if (fullDist > rad*1.10 || d1X > d || d2X < d) discard;
+    float alpha = 1;
+    alpha -= (d1-d)/(d1-d1X)*float(d < d1);
+    alpha -= (d-D2)/(d2X-D2)*float(d > D2);
+    alpha -= (fullDist-rad)/(rad*.1)*float(fullDist > rad);
+    vec4 col = vec4(r, g, b, alpha);
+    gl_FragColor = col*gl_Color*texture2D(tex, gl_TexCoord[0].xy);
 }
