@@ -66,6 +66,10 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    while (lList != nullptr){
       Level* l = lList->lev;
       l->updateLevel(deltaTime, player);
+      // The player can be affected by one of the arcs in this level.
+      for (int a = 0; a < l->arcs.size(); a++){
+         player->arcCol(l->arcs[a], deltaTime, a+levID);
+      }
       Instances* in = l->insts;
       while (in != nullptr){
          in->i->upd(deltaTime, keyPressed, keyHeld, player);
