@@ -35,6 +35,11 @@ void main(void){
     alpha -= (d1-d)/(d1-d1X)*float(d < d1);
     alpha -= (d-D2)/(d2X-D2)*float(d > D2);
     alpha -= (fullDist-rad)/(rad*.1)*float(fullDist > rad);
-    vec4 col = vec4(r, g, b, alpha);
-    gl_FragColor = col*gl_Color*texture2D(tex, gl_TexCoord[0].xy);
+    vec4 sCol = gl_Color*texture2D(tex, gl_TexCoord[0].xy);
+    float weight = r+g+b;
+    float trueCol = sCol.r*r/weight+sCol.g*g/weight+sCol.b*b/weight;
+    vec4 col = vec4(trueCol*r, trueCol*g, trueCol*b, alpha);
+    // vec4 col = vec4(r, g, b, alpha);
+    // gl_FragColor = col*gl_Color*texture2D(tex, gl_TexCoord[0].xy);
+    gl_FragColor = col;
 }
