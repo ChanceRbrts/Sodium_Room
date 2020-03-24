@@ -46,6 +46,7 @@ class Instance{
       double x, y;
       // Velocity (Pixels per seconds)
       double dX, dY;
+      double prevDX, prevDY;
       double w, h;
       int texID(){return textureID;};
       virtual bool canMessWithLevel(){return false;};

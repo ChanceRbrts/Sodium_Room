@@ -11,6 +11,7 @@ uniform float termV;
 // Current Time (Assumption: 0 < time < 5)
 uniform float time;
 uniform float maxTime;
+uniform bool gravityDown;
 
 
 void main(void){
@@ -35,8 +36,8 @@ void main(void){
     // Add our terminal velocity in...
     trueY += termV*dropTimeTr;
     objY += termV*dropTimeObj;
-    // And find the difference! (Guaranteed to be negative)
-    trueY = trueY-objY;
+    // And find the difference! (Negative if falling down, Positive if falling up)
+    trueY = (trueY-objY)*(-1+2*float(gravityDown));
     // trueY = y + (pos.y-pos.z*64)*unitY;
     trueY = y+(trueY+pos.y)*unitY;
     gl_FrontColor = gl_Color;

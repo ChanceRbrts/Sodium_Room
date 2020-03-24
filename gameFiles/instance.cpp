@@ -7,7 +7,9 @@ Instance::Instance(double X, double Y, double W, double H){
    w = W*32;
    h = H*32;
    dX = 0;
+   prevDX = dX;
    dY = 0;
+   prevDY = dY;
    r = 1;
    g = 1;
    b = 1;
@@ -26,8 +28,13 @@ Instance::Instance(double X, double Y, double W, double H){
 }
 
 void Instance::doGravity(double deltaTime){
-   dY += 1024*deltaTime;
-   if (dY > termY) dY = termY;
+   if (termY > 0){
+      dY += 1024*deltaTime;
+      if (dY > termY) dY = termY;
+   } else {
+      dY -= 1024*deltaTime;
+      if (dY < termY) dY = termY;
+   }
 }
 
 void Instance::upd(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
@@ -39,6 +46,8 @@ void Instance::upd(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* 
 void Instance::finishUpdate(double deltaTime){
    x += dX*deltaTime;
    y += dY*deltaTime;
+   prevDX = dX;
+   prevDY = dY;
    fUpdate(deltaTime);
    arcList.clear();
 }
