@@ -90,7 +90,11 @@ void Rain::collided(Instance *o, double deltaTime){
     bool stillCheck = !p->isLocked() && ((abs(p->dX) < 0.01 && (abs(p->dY) < 0.01)) || fall);
     // The player's bounds should actually be inside the rain.
     bool inBoundsFloor = (o->y+o->h < y+h) || (o->y+o->h == y+h && up);
-    if (o->x >= x && o->x+o->w <= x+w && o->y >= y && inBoundsFloor && stillCheck){
+    bool outBoundsFloor = (o->y > y+1) || (o->y >= y && !up);
+    if (o->y < y+1 && up && fall){
+        o->dY = 0;
+    }
+    if (o->x >= x && o->x+o->w <= x+w && outBoundsFloor && inBoundsFloor && stillCheck){
         p->lockPlayer(true);
         p->hide(true);
         toAdd.push_back(new RainPlayer(p, !up));
@@ -169,6 +173,7 @@ RainPlayer::~RainPlayer(){
 }
 
 void RainPlayer::fUpdate(double deltaTime){
+    printf("%f\n", y);
     // This instance was stopped.
     if (dY == 0 && time > 0 && !backTogether){
         backTogether = true;
