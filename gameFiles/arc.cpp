@@ -1,6 +1,6 @@
 #include "arc.h"
 
-Arc::Arc(double X, double Y, double R, double D1, double D2, double RC, double GC, double BC){
+Arc::Arc(double X, double Y, double R, double D1, double D2, double RC, double GC, double BC, bool mono){
     x = X*32;
     y = Y*32;
     r = R*32;
@@ -12,6 +12,7 @@ Arc::Arc(double X, double Y, double R, double D1, double D2, double RC, double G
     rCol = RC;
     gCol = GC;
     bCol = BC;
+    monocolor = mono;
 }
 
 Arc::~Arc(){
@@ -53,9 +54,10 @@ void Arc::draw(GLUtil* glu){
     shade->addUniform("camY", glu->draw->camY);
     shade->addUniform("unitX", 2/glu->draw->getWidth());
     shade->addUniform("unitY", -2/glu->draw->getHeight());
+    shade->addUniform("mono", monocolor);
     shade->moveShaderBox(x-maxR, y-maxR);
 }
 
 ArcInfo Arc::getInfo(int id){
-    return (ArcInfo){id, rCol, gCol, bCol};
+    return (ArcInfo){id, rCol, gCol, bCol, monocolor};
 }

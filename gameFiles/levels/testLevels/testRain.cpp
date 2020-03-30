@@ -20,16 +20,16 @@ std::vector<ShaderBox *> TestRain::createShaderBoxes(GLUtil* glu){
 std::vector<Instance *>  TestRain::makeLevel(std::vector<Instance*> previous){
    previous.push_back(new Player(10, 5));
    previous.push_back(new Grate(12, 6, 7));
-   previous.push_back(new Rain(12, 1, 7, 1));
+   previous.push_back(new Rain(12, 1, 7, 0));
    // previous.push_back(new Rain(12, 1, 7, true));
    return previous;
 }
 
 std::vector<Arc *> TestRain::createArcs(){
    std::vector<Arc *> arcs;
-   // arcs.push_back(new Arc(9.5, 7, 10, -M_PI/8, M_PI/8, 1, 0, 0));
-   // arcs.push_back(new Arc(9.5, 7, 10, -M_PI/8, M_PI/8, 0.4, 0.4, 1));
-   arcs.push_back(new Arc(9.5, 7, 10, -M_PI/8, M_PI/8, 0.1, 1, 0.1));
+   // arcs.push_back(new Arc(9.5, 7, 10, -M_PI/8, M_PI/8, 1, 0, 0, true));
+   // arcs.push_back(new Arc(9.5, 7, 10, -M_PI/8, M_PI/8, 0.4, 0.4, 1, true));
+   arcs.push_back(new Arc(10, 7, 10, -M_PI/8, M_PI/8, 0.1, 1, 0.1, true));
    return arcs;
 }
 

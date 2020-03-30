@@ -173,7 +173,6 @@ RainPlayer::~RainPlayer(){
 }
 
 void RainPlayer::fUpdate(double deltaTime){
-    printf("%f\n", y);
     // This instance was stopped.
     if (dY == 0 && time > 0 && !backTogether){
         backTogether = true;

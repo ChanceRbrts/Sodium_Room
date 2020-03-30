@@ -7,6 +7,7 @@
 struct ArcInfo{
     int id;
     double r, g, b;
+    bool monocolor;
 };
 
 class Arc{
@@ -17,8 +18,9 @@ class Arc{
         double maxR;
         double d1, d2;
         bool connected;
+        bool monocolor;
     public:
-        Arc(double X, double Y, double R, double D1, double D2, double RC, double GC, double BC);
+        Arc(double X, double Y, double R, double D1, double D2, double RC, double GC, double BC, bool mono);
         ~Arc();
         void changeConnection(bool c){ connected = c; }
         double getX(){return x;};
