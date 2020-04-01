@@ -7,7 +7,9 @@ Instance::Instance(double X, double Y, double W, double H){
    w = W*32;
    h = H*32;
    dX = 0;
+   prevDX = dX;
    dY = 0;
+   prevDY = dY;
    r = 1;
    g = 1;
    b = 1;
@@ -26,8 +28,13 @@ Instance::Instance(double X, double Y, double W, double H){
 }
 
 void Instance::doGravity(double deltaTime){
-   dY += 1024*deltaTime;
-   if (dY > termY) dY = termY;
+   if (termY > 0){
+      dY += 1024*deltaTime;
+      if (dY > termY) dY = termY;
+   } else {
+      dY -= 1024*deltaTime;
+      if (dY < termY) dY = termY;
+   }
 }
 
 void Instance::upd(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
@@ -39,7 +46,10 @@ void Instance::upd(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* 
 void Instance::finishUpdate(double deltaTime){
    x += dX*deltaTime;
    y += dY*deltaTime;
+   prevDX = dX;
+   prevDY = dY;
    fUpdate(deltaTime);
+   arcList.clear();
 }
 
 void Instance::changeTexture(int tex, bool untint){
@@ -154,4 +164,112 @@ void Instance::collision(Instance* o, double deltaTime, bool cornerCheck){
          o->collided(this, deltaTime);
       }
    }
+}
+
+bool Instance::arcCollision(Arc* o, double deltaTime){
+   double oX = o->getX();
+   double oY = o->getY();
+   double r = o->getR();
+   double fX = x-oX+dX*deltaTime;
+   double fY = y-oY+dY*deltaTime;
+   // If the instance is just out of reach of the circle of the arc, don't do anything.
+   if (fX > r || fX+w < -r || fY > r || fY+h < -r) return false;
+   // What makes this easier is the fact that the instance is grid aligned.
+   // As such, if the center is in that area, then we have a collision
+   if (fX <= 0 && fY <= 0 && fX+w >= 0 && fY+h >= 0) return true;
+   // Of course, if it's not any of these cases, we have to be more creative...
+   // First, we need to check the radian ranges of the instance compared to the arc.
+   // Get arc degrees
+   double d1 = fmod(o->getD1()+M_PI, 2*M_PI)-M_PI;
+   double d2 = fmod(o->getD2()+M_PI, 2*M_PI)-M_PI;
+   double d2A = d1 > d2 ? d2 + 2*M_PI : d2;
+   // If d1 > d2, then there's wrap around that we have to deal with.
+   // Compare the four corners of the hitbox to the arc in polar coordinates.
+   bool q1 = false;
+   bool q2 = false;
+   bool q3 = false;
+   bool q4 = false;
+   for (int i = 0; i < 4; i++){
+      // Go through each corner in connecting location.
+      double xi = fX+w*int(i/2);
+      double yi = fY+h*int((i-1)/2);
+      // We don't need to worry about this being 0.
+      double ri = sqrt(xi*xi+yi*yi);
+      double di = atan2(yi, xi);
+      double dj = di;
+      dj += (di < d1 && d1 > d2) ? 2*M_PI : 0;
+      if (dj >= d1 && dj <= d2A && ri <= r) return true;
+      // Find the quadrant this is in and make a note to check that quadrant.
+      if (di <= -M_PI_2) q3 = true;
+      else if (di <= 0) q4 = true;
+      else if (di <= M_PI_2) q1 = true;
+      else q2 = true;
+   }
+   // Check in 2 degree rays past the arc.
+   // (4 degrees at a 320 px radius takes about 32 px. (2*pi*320/(360/4)))
+   d2 += (d1 >= d2) ? 2*M_PI : 0;
+   for (double di = d1; di <= d2; di += M_PI/45){
+      double fXN = fX;
+      double fXF = fX+w;
+      double fYN = fY;
+      double fYF = fY+h;
+      // Move stuff to -PI to PI (3*PI is added to avoid negative numbers)
+      double dj = fmod(di+3*M_PI, M_PI*2)-M_PI;
+      // If the ray is in the wrong quadrant, move on to the next ray.
+      // TODO: The actual line/rectangle collision stuff.
+      if (dj <= -M_PI_2){
+         // Check Bottom and Right.
+         if (!q3) continue;
+         fXN = -(fX+w);
+         fXF = -fX;
+         fYN = -(fY+h);
+         fYF = -fY;
+      }
+      else if (dj > -M_PI_2 && dj <= 0){
+         if (!q4) continue;
+         // Check Bottom and Left
+         fYN = -(fY+h);
+         fYF = -fY;
+      }
+      else if (dj > 0 && dj <= M_PI_2){
+         if (!q1) continue;
+         // Check Top and Left (No Change)
+      }
+      else { // if (dj > M_PI_2)
+         if (!q2) continue;
+         // Check Top and Right
+         fXN = -(fX+w);
+         fXF = -fX;
+      }
+      double cDI = cos(di);
+      double sDI = sin(di);
+      if (cDI != 0){
+         double slope = abs(sDI/cDI);
+         if (slope == 0){
+            // Either continues or returns true.
+            // We only need to check the x-axis in this case.
+            if (fY > 0 || fY+h < 0) continue;
+            if (cDI > 0 && fX > 0 && fX < r) return true;
+            if (cDI < 0 && fX+w < 0 && fX+w > -r) return true;
+         }
+         // Check if there's an intersection horizontally. (Only need to check closest wall.)
+         float testY = slope*fXN;
+         if (testY >= fYN && testY <= fYF) return true;
+         // Check if there's an intersection vertically. (Only need to check closest wall.)
+         float testX = fYN/slope;
+         if (testX >= fXN && testX <= fXF) return true;
+      } else {
+         // We only need to check the y-axis in this case.
+         if (fX > 0 || fX+w < 0 ) continue;
+         if (sDI > 0 && fY > 0 && fY < r) return true;
+         if (sDI < 0 && fY+h < 0 && fY+h > -r) return true;
+      }
+   }
+   // If there is no intersection, then we have not found anything.
+   return false;
+}
+
+void Instance::arcCol(Arc* o, double deltaTime, int id){
+   if (!arcCollision(o, deltaTime)) return;
+   arcList.push_back(o->getInfo(id));
 }

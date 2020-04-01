@@ -8,6 +8,8 @@ TestRain::TestRain(){
    w = 20*32;
    h = 15*32;
    filePath = "testRain";
+   time = 0;
+   maxTime = 4;
 }
 
 std::vector<ShaderBox *> TestRain::createShaderBoxes(GLUtil* glu){
@@ -18,8 +20,24 @@ std::vector<ShaderBox *> TestRain::createShaderBoxes(GLUtil* glu){
 std::vector<Instance *>  TestRain::makeLevel(std::vector<Instance*> previous){
    previous.push_back(new Player(10, 5));
    previous.push_back(new Grate(12, 6, 7));
-   previous.push_back(new Rain(12, 1, 7, false));
-   // previous.push_back(new Rain(12, 1, 5, false));
-   // previous.push_back(new Rain(17, 1, 2, true));
+   previous.push_back(new Rain(12, 1, 7, 0));
+   // previous.push_back(new Rain(12, 1, 7, true));
    return previous;
+}
+
+std::vector<Arc *> TestRain::createArcs(){
+   std::vector<Arc *> arcs;
+   // arcs.push_back(new Arc(9.5, 7, 10, -M_PI/8, M_PI/8, 1, 0, 0, true));
+   // arcs.push_back(new Arc(9.5, 7, 10, -M_PI/8, M_PI/8, 0.4, 0.4, 1, true));
+   arcs.push_back(new Arc(10, 7, 10, -M_PI/8, M_PI/8, 0.1, 1, 0.1, true));
+   return arcs;
+}
+
+void TestRain::updateLevel(double deltaTime, Instance* player){
+   Arc* a = arcs[0];
+   time += deltaTime;
+   if (time > maxTime) time -= maxTime;
+   // double dR = M_PI/4*cos(M_PI*2*time/maxTime)*deltaTime;
+   // a->setAngle(a->getD1()+dR, a->getD2()+dR);
+   a->setAngle(a->getD1()-M_PI/2*deltaTime, a->getD2()-M_PI/2*deltaTime);
 }

@@ -3,6 +3,8 @@
 
 #include "../glutils/glUtil.h"
 #include "../utils/texBook.h"
+#include "arc.h"
+#include <math.h>
 
 /**
  * The Object Class; these are the instances that we are updating!
@@ -33,6 +35,7 @@ class Instance{
       // Some objects need to do solid collisions with only some objects.
       // If solid is true, this is a blacklist; if solid is false, this is a whitelist for solid object collisions.
       std::vector<std::string> colList;
+      std::vector<ArcInfo> arcList;
       // Useful for identifying different objects
       std::string name;
       // Simple gravity calculations.
@@ -43,6 +46,7 @@ class Instance{
       double x, y;
       // Velocity (Pixels per seconds)
       double dX, dY;
+      double prevDX, prevDY;
       double w, h;
       int texID(){return textureID;};
       virtual bool canMessWithLevel(){return false;};
@@ -50,6 +54,7 @@ class Instance{
       double getR(){return r;};
       double getG(){return g;};
       double getB(){return b;};
+      std::vector<ArcInfo> getArcList(){return arcList;};
       void hide(bool h);
       void changeTexture(int tex, bool untint);
       bool canRemove(){return remove;};
@@ -109,8 +114,20 @@ class Instance{
        * Checks and handles collisions between another object.
        * @param o The instance that's being checked for collision
        * @param deltaTime The time in between this frame and the previous frame.
+       * @param cornerCheck Whether we check the corners for solid objects or just the edges.
        */
       void collision(Instance* o, double deltaTime, bool cornerCheck);
+      /**
+       * Checks and handles collisions with arcs.
+       * @param o The instance that defines the arc.
+       * @param deltaTime The time inbetween this frame and the previous frame.
+       */
+      bool arcCollision(Arc* o, double deltaTime);
+      /**
+       * Deals with the collision with arcs.
+       * @param o The arc that was collided with.
+       */
+      void arcCol(Arc* o, double deltaTime, int id);
       /**
        * If a collision happens, this function gets called.
        * This is code you want to get called if something collides with the object.

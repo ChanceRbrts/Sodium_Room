@@ -49,7 +49,7 @@ glutils/glutil.a:glutils/glConstants.o glutils/$(GLB)/glControls.o glutils/$(GLB
 utils/util.a:utils/fontBook.o utils/texBook.o
 	ar -rcs $@ $^
 
-gameFiles/instances.a:gameFiles/instance.o gameFiles/solid.o gameFiles/player.o\
+gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gameFiles/player.o\
 		main/shaderBox.o gameFiles/shaderboxes/longShaderbox.o gameFiles/textBox.o\
 		gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o
 	ar -rcs $@ $^

@@ -14,14 +14,15 @@
 
 class Rain : public Instance {
     private:
-        bool shaderCheck, hardMode;
+        bool shaderCheck;
+        int rainMode;
         float startY, lastDY;
         float time;
         std::vector<float> vertices;
         std::vector<float> colors;
         void initShaders(GLShaders* gls);
     public:
-        Rain(double X, double Y, double W, bool hard);
+        Rain(double X, double Y, double W, int mode);
         ~Rain();
         /**
         * Updates the rain's particle effects, and moves the "player" object down.
@@ -53,7 +54,7 @@ class RainPlayer : public Instance{
         std::vector<float> colors;
         // std::vector<float> texs;
     public:
-        RainPlayer(Player* pl);
+        RainPlayer(Player* pl, bool gDown);
         ~RainPlayer();
         /**
          * Updates the height and width

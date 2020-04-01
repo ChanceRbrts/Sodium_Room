@@ -7,6 +7,7 @@ ShaderBox::ShaderBox(double X, double Y, double W, double H, std::string vertSha
    h = H*32;
    xOffset = 0;
    yOffset = 0;
+   follow = false;
    glu = GLU;
    // Sets up the framebuffer.
    struct upointInt frameBufferParts = glu->shade->createFrameBuffer();
@@ -18,7 +19,7 @@ ShaderBox::ShaderBox(double X, double Y, double W, double H, std::string vertSha
    if (!glu->shade->programExists(drawID)){
       glu->shade->createProgram("gameFiles/shaders/"+vertShader, "gameFiles/shaders/"+fragShader, drawID);
    }
-   
+   remove = false;
 }
 
 ShaderBox::~ShaderBox(){
@@ -48,11 +49,15 @@ void ShaderBox::drawOutBox(){
    }
 }
 
-void ShaderBox::draw(){
+bool ShaderBox::canDraw(){
    GLDraw* gld = glu->draw;
+   return (x+w+xOffset >= gld->camX && y+h+yOffset >= gld->camY 
+         && x+xOffset <= gld->camX+gld->getWidth() && y+yOffset <= gld->camY+gld->getHeight());
+}
+
+void ShaderBox::draw(){
    // Draw only if we're within the bounds of the screen.
-   if (x+w+xOffset >= gld->camX && y+h+yOffset >= gld->camY 
-         && x+xOffset <= gld->camX+gld->getWidth() && y+yOffset <= gld->camY+gld->getHeight()){
+   if (canDraw()){
       // Get Shaders ready if we need them.
       int program = 0;
       if (drawID.length() > 0) program = glu->shade->bindShader(drawID);
@@ -67,7 +72,7 @@ void ShaderBox::draw(){
       glu->draw->enableTextures();
       glu->draw->bindTexture(texID);
       // Actually draw the textures.
-      glu->draw->color(1, 1, 1);
+      glu->draw->color(1, 1, 1, 1);
       glu->draw->begin("QUADS");
       glu->draw->texCoords(0, 1);
       glu->draw->vertW(x+xOffset, y+yOffset);
@@ -101,7 +106,10 @@ void ShaderBox::drawBoundary(){
    }
 }
 
-void ShaderBox::moveShaderBox(double X, double Y){}
+void ShaderBox::moveShaderBox(double X, double Y){
+   x = X;
+   y = Y;
+}
 
 void ShaderBox::setXOffset(double xoffset){
    xOffset = xoffset;
@@ -109,4 +117,12 @@ void ShaderBox::setXOffset(double xoffset){
 
 void ShaderBox::setYOffset(double yoffset){
    yOffset = yoffset;
+}
+
+void ShaderBox::addUniform(std::string name, float value){
+   uniforms[name] = value;
+}
+
+void ShaderBox::removeMe(){
+   remove = true;
 }
