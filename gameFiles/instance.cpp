@@ -41,6 +41,9 @@ void Instance::upd(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* 
    if (gravity) doGravity(deltaTime);
    update(deltaTime, keyPressed, keyHeld, player);
    onGround = false;
+   // Arc collision happens directly after the update frame.
+   // Due to when the arc collision happens, this makes sure the arc still has an effect for one frame.
+   arcList.clear();
 }
 
 void Instance::finishUpdate(double deltaTime){
@@ -49,7 +52,6 @@ void Instance::finishUpdate(double deltaTime){
    prevDX = dX;
    prevDY = dY;
    fUpdate(deltaTime);
-   arcList.clear();
 }
 
 void Instance::changeTexture(int tex, bool untint){

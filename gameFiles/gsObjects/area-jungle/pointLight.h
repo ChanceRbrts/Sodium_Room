@@ -3,11 +3,11 @@
 
 #include "../../instance.h"
 
-class Firefly : public Instance{
+class PointLight : public Instance{
     protected:
         Arc* light;
         double wide, maxWide, maxRadius;
-        void (*updatePos)(double, Firefly*);
+        void (*updatePos)(double, PointLight*);
         void updateArc(double deltaTime);
     public:
         /**
@@ -17,7 +17,7 @@ class Firefly : public Instance{
          * @param l The arc that represents the light that the firefly emits.
          * @param upd The function that updates the firefly.
          */
-        Firefly(double X, double Y, Arc* l, void (*upd)(double, Firefly*));
+        PointLight(double X, double Y, Arc* l, void (*upd)(double, PointLight*));
         void draw(GLDraw* gld, GLShaders* gls);
         void update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player);
         /**
@@ -25,7 +25,7 @@ class Firefly : public Instance{
          * @param deltaTime The time in seconds since the previous frame.
          * @param me The firefly that's calling the function.
          */
-        void defaultBehavior(double deltaTime, Firefly* me);
+        void defaultBehavior(double deltaTime, PointLight* me);
 };
 
 #endif

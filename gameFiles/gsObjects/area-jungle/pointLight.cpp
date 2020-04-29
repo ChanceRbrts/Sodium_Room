@@ -1,13 +1,13 @@
-#include "firefly.h"
+#include "pointLight.h"
 
-Firefly::Firefly(double X, double Y, Arc* l, void (*upd)(double, Firefly*)) : Instance(X, Y, 1/32.0, 1/32.0){
+PointLight::PointLight(double X, double Y, Arc* l, void (*upd)(double, PointLight*)) : Instance(X, Y, 1/32.0, 1/32.0){
     solid = false;
     maxRadius = l->getR();
     light = l;
     updatePos = upd;
 }
 
-void Firefly::draw(GLDraw* gld, GLShaders* gls){
+void PointLight::draw(GLDraw* gld, GLShaders* gls){
     // The arc will draw around the radius, so let's just draw this as a point.
     gld->begin("POINTS");
     gld->color(1, 1, 1);
@@ -15,14 +15,14 @@ void Firefly::draw(GLDraw* gld, GLShaders* gls){
     gld->end();
 }
 
-void Firefly::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
+void PointLight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
     updatePos(deltaTime, this);
     updateArc(deltaTime);
 }
 
-void Firefly::updateArc(double deltaTime){
+void PointLight::updateArc(double deltaTime){
     light->setPosition(x+dX*deltaTime, y+dY*deltaTime);
     light->setR(maxRadius*wide/maxWide);
 }
 
-void Firefly::defaultBehavior(double deltaTime, Firefly* me){}
+void PointLight::defaultBehavior(double deltaTime, PointLight* me){}
