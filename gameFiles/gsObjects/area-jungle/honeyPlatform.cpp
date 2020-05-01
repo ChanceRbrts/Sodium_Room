@@ -58,5 +58,11 @@ void HoneyPlatform::collided(Instance* o, double deltaTime){
     // I'm going to say fdb831 for this.
     // Honey is normally sticky and has a ton of friction.
     // R -> Horizontal Friction, G -> Propelling Power, B -> Vertical Friction
-    
+    o->dX = o->dX*(1-(0.5*r));
+    o->dY = o->dY*(1-(0.5*b));
+    if (o->getName().compare("Player") != 0) return;
+    Player* p = (Player *)o;
+    if (b > 0.5){
+        // If there's enough friction on the wall, allow the player to walljump.
+    }
 }

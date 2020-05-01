@@ -25,6 +25,10 @@ class Instance{
        * (If you want to use a texture, make sure r, g, and b are all 1.)
        */
       double r, g, b;
+      double dXModifier, dYModifier;
+      double startDXM, targetDXM;
+      double startDYM, targetDYM;
+      double dXChangeTime, dYChangeTime;
       bool gravity, onGround, immovable, solid;
       // Should always be false except for the player.
       bool playerRef;
@@ -56,6 +60,7 @@ class Instance{
       double getB(){return b;};
       std::vector<ArcInfo> getArcList(){return arcList;};
       void hide(bool h);
+      void changeDVModifier(bool horizontal, double to, double timeMod, bool changeSpeed);
       void changeTexture(int tex, bool untint);
       bool canRemove(){return remove;};
       bool isPlayer(){return playerRef;};

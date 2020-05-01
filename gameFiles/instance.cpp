@@ -44,11 +44,30 @@ void Instance::upd(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* 
    // Arc collision happens directly after the update frame.
    // Due to when the arc collision happens, this makes sure the arc still has an effect for one frame.
    arcList.clear();
+   // Something may change the instance's speed, so account for that.
+   for (int i = 0; i < 2; i++){
+      // First, change the multipliers if it needs changing.
+      double* dV = (i == 0)? &dX : &dY;
+      double* dStart = (i == 0)? &startDXM : &startDYM;
+      double* dEnd = (i == 0)? &targetDXM : &targetDYM;
+      double* dTime = (i == 0)? &dXChangeTime : &dYChangeTime;
+      double dDV = deltaTime*(*dEnd-*dStart)/(*dTime);
+      *dTime += dDV;
+      // Note when we end the linear interpolation
+
+   }
+   // First, change the multipliers if it needs changing.
+   
+   // Apply the multiplier.
+   dX *= dXModifier == 0 ? 0.001 : dXModifier;
+   dY *= dYModifier == 0 ? 0.001 : dYModifier;
 }
 
 void Instance::finishUpdate(double deltaTime){
    x += dX*deltaTime;
    y += dY*deltaTime;
+   dX /= dXModifier == 0 ? 0.001 : dXModifier;
+   dY /= dYModifier == 0 ? 0.001 : dYModifier;
    prevDX = dX;
    prevDY = dY;
    fUpdate(deltaTime);
@@ -66,6 +85,23 @@ void Instance::changeTexture(int tex, bool untint){
 
 void Instance::hide(bool h){
    hidden = h;
+}
+
+void Instance::changeDVModifier(bool horizontal, double to, double timeMod, bool changeSpeed){
+   double* startDVM = horizontal? &startDXM : &startDYM;
+   double* targetDVM = horizontal? &targetDXM : &targetDYM;
+   double* dVChangeTime = horizontal? &dXChangeTime : &dYChangeTime;
+   double* dVModifier = horizontal? &dXModifier : &dYModifier;
+   double* dV = horizontal? &dX : &dY;
+   *startDVM = *dVModifier;
+   *targetDVM = to;
+   if (changeSpeed){
+      *dVChangeTime = 0;
+      *dVModifier = to;
+      *dV = (*dV)*(*startDVM)/to;
+      return;
+   }
+   *dVChangeTime = timeMod;
 }
 
 void Instance::draw(GLUtil* glu){
