@@ -67,7 +67,7 @@ void HoneyPlatform::update(double deltaTime, bool* keyPressed, bool* keyHeld){
                     toRemove.push_back(insts->first);
                     removed = true;
                 }
-                p->dY = -184+400*(1.0-g);
+                p->dY = -340*2*(1.0-g);
             }
         }
     }
