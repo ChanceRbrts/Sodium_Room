@@ -45,6 +45,35 @@ void HoneyPlatform::update(double deltaTime, bool* keyPressed, bool* keyHeld){
     moveValueTo(&r, goalColorR, deltaTime);
     moveValueTo(&g, goalColorG, deltaTime);
     moveValueTo(&b, goalColorB, deltaTime);
+    // Iterate through the instances that we have collided with to find the ones that we haven't this frame.
+    std::map<Instance *, bool>::iterator insts = collidedInstances.begin();
+    std::vector<Instance *> toRemove;
+    for (; insts != collidedInstances.end(); insts++){
+        bool removed = false;
+        if (!insts->second){
+            // We have not collided with this instance at this point, bring stuff back to normal!
+            insts->first->changeDVModifier(true, 1, 0, true);
+            insts->first->changeDVModifier(false, 1, 0, true);
+            toRemove.push_back(insts->first);
+            removed = true;
+        }
+        // See if our player is jumping.
+        if (insts->first->getName().compare("Player") == 0){
+            Player* p = (Player *)(insts->first);
+            if (p->isJumping()){
+                if (!removed){
+                    p->changeDVModifier(true, 1, 0, true);
+                    p->changeDVModifier(false, 1, 0, true);
+                    toRemove.push_back(insts->first);
+                    removed = true;
+                }
+                p->dY = -184+400*(1.0-g);
+            }
+        }
+    }
+    for (int i = 0; i < toRemove.size(); i++){
+        collidedInstances.erase(toRemove[i]);
+    }
 }
 
 /*
@@ -58,11 +87,10 @@ void HoneyPlatform::collided(Instance* o, double deltaTime){
     // I'm going to say fdb831 for this.
     // Honey is normally sticky and has a ton of friction.
     // R -> Horizontal Friction, G -> Propelling Power, B -> Vertical Friction
-    o->dX = o->dX*(1-(0.5*r));
-    o->dY = o->dY*(1-(0.5*b));
-    if (o->getName().compare("Player") != 0) return;
-    Player* p = (Player *)o;
-    if (b > 0.5){
-        // If there's enough friction on the wall, allow the player to walljump.
+    std::map<Instance *, bool>::iterator obj = collidedInstances.find(o);
+    if (obj == collidedInstances.end()){
+        o->changeDVModifier(true, 1-(0.5*r), 1, false);
+        o->changeDVModifier(false, 1-(0.5*b), 1, false);
     }
+    collidedInstances.insert_or_assign(o, true);
 }

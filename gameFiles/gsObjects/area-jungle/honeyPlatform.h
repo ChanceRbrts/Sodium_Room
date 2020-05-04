@@ -9,6 +9,7 @@ class HoneyPlatform : public Instance {
         // The amount of time it takes for the color of the object to go from 0 to 255.
         double colorSwapTime;
         double moveValueTo(double* vMove, double vTo, double deltaTime);
+        std::map<Instance *, bool> collidedInstances;
     public:
         HoneyPlatform(double X, double Y, double W, bool horizontal);
         // void draw(GLDraw* gld, GLShaders* gls);

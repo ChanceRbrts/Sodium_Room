@@ -14,6 +14,7 @@ class Player : public Instance{
       double aPressTime;
       double prevdY;
       double prevdX;
+      bool jumpFrame;
    public:
       Player(double X, double Y);
       bool isLocked();
@@ -31,6 +32,7 @@ class Player : public Instance{
        * I probably could have done this with stuff in collided.
        */
       void fUpdate(double deltaTime);
+      bool isJumping();
 };
 
 #endif

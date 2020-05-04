@@ -10,11 +10,13 @@ Player::Player(double X, double Y) : Instance(X, Y, 1, 1){
    prevdY = 0;
    name = "Player";
    locked = false;
+   jumpFrame = false;
 }
 
 void Player::update(double deltaTime, bool* keyPressed, bool* keyHeld){
    // If we're in a cutscene or something like that, then we shouldn't control the Player from here.
    if (locked) return;
+   jumpFrame = false;
    if (onGround) onGroundTime = 0.1;
    onGroundTime = onGroundTime>0?onGroundTime-deltaTime:0;
    aPressTime = aPressTime>0?aPressTime-deltaTime:0;
@@ -42,6 +44,7 @@ void Player::update(double deltaTime, bool* keyPressed, bool* keyHeld){
    if (aPressTime > 0 && onGroundTime > 0){
       onGroundTime = 0;
       jumpTime = 0.2;
+      jumpFrame = true;
    }
    // This allows us to jump with conditional height.
    if (keyHeld[BUTTON_A] && onGroundTime <= 0){
@@ -67,4 +70,8 @@ void Player::lockPlayer(bool lock){
 
 bool Player::isLocked(){
    return locked;
+}
+
+bool Player::isJumping(){
+   return jumpFrame;
 }

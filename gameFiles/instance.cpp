@@ -51,13 +51,17 @@ void Instance::upd(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* 
       double* dStart = (i == 0)? &startDXM : &startDYM;
       double* dEnd = (i == 0)? &targetDXM : &targetDYM;
       double* dTime = (i == 0)? &dXChangeTime : &dYChangeTime;
+      double* dVModifier = (i == 0)? &dXModifier : &dYModifier;
+      if (abs(*dVModifier-*dEnd) < 0.01) continue;
       double dDV = deltaTime*(*dEnd-*dStart)/(*dTime);
-      *dTime += dDV;
+      *dVModifier += dDV;
       // Note when we end the linear interpolation
-
+      int modifier = (dDV > 0) ? 1 : -1;
+      if ((*dVModifier-*dEnd)*modifier > 0){
+         *dTime = 0;
+         *dVModifier = *dEnd;
+      }  
    }
-   // First, change the multipliers if it needs changing.
-   
    // Apply the multiplier.
    dX *= dXModifier == 0 ? 0.001 : dXModifier;
    dY *= dYModifier == 0 ? 0.001 : dYModifier;
