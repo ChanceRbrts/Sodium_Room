@@ -58,6 +58,12 @@ void Arc::draw(GLUtil* glu){
     shade->moveShaderBox(x-maxR, y-maxR);
 }
 
+void Arc::setColor(double R, double G, double B){
+    rCol = (R <= 1 && R >= 0) ? R : rCol;
+    gCol = (G <= 1 && G >= 0) ? G : gCol;
+    bCol = (B <= 1 && B >= 0) ? B : bCol;
+}
+
 ArcInfo Arc::getInfo(int id){
     return (ArcInfo){id, rCol, gCol, bCol, monocolor};
 }

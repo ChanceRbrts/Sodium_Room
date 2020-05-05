@@ -19,8 +19,8 @@ uniform sampler2D tex;
 
 void main(void){
     float tPI = 6.28318530718;
-    float realX = gl_FragCoord.x*xScale-camX;
-    float realY = (480-gl_FragCoord.y)*yScale-camY;
+    float realX = gl_FragCoord.x*xScale+camX;
+    float realY = (480-gl_FragCoord.y)*yScale+camY;
     float distX = realX-x;
     float distY = realY-y;
     float fullDist = sqrt(distX*distX+distY*distY);

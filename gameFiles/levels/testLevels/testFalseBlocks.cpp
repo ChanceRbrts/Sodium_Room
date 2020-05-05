@@ -18,7 +18,6 @@ std::vector<ShaderBox *> TestFalseBlocks::createShaderBoxes(GLUtil* glu){
 std::vector<Instance *> TestFalseBlocks::makeLevel(std::vector<Instance*> previous){
    previous.push_back(new Player(10, 13));
    previous.push_back(new FakeSolids("testFalseBlocks2"));
-   previous.push_back(new HoneyPlatform(13, 14, 4, true));
    /*for (int i = 9; i < 19; i++){
       for (int j = 7; j < 9; j++){
          previous.push_back(new FakeSolid(i, j));

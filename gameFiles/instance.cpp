@@ -22,6 +22,8 @@ Instance::Instance(double X, double Y, double W, double H){
    targetDYM = 0;
    dXChangeTime = 0;
    dYChangeTime = 0;
+   collDX = 0;
+   collDY = 0;
    textureID = -1;
    hasTexture = false;
    gravity = false;
@@ -72,6 +74,8 @@ void Instance::upd(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* 
    // Apply the multiplier.
    dX *= dXModifier == 0 ? 0.001 : dXModifier;
    dY *= dYModifier == 0 ? 0.001 : dYModifier;
+   collDX = dX;
+   collDY = dY;
 }
 
 void Instance::finishUpdate(double deltaTime){

@@ -56,7 +56,7 @@ gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gam
 	ar -rcs $@ $^
 
 gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/levelExample.o\
-		gameFiles/levels/testLevels/testRain.o
+		gameFiles/levels/testLevels/testRain.o gameFiles/levels/testLevels/testJungleObjects.o
 	ar -rcs $@ $^
 
 gameFiles/instancesext.a:gameFiles/instancelev.o gameFiles/gsObjects/enclosedLevel.o\

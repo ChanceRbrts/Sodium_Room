@@ -6,4 +6,5 @@ Levels::Levels(){
    lev.push_back(new TestRain());
    lev.push_back(new TestFalseBlocks());
    lev.push_back(new TestHorizontalEnclosed());
+   lev.push_back(new TestJungleObjects());
 }
