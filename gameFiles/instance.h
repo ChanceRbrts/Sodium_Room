@@ -60,6 +60,7 @@ class Instance{
       double getR(){return r;};
       double getG(){return g;};
       double getB(){return b;};
+      void ground(){onGround = true;};
       std::vector<ArcInfo> getArcList(){return arcList;};
       void hide(bool h);
       void changeDVModifier(bool horizontal, double to, double timeMod, bool changeSpeed);

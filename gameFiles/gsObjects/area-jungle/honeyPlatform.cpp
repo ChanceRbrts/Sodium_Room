@@ -100,6 +100,9 @@ void HoneyPlatform::collided(Instance* o, double deltaTime){
         o->changeDVModifier(true, 1-(0.7*r), 0.5, false);
         o->changeDVModifier(false, 1-(0.7*b), 0.5, false);
     }
+    if (b > 0.5 && o->dY > 0){
+        o->ground();
+    }
     if (obj == collidedInstances.end()){
         collidedInstances.insert({o, true});
     } else collidedInstances[o] = true;

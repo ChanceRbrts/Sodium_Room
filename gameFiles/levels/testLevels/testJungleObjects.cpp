@@ -10,6 +10,7 @@ TestJungleObjects::TestJungleObjects(){
 std::vector<Instance *> TestJungleObjects::makeLevel(std::vector<Instance*> previous){
     previous.push_back(new Player(17, 13));
     previous.push_back(new HoneyPlatform(8, 14, 4, true));
+    previous.push_back(new HoneyPlatform(19, 7, 5, false));
     return previous;
 }
 
@@ -20,13 +21,12 @@ std::vector<Arc *> TestJungleObjects::createArcs(){
 }
 
 void TestJungleObjects::updateLevel(double deltaTime, Instance* player){
-    double prevCounter = sineWaveCounter;
     sineWaveCounter += deltaTime;
-    while (sineWaveCounter > 4){
-        sineWaveCounter -= 4;
+    while (sineWaveCounter > 8){
+        sineWaveCounter -= 8;
         colorPicker = (colorPicker+1)%3;
     }
-    double angle1 = M_PI/2-M_PI/4*cos(sineWaveCounter*M_PI/2);
+    double angle1 = M_PI/2-M_PI/2*cos(sineWaveCounter*M_PI/4);
     a1->setAngle(angle1-M_PI*1/16, angle1+M_PI*1/16);
     double red1 = colorPicker == 0 ? 1 : 0;
     double green1 = colorPicker == 1 ? 1 : 0;
