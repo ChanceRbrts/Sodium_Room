@@ -34,6 +34,8 @@ class Instance{
       bool playerRef;
       bool remove;
       bool hidden;
+      bool stuckToWall;
+      double collDX, collDY;
       // The boolean to say whether or not you need the GLUtil class and not just GLDraw and GLShaders for drawing.
       bool needExtra;
       // Some objects need to do solid collisions with only some objects.

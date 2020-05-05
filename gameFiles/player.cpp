@@ -11,13 +11,17 @@ Player::Player(double X, double Y) : Instance(X, Y, 1, 1){
    name = "Player";
    locked = false;
    jumpFrame = false;
+   jumpMultiplier = 1;
 }
 
 void Player::update(double deltaTime, bool* keyPressed, bool* keyHeld){
    // If we're in a cutscene or something like that, then we shouldn't control the Player from here.
    if (locked) return;
    jumpFrame = false;
-   if (onGround) onGroundTime = 0.1;
+   if (onGround){ 
+      onGroundTime = 0.1;
+      jumpMultiplier = 1;
+   }
    onGroundTime = onGroundTime>0?onGroundTime-deltaTime:0;
    aPressTime = aPressTime>0?aPressTime-deltaTime:0;
    jumpTime = jumpTime>0?jumpTime-deltaTime:0;
@@ -49,11 +53,12 @@ void Player::update(double deltaTime, bool* keyPressed, bool* keyHeld){
    // This allows us to jump with conditional height.
    if (keyHeld[BUTTON_A] && onGroundTime <= 0){
       // Was 384.
-      dY = jumpTime>0?-340:dY>0?dY-128*deltaTime:dY;
+      dY = jumpTime>0?-340*jumpMultiplier:dY>0?dY-128*jumpMultiplier*deltaTime:dY;
    }
    // Keep dX and dY before collision checks here.
    prevdX = dX;
    prevdY = dY;
+   // printf("%f, %f\n", dXModifier, dYModifier);
 }
 
 void Player::fUpdate(double deltaTime){
@@ -74,4 +79,9 @@ bool Player::isLocked(){
 
 bool Player::isJumping(){
    return jumpFrame;
+}
+
+void Player::changeJumpMultiplier(double j){
+   if (j <= 0) return;
+   jumpMultiplier = j;
 }

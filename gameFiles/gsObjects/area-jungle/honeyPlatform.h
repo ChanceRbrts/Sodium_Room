@@ -10,6 +10,7 @@ class HoneyPlatform : public Instance {
         double colorSwapTime;
         double moveValueTo(double* vMove, double vTo, double deltaTime);
         std::map<Instance *, bool> collidedInstances;
+        bool changedColor;
     public:
         HoneyPlatform(double X, double Y, double W, bool horizontal);
         // void draw(GLDraw* gld, GLShaders* gls);

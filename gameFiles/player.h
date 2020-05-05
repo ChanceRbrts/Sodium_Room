@@ -14,6 +14,7 @@ class Player : public Instance{
       double aPressTime;
       double prevdY;
       double prevdX;
+      double jumpMultiplier;
       bool jumpFrame;
    public:
       Player(double X, double Y);
@@ -33,6 +34,7 @@ class Player : public Instance{
        */
       void fUpdate(double deltaTime);
       bool isJumping();
+      void changeJumpMultiplier(double j);
 };
 
 #endif
