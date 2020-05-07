@@ -37,6 +37,7 @@ void Arc::setAngle(double D1, double D2){
 }
 
 void Arc::draw(GLUtil* glu){
+    printf("%f, %f, %f!\n", x, y, r);
     if (shade == nullptr){
         shade = new ShaderBox(0, 0, maxR*1.1/16, maxR*1.1/16, "", "arc", glu);
     }

@@ -9,7 +9,8 @@ TestJungleObjects::TestJungleObjects(){
 
 void TestJungleObjects::createPointLights(){
     pLight.clear();
-    pLight.push_back(new PointLight(47, 10, new Arc(0, 0, 4, 0, M_PI*2, 1, 0, 1, true)));
+    Arc* a = new Arc(0, 0, 4, -M_PI, M_PI, 1, 0, 1, true);
+    pLight.push_back(new PointLight(47, 10, a));
 }
 
 std::vector<Instance *> TestJungleObjects::makeLevel(std::vector<Instance*> previous){

@@ -6,7 +6,7 @@
 class PointLight : public Instance{
     protected:
         Arc* light;
-        double wide, maxWide, maxRadius;
+        double wide, maxRadius;
         void updateArc(double deltaTime);
         virtual void updatePos(double deltaTime){};
     public:
