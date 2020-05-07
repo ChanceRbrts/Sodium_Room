@@ -31,7 +31,7 @@ void main(void){
     D2 += tPI*float(d2 <= d1);
     d2X += tPI*float(d2 <= d1);
     d += tPI*float(d < d1X && d2 <= d1);
-    if (fullDist > rad*1.10 || d1X > d || d2X < d) discard;
+    if (fullDist > rad*1.1 || d1X > d || d2X < d) discard;
     float alpha = 1;
     alpha -= (d1-d)/(d1-d1X)*float(d < d1);
     alpha -= (d-D2)/(d2X-D2)*float(d > D2);

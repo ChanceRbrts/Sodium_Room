@@ -37,7 +37,7 @@ void Arc::setAngle(double D1, double D2){
 }
 
 void Arc::draw(GLUtil* glu){
-    printf("%f, %f, %f!\n", x, y, r);
+    // printf("%f, %f, %f!\n", x, y, r);
     if (shade == nullptr){
         shade = new ShaderBox(0, 0, maxR*1.1/16, maxR*1.1/16, "", "arc", glu);
     }
@@ -56,7 +56,7 @@ void Arc::draw(GLUtil* glu){
     shade->addUniform("unitX", 2/glu->draw->getWidth());
     shade->addUniform("unitY", -2/glu->draw->getHeight());
     shade->addUniform("mono", monocolor);
-    shade->moveShaderBox(x-maxR, y-maxR);
+    shade->moveShaderBox(x-maxR*1.1, y-maxR*1.1);
 }
 
 void Arc::setColor(double R, double G, double B){
