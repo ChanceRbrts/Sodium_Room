@@ -14,5 +14,6 @@
 #include "gsObjects/rain.h"
 #include "gsObjects/grate.h"
 #include "gsObjects/area-jungle/honeyPlatform.h"
+#include "gsObjects/area-jungle/pointLight.h"
 
 #endif

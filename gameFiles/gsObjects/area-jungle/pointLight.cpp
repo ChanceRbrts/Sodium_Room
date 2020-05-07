@@ -1,10 +1,10 @@
 #include "pointLight.h"
 
-PointLight::PointLight(double X, double Y, Arc* l, void (*upd)(double, PointLight*)) : Instance(X, Y, 1/32.0, 1/32.0){
+PointLight::PointLight(double X, double Y, Arc* l) : Instance(X, Y, 1/32.0, 1/32.0){
     solid = false;
     maxRadius = l->getR();
     light = l;
-    updatePos = upd;
+    name = "Point Light";
 }
 
 void PointLight::draw(GLDraw* gld, GLShaders* gls){
@@ -16,7 +16,7 @@ void PointLight::draw(GLDraw* gld, GLShaders* gls){
 }
 
 void PointLight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
-    updatePos(deltaTime, this);
+    updatePos(deltaTime);
     updateArc(deltaTime);
 }
 
@@ -25,4 +25,6 @@ void PointLight::updateArc(double deltaTime){
     light->setR(maxRadius*wide/maxWide);
 }
 
-void PointLight::defaultBehavior(double deltaTime, PointLight* me){}
+Arc* PointLight::getLight(){
+    return light;
+}

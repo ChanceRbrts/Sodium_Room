@@ -7,8 +7,10 @@ class TestJungleObjects : public Level{
     protected:
         std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
         Arc* a1;
+        std::vector<PointLight *> pLight;
         int colorPicker;
         double sineWaveCounter;
+        void createPointLights();
     public:
         TestJungleObjects();
         std::vector<Arc *> createArcs();

@@ -4,19 +4,32 @@ TestJungleObjects::TestJungleObjects(){
     filePath = "testJungleObjects";
     sineWaveCounter = 0;
     colorPicker = 0;
-    a1 = new Arc(10, 0, 15, M_PI*3/16, M_PI*5/16, 1, 0, 0, true);
+    a1 = nullptr;
+}
+
+void TestJungleObjects::createPointLights(){
+    pLight.clear();
+    pLight.push_back(new PointLight(47, 10, new Arc(0, 0, 4, 0, M_PI*2, 1, 0, 1, true)));
 }
 
 std::vector<Instance *> TestJungleObjects::makeLevel(std::vector<Instance*> previous){
-    previous.push_back(new Player(17, 13));
+    previous.push_back(new Player(23, 4));
     previous.push_back(new HoneyPlatform(8, 14, 4, true));
     previous.push_back(new HoneyPlatform(19, 7, 5, false));
+    createPointLights();
+    for (int i = 0; i < pLight.size(); i++){
+        previous.push_back(pLight[i]);
+    }
     return previous;
 }
 
 std::vector<Arc *> TestJungleObjects::createArcs(){
     std::vector<Arc *> arcs;
+    a1 = new Arc(10, 0, 15, M_PI*3/16, M_PI*5/16, 1, 0, 0, true);
     arcs.push_back(a1);
+    for (int i = 0; i < pLight.size(); i++){
+        arcs.push_back(pLight[i]->getLight());
+    }
     return arcs;
 }
 
