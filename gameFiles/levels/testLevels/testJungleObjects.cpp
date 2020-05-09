@@ -9,7 +9,7 @@ TestJungleObjects::TestJungleObjects(){
 
 void TestJungleObjects::createPointLights(){
     pLight.clear();
-    Arc* a = new Arc(0, 0, 4, -M_PI, M_PI, 1, 0, 1, true);
+    Arc* a = new Arc(0, 0, 4, -M_PI, M_PI, 1, 1, 1, false);
     pLight.push_back(new PointLight(47, 10, a));
 }
 
@@ -22,6 +22,17 @@ std::vector<Instance *> TestJungleObjects::makeLevel(std::vector<Instance*> prev
         previous.push_back(pLight[i]);
     }
     return previous;
+}
+
+std::vector<ShaderBox *> TestJungleObjects::createShaderBoxes(GLUtil* glu){
+   std::vector<ShaderBox *> shadings;
+   ShaderBox* sBox = new ShaderBox(38, 1, 19, 13, "", "monochrome", glu);
+   sBox->addUniform("r", 0.5);
+   sBox->addUniform("g", 0.5);
+   sBox->addUniform("b", 0.5);
+   sBox->addUniform("mono", true);
+   shadings.push_back(sBox);
+   return shadings;
 }
 
 std::vector<Arc *> TestJungleObjects::createArcs(){

@@ -15,6 +15,7 @@ class TestJungleObjects : public Level{
         TestJungleObjects();
         std::vector<Arc *> createArcs();
         void updateLevel(double deltaTime, Instance* player);
+        std::vector<ShaderBox *> createShaderBoxes(GLUtil* glu);
 };
 
 #endif
