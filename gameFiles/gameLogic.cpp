@@ -4,7 +4,8 @@ GameLogic::GameLogic(){
    levels = new Levels();
    createdFonts = false;
    loadedLevels = nullptr;
-   loadLevel(levels->lev[1]);
+   player = nullptr;
+   loadLevel(levels->lev[4]);
 }
 
 GameLogic::~GameLogic(){

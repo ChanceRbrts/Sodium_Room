@@ -51,11 +51,13 @@ utils/util.a:utils/fontBook.o utils/texBook.o
 
 gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gameFiles/player.o\
 		main/shaderBox.o gameFiles/shaderboxes/longShaderbox.o gameFiles/textBox.o\
-		gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o
+		gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o\
+		gameFiles/gsObjects/area-jungle/honeyPlatform.o\
+		gameFiles/gsObjects/area-jungle/pointLight.o
 	ar -rcs $@ $^
 
 gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/levelExample.o\
-		gameFiles/levels/testLevels/testRain.o
+		gameFiles/levels/testLevels/testRain.o gameFiles/levels/testLevels/testJungleObjects.o
 	ar -rcs $@ $^
 
 gameFiles/instancesext.a:gameFiles/instancelev.o gameFiles/gsObjects/enclosedLevel.o\

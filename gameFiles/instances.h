@@ -13,5 +13,7 @@
 // Objects that are added in the game that are not part of the engine go here.
 #include "gsObjects/rain.h"
 #include "gsObjects/grate.h"
+#include "gsObjects/area-jungle/honeyPlatform.h"
+#include "gsObjects/area-jungle/pointLight.h"
 
 #endif

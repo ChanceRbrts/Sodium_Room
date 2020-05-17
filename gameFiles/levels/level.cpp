@@ -195,8 +195,8 @@ void Level::drawObjects(GLUtil* glu, Instance* player, int mode){
    double cY = glu->draw->camY;
    if (player != nullptr){
       if (player->x < cX+wid && player->x+player->w > cX && player->y < cY+hei && player->y+player->h > cY){
-            player->draw(glu);
-         }
+         player->draw(glu);
+      }
    }
    if (insts != nullptr){
       for (Instances* i = insts; i != nullptr; i = i->next){

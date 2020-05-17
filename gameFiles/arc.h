@@ -33,6 +33,7 @@ class Arc{
         ShaderBox* getShaderBox(){ return shade; }
         void setAngle(double D1, double D2);
         void draw(GLUtil* glu);
+        void setColor(double R, double G, double B);
         ArcInfo getInfo(int id);
 };
 

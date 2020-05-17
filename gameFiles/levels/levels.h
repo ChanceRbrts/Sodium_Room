@@ -8,6 +8,7 @@
 #include "testLevels/testRain.h"
 #include "testLevels/testFalseBlocks.h"
 #include "testLevels/testHorizontalEnclosed.h"
+#include "testLevels/testJungleObjects.h"
 
 class Levels{
    public:

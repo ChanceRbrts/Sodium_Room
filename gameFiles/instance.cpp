@@ -14,6 +14,16 @@ Instance::Instance(double X, double Y, double W, double H){
    g = 1;
    b = 1;
    termY = 1024;
+   dXModifier = 1;
+   dYModifier = 1;
+   startDXM = 0;
+   startDYM = 0;
+   targetDXM = 0;
+   targetDYM = 0;
+   dXChangeTime = 0;
+   dYChangeTime = 0;
+   collDX = 0;
+   collDY = 0;
    textureID = -1;
    hasTexture = false;
    gravity = false;
@@ -24,6 +34,7 @@ Instance::Instance(double X, double Y, double W, double H){
    solid = true;
    hidden = false;
    needExtra = false;
+   stuckToWall = false;
    name = "Instance";
 }
 
@@ -41,15 +52,40 @@ void Instance::upd(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* 
    if (gravity) doGravity(deltaTime);
    update(deltaTime, keyPressed, keyHeld, player);
    onGround = false;
+   // Arc collision happens directly after the update frame.
+   // Due to when the arc collision happens, this makes sure the arc still has an effect for one frame.
+   arcList.clear();
+   for (int i = 0; i < 2; i++){
+      double* dStart = (i == 0)? &startDXM : &startDYM;
+      double* dEnd = (i == 0)? &targetDXM : &targetDYM;
+      double* dTime = (i == 0)? &dXChangeTime : &dYChangeTime;
+      double* dVModifier = (i == 0)? &dXModifier : &dYModifier;
+      // If no speed change is in effect, don't try to change the speed!
+      if (*dTime <= 0 || abs(*dVModifier-*dEnd) < 0.01) continue;
+      double dDV = deltaTime*(*dEnd-*dStart)/(*dTime);
+      *dVModifier += dDV;
+      // Note when we end the linear interpolation
+      int modifier = (dDV > 0) ? 1 : -1;
+      if ((*dVModifier-*dEnd)*modifier > 0){
+         *dTime = 0;
+         *dVModifier = *dEnd;
+      } 
+   }
+   // Apply the multiplier.
+   dX *= dXModifier == 0 ? 0.001 : dXModifier;
+   dY *= dYModifier == 0 ? 0.001 : dYModifier;
+   collDX = dX;
+   collDY = dY;
 }
 
 void Instance::finishUpdate(double deltaTime){
    x += dX*deltaTime;
    y += dY*deltaTime;
+   dX /= dXModifier == 0 ? 0.001 : dXModifier;
+   dY /= dYModifier == 0 ? 0.001 : dYModifier;
    prevDX = dX;
    prevDY = dY;
    fUpdate(deltaTime);
-   arcList.clear();
 }
 
 void Instance::changeTexture(int tex, bool untint){
@@ -64,6 +100,23 @@ void Instance::changeTexture(int tex, bool untint){
 
 void Instance::hide(bool h){
    hidden = h;
+}
+
+void Instance::changeDVModifier(bool horizontal, double to, double timeMod, bool changeSpeed){
+   double* startDVM = horizontal? &startDXM : &startDYM;
+   double* targetDVM = horizontal? &targetDXM : &targetDYM;
+   double* dVChangeTime = horizontal? &dXChangeTime : &dYChangeTime;
+   double* dVModifier = horizontal? &dXModifier : &dYModifier;
+   double* dV = horizontal? &dX : &dY;
+   *startDVM = *dVModifier;
+   *targetDVM = to;
+   if (changeSpeed){
+      *dVChangeTime = 0;
+      *dVModifier = to;
+      *dV = (*dV)*(*startDVM)/to;
+      return;
+   }
+   *dVChangeTime = timeMod;
 }
 
 void Instance::draw(GLUtil* glu){
@@ -157,9 +210,13 @@ void Instance::collision(Instance* o, double deltaTime, bool cornerCheck){
          o->collided(this, deltaTime);
       }
    } else{
+      float rDX = o->stuckToWall ? collDX : dX;
+      float rDY = o->stuckToWall ? collDY : dY;
+      float oRDX = stuckToWall ? o->collDX : o->dX;
+      float oRDY = stuckToWall ? o->collDY : o->dY;
       // If it's not solid, we just need to check the bounds of the object.
-      if (y+dY*deltaTime < o->y+o->h+o->dY*deltaTime && y+h+dY*deltaTime > o->y+o->dY*deltaTime
-            && x+dX*deltaTime < o->x+o->w+o->dX*deltaTime && x+w+dX*deltaTime > o->x+o->dX*deltaTime){
+      if (y+rDY*deltaTime < o->y+o->h+oRDY*deltaTime && y+h+rDY*deltaTime > o->y+oRDY*deltaTime
+            && x+rDX*deltaTime < o->x+o->w+oRDX*deltaTime && x+w+rDX*deltaTime > o->x+oRDX*deltaTime){
          collided(o, deltaTime);
          o->collided(this, deltaTime);
       }
