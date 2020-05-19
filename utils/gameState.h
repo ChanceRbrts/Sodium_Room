@@ -39,6 +39,8 @@ class GameState{
         static bool getSaveB(std::string key);
         static int getSaveI(std::string key);
         static double getSaveD(std::string key);
+        static int makePermament(std::string key){ setPermanent(key, true); };
+        static int setPermanent(std::string key, bool toSave);
         static void setSave(std::string key, bool value){ setSaveB(key, value); };
         static void setSaveB(std::string, bool value);
         static void setSave(std::string key, int value){ setSaveI(key, value); };

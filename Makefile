@@ -46,7 +46,7 @@ glutils/glutil.a:glutils/glConstants.o glutils/$(GLB)/glControls.o glutils/$(GLB
 		glutils/$(GLB)/glDraw.o glutils/$(GLB)/glShaders.o glutils/$(GLB)/glUtil.o
 	ar -rcs $@ $^
 
-utils/util.a:utils/fontBook.o utils/texBook.o
+utils/util.a:utils/fontBook.o utils/texBook.o utils/gameState.o
 	ar -rcs $@ $^
 
 gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gameFiles/player.o\

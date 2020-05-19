@@ -12,14 +12,24 @@ bool GameState::hasValue(std::string key){
     return it != stateMap.end();
 }
 
+/** TODO: Implement */
 int GameState::loadFile(std::string fileName){
-
+    
 }
 
+/** TODO: Implement */
 int GameState::saveFile(std::string fileName){
 
 }
 
+int GameState::setPermanent(std::string key, bool toSave){
+    bool hasval = hasValue(key);
+    saveVar sV = hasval ? stateMap[key] : (saveVar){ toSave, SAV_ERR, 0.0 };
+    sV.save = toSave;
+    if (hasval) stateMap[key] = sV;
+    else stateMap.insert({key, sV});
+    return sV.type;
+}
 
 int GameState::getType(std::string key){
     if (!hasValue(key)) return SAV_ERR;
@@ -55,19 +65,25 @@ double GameState::getSaveD(std::string key){
 }
 
 void GameState::setSaveB(std::string key, bool b){
-    saveVar sV = (saveVar){ true, SAV_BOOL, b };
-    if (hasValue(key)) stateMap[key] = sV;
+    bool hasval = hasValue(key);
+    bool toSave = hasval ? stateMap[key].save : false;
+    saveVar sV = (saveVar){ toSave, SAV_BOOL, b };
+    if (hasval) stateMap[key] = sV;
     else stateMap.insert({key, sV});
 }
 
 void GameState::setSaveI(std::string key, int i){
-    saveVar sV = (saveVar){ true, SAV_INT, i };
-    if (hasValue(key)) stateMap[key] = sV;
+    bool hasval = hasValue(key);
+    bool toSave = hasval ? stateMap[key].save : false;
+    saveVar sV = (saveVar){ toSave, SAV_INT, i };
+    if (hasval) stateMap[key] = sV;
     else stateMap.insert({key, sV});
 }
 
 void GameState::setSaveD(std::string key, double d){
-    saveVar sV = (saveVar){ true, SAV_DOUBLE, d };
-    if (hasValue(key)) stateMap[key] = sV;
+    bool hasval = hasValue(key);
+    bool toSave = hasval ? stateMap[key].save : false;
+    saveVar sV = (saveVar){ toSave, SAV_DOUBLE, d };
+    if (hasval) stateMap[key] = sV;
     else stateMap.insert({key, sV});
 }

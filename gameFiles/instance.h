@@ -3,6 +3,7 @@
 
 #include "../glutils/glUtil.h"
 #include "../utils/texBook.h"
+#include "../utils/gameState.h"
 #include "arc.h"
 #include <math.h>
 
