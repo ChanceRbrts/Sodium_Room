@@ -57,15 +57,17 @@ class Instance{
       double w, h;
       int texID(){return textureID;};
       virtual bool canMessWithLevel(){return false;};
-      // See if the object needs to be deleted.
       double getR(){return r;};
       double getG(){return g;};
       double getB(){return b;};
+      double getCollDX(){return collDX;};
+      double getCollDY(){return collDY;};
       void ground(){onGround = true;};
       std::vector<ArcInfo> getArcList(){return arcList;};
       void hide(bool h);
       void changeDVModifier(bool horizontal, double to, double timeMod, bool changeSpeed);
       void changeTexture(int tex, bool untint);
+      // See if the object needs to be deleted.
       bool canRemove(){return remove;};
       bool isPlayer(){return playerRef;};
       // Check the whitelist/blacklist with the other index. 

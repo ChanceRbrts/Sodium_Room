@@ -14,17 +14,17 @@ bool GameState::hasValue(std::string key){
 
 /** TODO: Implement */
 int GameState::loadFile(std::string fileName){
-    
+    return 0;
 }
 
 /** TODO: Implement */
 int GameState::saveFile(std::string fileName){
-
+    return 0;
 }
 
 int GameState::setPermanent(std::string key, bool toSave){
     bool hasval = hasValue(key);
-    saveVar sV = hasval ? stateMap[key] : (saveVar){ toSave, SAV_ERR, 0.0 };
+    saveVar sV = hasval ? stateMap[key] : (saveVar){ toSave, SAV_ERR, {false} };
     sV.save = toSave;
     if (hasval) stateMap[key] = sV;
     else stateMap.insert({key, sV});
@@ -67,7 +67,7 @@ double GameState::getSaveD(std::string key){
 void GameState::setSaveB(std::string key, bool b){
     bool hasval = hasValue(key);
     bool toSave = hasval ? stateMap[key].save : false;
-    saveVar sV = (saveVar){ toSave, SAV_BOOL, b };
+    saveVar sV = (saveVar){ toSave, SAV_BOOL, {b} };
     if (hasval) stateMap[key] = sV;
     else stateMap.insert({key, sV});
 }
@@ -75,7 +75,9 @@ void GameState::setSaveB(std::string key, bool b){
 void GameState::setSaveI(std::string key, int i){
     bool hasval = hasValue(key);
     bool toSave = hasval ? stateMap[key].save : false;
-    saveVar sV = (saveVar){ toSave, SAV_INT, i };
+    // Note to self: Unions can only be initialized with their first value.
+    saveVar sV = (saveVar){ toSave, SAV_INT, {false} };
+    sV.data.i = i;
     if (hasval) stateMap[key] = sV;
     else stateMap.insert({key, sV});
 }
@@ -83,7 +85,9 @@ void GameState::setSaveI(std::string key, int i){
 void GameState::setSaveD(std::string key, double d){
     bool hasval = hasValue(key);
     bool toSave = hasval ? stateMap[key].save : false;
-    saveVar sV = (saveVar){ toSave, SAV_DOUBLE, d };
+    // Note to self: Unions can only be initialized with their first value.
+    saveVar sV = (saveVar){ toSave, SAV_DOUBLE, {false} };
+    sV.data.d = d;
     if (hasval) stateMap[key] = sV;
     else stateMap.insert({key, sV});
 }
