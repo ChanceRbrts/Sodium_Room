@@ -14,7 +14,7 @@ class Button : public Instance {
         virtual void changeState();
         void setUp(int dir);
         void unpushCheck(double deltaTime);
-        void changePress();
+        void changePress(double deltaTime);
     public:
         Button(double X, double Y, int direction, std::string pressedValue);
         Button(double X, double Y, int direction, std::string pressedValue, int maxPressed);

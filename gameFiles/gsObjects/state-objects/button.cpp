@@ -19,6 +19,7 @@ void Button::setUp(int dir){
     pressed = 0;
     pressDown = false;
     prevPress = false;
+    immovable = true;
     pressDir = dir;
     pEpsilon = 0.15;
     // Retrieve the game state from the button (if it exists)
@@ -64,20 +65,22 @@ void Button::unpushCheck(double deltaTime){
     }
 }
 
-void Button::changePress(){
+void Button::changePress(double deltaTime){
     double* toChange = pressDir%2 == 0 ? &h : &w;
-    double* adjustX = pressDir%2 == 0 ? &y : &x;
+    double* adjustX = pressDir%2 == 0 ? &dY : &dX;
     bool toAdjust = pressDir < 2;
     *toChange = pressDown ? 8 : 16;
     if (toAdjust){
-        *adjustX += pressDown ? 8 : -8;
+        *adjustX += (pressDown ? 8 : -8)/deltaTime;
     }
 }
 
 void Button::update(double deltaTime, bool* keyPressed, bool* keyHeld){
+    dX = 0;
+    dY = 0;
     unpushCheck(deltaTime);
     if (prevPress != pressDown){
-        changePress();
+        changePress(deltaTime);
     }
     prevPress = pressDown;
 }
@@ -87,8 +90,8 @@ void Button::collided(Instance* o, double deltaTime){
     // Based on which direction needs to be held to press the button...
     // Top = 0, Right = 1, Bottom = 2, Left = 3
     int sign = pressDir < 2 ? -1 : 1;
-    if (pressDir%2 == 0 && o->getCollDY()*sign >= 0) return;
-    if (pressDir%2 == 1 && o->getCollDX()*sign >= 0) return;
+    if (pressDir%2 == 0 && (o->getCollDY()*sign >= 0 || o->x >= x+w || o->x+o->w <= x)) return;
+    if (pressDir%2 == 1 && (o->getCollDX()*sign >= 0 || o->y >= y+h || o->y+o->h <= y)) return;
     if (multiPress){
         std::map<Instance *, double>::iterator obj = collWith.find(o);
         if (obj != collWith.end()){
