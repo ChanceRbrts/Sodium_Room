@@ -50,10 +50,11 @@ void TestJungleObjects::updateLevel(double deltaTime, Instance* player){
     sineWaveCounter += deltaTime;
     while (sineWaveCounter > 8){
         sineWaveCounter -= 8;
-        colorPicker = (colorPicker+1)%3;
+        // colorPicker = (colorPicker+1)%3;
     }
     double angle1 = M_PI/2-M_PI/2*cos(sineWaveCounter*M_PI/4);
     a1->setAngle(angle1-M_PI*1/16, angle1+M_PI*1/16);
+    colorPicker = GameState::getSaveI("b1");
     double red1 = colorPicker == 0 ? 1 : 0;
     double green1 = colorPicker == 1 ? 1 : 0;
     double blue1 = colorPicker == 2 ? 1 : 0;

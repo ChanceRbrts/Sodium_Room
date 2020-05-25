@@ -112,5 +112,5 @@ void Button::makePermanent(){
 
 void Button::changeState(){
     if (!multiPress) return;
-    pressed += 1 % maxPress;
+    pressed = (pressed+1) % maxPress;
 }
