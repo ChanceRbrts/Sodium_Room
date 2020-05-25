@@ -8,16 +8,19 @@ Button::Button(double X, double Y, int direction, std::string pressedValue) : In
 }
 
 Button::Button(double X, double Y, int direction, std::string pressedValue, int maxPressed) : Instance(X, Y, 2, 1){
-    multiPress = (maxPressed == 1);
+    multiPress = (maxPressed > 0);
     maxPress = maxPressed;
     pressedVal = pressedValue;
     setUp(direction);
 }
 
+
 void Button::setUp(int dir){
     pressed = 0;
     pressDown = false;
+    prevPress = false;
     pressDir = dir;
+    pEpsilon = 0.15;
     // Retrieve the game state from the button (if it exists)
     int value = GameState::getType(pressedVal);
     int pressVal = GameState::getType(pressedVal+"_pressed");
@@ -40,14 +43,16 @@ void Button::setUp(int dir){
     // y += dir%2 == 0 ? (dir == 0 ? 16 : 0) : 0;
 }
 
-void Button::update(double deltaTime, bool* keyPressed, bool* keyHeld){
+void Button::unpushCheck(double deltaTime){
     if (!multiPress) return;
-    std::map<Instance *, bool>::iterator insts = collWith.begin();
+    std::map<Instance *, double>::iterator insts = collWith.begin();
     std::vector<Instance *> toRemove;
     // Remove stuff that's no longer colliding with the object.
     for (; insts != collWith.end(); insts++){
-        if (!insts->second){
-            toRemove.push_back(insts->first);
+        Instance* o = insts->first;
+        collWith[o] -= deltaTime;
+        if (collWith[o] < 0){
+            toRemove.push_back(o);
         }
     }
     for (int i = 0; i < toRemove.size(); i++){
@@ -59,6 +64,24 @@ void Button::update(double deltaTime, bool* keyPressed, bool* keyHeld){
     }
 }
 
+void Button::changePress(){
+    double* toChange = pressDir%2 == 0 ? &h : &w;
+    double* adjustX = pressDir%2 == 0 ? &y : &x;
+    bool toAdjust = pressDir < 2;
+    *toChange = pressDown ? 8 : 16;
+    if (toAdjust){
+        *adjustX += pressDown ? 8 : -8;
+    }
+}
+
+void Button::update(double deltaTime, bool* keyPressed, bool* keyHeld){
+    unpushCheck(deltaTime);
+    if (prevPress != pressDown){
+        changePress();
+    }
+    prevPress = pressDown;
+}
+
 void Button::collided(Instance* o, double deltaTime){
     // Make sure the dX/dY lines up with the direction the button is.
     // Based on which direction needs to be held to press the button...
@@ -67,10 +90,10 @@ void Button::collided(Instance* o, double deltaTime){
     if (pressDir%2 == 0 && o->getCollDY()*sign >= 0) return;
     if (pressDir%2 == 1 && o->getCollDX()*sign >= 0) return;
     if (multiPress){
-        std::map<Instance *, bool>::iterator obj = collWith.find(o);
+        std::map<Instance *, double>::iterator obj = collWith.find(o);
         if (obj != collWith.end()){
-            collWith[o] = true;
-        } else collWith.insert({o, true});
+            collWith[o] = pEpsilon;
+        } else collWith.insert({o, pEpsilon});
     }
     // Make sure the button hasn't already been pressed.
     if ((pressed && !multiPress) || pressDown) return;

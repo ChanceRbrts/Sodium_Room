@@ -17,7 +17,7 @@ std::vector<Instance *> TestJungleObjects::makeLevel(std::vector<Instance*> prev
     previous.push_back(new Player(23, 4));
     previous.push_back(new HoneyPlatform(8, 14, 4, true));
     previous.push_back(new HoneyPlatform(19, 7, 5, false));
-    previous.push_back(new Button(13, 13, 0, "b1"));
+    previous.push_back(new Button(13, 13, 0, "b1", 3));
     createPointLights();
     for (int i = 0; i < pLight.size(); i++){
         previous.push_back(pLight[i]);

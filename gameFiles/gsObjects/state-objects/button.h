@@ -7,10 +7,14 @@ class Button : public Instance {
         int pressed, maxPress;
         bool multiPress, pressDown;
         int pressDir;
+        double pEpsilon;
         std::string pressedVal;
-        std::map<Instance*, bool> collWith;
+        std::map<Instance*, double> collWith;
+        bool prevPress;
         virtual void changeState();
         void setUp(int dir);
+        void unpushCheck(double deltaTime);
+        void changePress();
     public:
         Button(double X, double Y, int direction, std::string pressedValue);
         Button(double X, double Y, int direction, std::string pressedValue, int maxPressed);
