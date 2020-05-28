@@ -22,6 +22,7 @@ void Button::setUp(int dir){
     immovable = true;
     pressDir = dir;
     pEpsilon = 0.15;
+    name = "Button";
     // Retrieve the game state from the button (if it exists)
     int value = GameState::getType(pressedVal);
     int pressVal = GameState::getType(pressedVal+"_pressed");
