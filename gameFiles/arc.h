@@ -15,6 +15,7 @@ class Arc{
         ShaderBox* shade;
         double x, y, r;
         double rCol, gCol, bCol;
+        double alpha;
         double maxR;
         double d1, d2;
         bool connected;
@@ -30,10 +31,12 @@ class Arc{
         void setR(double R);
         double getD1(){return d1;};
         double getD2(){return d2;};
+        double getAlpha(){return alpha;}
         ShaderBox* getShaderBox(){ return shade; }
         void setAngle(double D1, double D2);
         void draw(GLUtil* glu);
         void setColor(double R, double G, double B);
+        void setAlpha(double A);
         ArcInfo getInfo(int id);
 };
 

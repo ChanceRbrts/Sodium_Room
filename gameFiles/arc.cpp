@@ -12,6 +12,7 @@ Arc::Arc(double X, double Y, double R, double D1, double D2, double RC, double G
     rCol = RC;
     gCol = GC;
     bCol = BC;
+    alpha = 1;
     monocolor = mono;
 }
 
@@ -49,6 +50,7 @@ void Arc::draw(GLUtil* glu){
     shade->addUniform("r", rCol);
     shade->addUniform("g", gCol);
     shade->addUniform("b", bCol);
+    shade->addUniform("a", alpha);
     shade->addUniform("xScale", 1);
     shade->addUniform("yScale", 1);
     shade->addUniform("camX", glu->draw->camX);
@@ -60,9 +62,13 @@ void Arc::draw(GLUtil* glu){
 }
 
 void Arc::setColor(double R, double G, double B){
-    rCol = (R <= 1 && R >= 0) ? R : rCol;
-    gCol = (G <= 1 && G >= 0) ? G : gCol;
-    bCol = (B <= 1 && B >= 0) ? B : bCol;
+    rCol = R >= 0 ? R : rCol;
+    gCol = G >= 0 ? G : gCol;
+    bCol = B >= 0 ? B : bCol;
+}
+
+void Arc::setAlpha(double A){
+    alpha = A > 1 ? 1 : (A < 0 ? 0 : A);
 }
 
 ArcInfo Arc::getInfo(int id){
