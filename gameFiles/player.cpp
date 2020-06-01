@@ -12,6 +12,7 @@ Player::Player(double X, double Y) : Instance(X, Y, 1, 1){
    locked = false;
    jumpFrame = false;
    jumpMultiplier = 1;
+   curAbility = nullptr;
 }
 
 void Player::update(double deltaTime, bool* keyPressed, bool* keyHeld){
@@ -66,6 +67,11 @@ void Player::fUpdate(double deltaTime){
    // If something stops you from jumping, stop checking for conditional height.
    if (prevdY < 0 && dY >= 0){
       jumpTime = 0;
+   }
+   // Make sure the special ability starts on the player.
+   if (curAbility != nullptr){
+      curAbility->x = x+w/2;
+      curAbility->y = y+h/2;
    }
 }
 

@@ -18,4 +18,6 @@
 #include "gsObjects/state-objects/button.h"
 #include "gsObjects/state-objects/keyLock.h"
 
+#include "playerObjects/lighter.h"
+
 #endif

@@ -16,6 +16,7 @@ class Player : public Instance{
       double prevdX;
       double jumpMultiplier;
       bool jumpFrame;
+      Instance* curAbility;
    public:
       Player(double X, double Y);
       bool isLocked();

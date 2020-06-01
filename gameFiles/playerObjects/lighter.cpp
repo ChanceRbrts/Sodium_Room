@@ -2,9 +2,15 @@
 
 Lighter::Lighter() : Instance(0, 0, 1, 1){
     maxFluid = 1;
-    fluid = 1;
+    fluid = maxFluid;
+    // Lighter Mechanic Variables
     cooldown = 0;
-    maxCooldown = 10;
+    maxCooldown = 5;
+    cooloffFactor = 0.5;
+    meltFactor = 1;
+    diminishFactor = 0.2;
+    incFactor = 0.2;
+    // Animation Variables
     prevAlpha = 1;
     newAlpha = 1;
     maxAnimTime = 1/15.0;
@@ -45,7 +51,42 @@ void Lighter::update(double deltaTime, bool* keyPressed, bool* keyHeld){
     if (keyPressed[BUTTON_B]){
         toggleLight();
     }
-    
     // Animation
     if (on) lightFlicker(deltaTime);
+    // The lighter can't last forever, so let's figure out a cooldown system.
+    if (on && cooldown < maxCooldown){
+        // Start a timer for when we need to dimish the lighter.
+        cooldown += deltaTime*cooloffFactor;
+        if (cooldown > maxCooldown) cooldown = maxCooldown;
+    } else if (on){
+        // Slowly diminish the lighter's radius.
+        fluid -= deltaTime*diminishFactor;
+        if (fluid < 0){
+            fluid = 0;
+            on = false;
+        }
+    } else if (cooldown > 0){
+        // Prioritize the cooldown to the lighter radius.
+        cooldown -= deltaTime*cooloffFactor;
+        if (cooldown <= 0) cooldown = 0;
+    } else if (fluid < maxFluid) {
+        // Once we have a stable lighter, increase the radius again.
+        fluid += deltaTime*incFactor;
+        if (fluid > maxFluid) fluid = maxFluid;
+    }
+    
+}
+
+void Lighter::fUpdate(double deltaTime){
+    double trueR = 64*fluid/maxFluid;
+    a->setR(trueR == 0 ? 0.1 : trueR);
+    double trueX = trueR == 0 ? x-999 : x;
+    a->setPosition(trueX, y);
+}
+
+void Lighter::collided(Instance* o, double deltaTime){
+    if (o->getName().compare("Rain") == 0){
+        // Rain makes things harder for a lighter.
+        fluid -= deltaTime*meltFactor;
+    }
 }
