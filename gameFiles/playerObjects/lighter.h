@@ -1,8 +1,8 @@
 #ifndef dwr_player_lighter
 #define dwr_player_lighter
-#include "../instance.h"
+#include "../player.h"
 
-class Lighter : public Instance {
+class Lighter : public PlayerAbility {
     private:
         double fluid, maxFluid;
         double cooldown, maxCooldown;
@@ -18,6 +18,7 @@ class Lighter : public Instance {
         Lighter();
         void update(double deltaTime, bool* keyPressed, bool* keyHeld);
         void fUpdate(double deltaTime);
+        void draw(GLDraw* gld, GLShaders* gls);
         Arc* getArc(){ return a; };
         void collided(Instance* o, double deltaTime);
 };

@@ -3,6 +3,14 @@
 
 #include "instance.h"
 
+class PlayerAbility : public Instance{
+   protected:
+      Arc* a;
+   public: 
+      PlayerAbility(double X, double Y, double W, double H);
+      Arc* getArc(){ return a; };
+};
+
 /**
  * The Player Character!
  */
@@ -16,7 +24,7 @@ class Player : public Instance{
       double prevdX;
       double jumpMultiplier;
       bool jumpFrame;
-      Instance* curAbility;
+      PlayerAbility* curAbility;
    public:
       Player(double X, double Y);
       bool isLocked();
@@ -36,6 +44,8 @@ class Player : public Instance{
       void fUpdate(double deltaTime);
       bool isJumping();
       void changeJumpMultiplier(double j);
+      PlayerAbility* getAbility();
+      void giveAbility(PlayerAbility* plAb);
 };
 
 #endif

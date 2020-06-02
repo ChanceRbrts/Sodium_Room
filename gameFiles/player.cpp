@@ -59,6 +59,9 @@ void Player::update(double deltaTime, bool* keyPressed, bool* keyHeld){
    // Keep dX and dY before collision checks here.
    prevdX = dX;
    prevdY = dY;
+   if (curAbility != nullptr){
+      curAbility->update(deltaTime, keyPressed, keyHeld, this);
+   }
    // printf("%f, %f\n", dXModifier, dYModifier);
 }
 
@@ -72,6 +75,9 @@ void Player::fUpdate(double deltaTime){
    if (curAbility != nullptr){
       curAbility->x = x+w/2;
       curAbility->y = y+h/2;
+   }
+   if (curAbility != nullptr){
+      curAbility->finishUpdate(deltaTime);
    }
 }
 
@@ -90,4 +96,17 @@ bool Player::isJumping(){
 void Player::changeJumpMultiplier(double j){
    if (j <= 0) return;
    jumpMultiplier = j;
+}
+
+void Player::giveAbility(PlayerAbility* plAb){
+   curAbility = plAb;
+}
+
+
+PlayerAbility* Player::getAbility(){
+   return curAbility;
+}
+
+PlayerAbility::PlayerAbility(double X, double Y, double W, double H) : Instance(X, Y, W, H){
+   a = nullptr;
 }

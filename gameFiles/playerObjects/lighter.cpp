@@ -1,6 +1,6 @@
 #include "lighter.h"
 
-Lighter::Lighter() : Instance(0, 0, 1, 1){
+Lighter::Lighter() : PlayerAbility(0, 0, 1, 1){
     maxFluid = 1;
     fluid = maxFluid;
     // Lighter Mechanic Variables
@@ -89,4 +89,9 @@ void Lighter::collided(Instance* o, double deltaTime){
         // Rain makes things harder for a lighter.
         fluid -= deltaTime*meltFactor;
     }
+}
+
+void Lighter::draw(GLDraw* gld, GLShaders* gls){
+    // Do some drawing code here at some point.
+    // For now, do nothing.
 }
