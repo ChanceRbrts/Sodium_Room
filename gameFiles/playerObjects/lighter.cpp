@@ -15,7 +15,7 @@ Lighter::Lighter() : PlayerAbility(0, 0, 1, 1){
     newAlpha = 1;
     maxAnimTime = 1/15.0;
     animTime = maxAnimTime;
-    a = new Arc(0, 0, 1, -M_PI, M_PI, 1, 1, 1, true);
+    a = new Arc(0, 0, 4, -M_PI, M_PI, 1, 1, 1, false);
     on = false;
     solid = false;
     name = "Lighter";
@@ -74,13 +74,12 @@ void Lighter::update(double deltaTime, bool* keyPressed, bool* keyHeld){
         fluid += deltaTime*incFactor;
         if (fluid > maxFluid) fluid = maxFluid;
     }
-    
 }
 
 void Lighter::fUpdate(double deltaTime){
-    double trueR = 64*fluid/maxFluid;
+    double trueR = 16+48*(fluid/maxFluid);
     a->setR(trueR == 0 ? 0.1 : trueR);
-    double trueX = trueR == 0 ? x-999 : x;
+    double trueX = (trueR == 0 || !on) ? x-999 : x;
     a->setPosition(trueX, y);
 }
 

@@ -10,7 +10,6 @@ class Lighter : public PlayerAbility {
         double prevAlpha, newAlpha;
         double animTime, maxAnimTime;
         double cooloffFactor, meltFactor, diminishFactor, incFactor;
-        Arc* a;
         bool on;
         void toggleLight();
         void lightFlicker(double deltaTime);
@@ -19,7 +18,6 @@ class Lighter : public PlayerAbility {
         void update(double deltaTime, bool* keyPressed, bool* keyHeld);
         void fUpdate(double deltaTime);
         void draw(GLDraw* gld, GLShaders* gls);
-        Arc* getArc(){ return a; };
         void collided(Instance* o, double deltaTime);
 };
 

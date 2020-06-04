@@ -18,6 +18,8 @@ void GameLogic::loadLevel(Level* l){
    pointDouble playerLoc = l->createLevel();
    if (player == nullptr){
       player = new Player(playerLoc.x/32, playerLoc.y/32);
+      // TODO: Find a better place for this.
+      ((Player *)player)->giveAbility(new Lighter());
    }
    LevelList* lev = new LevelList();
    lev->lev = l;

@@ -104,6 +104,7 @@ void Player::giveAbility(PlayerAbility* plAb){
 
 
 PlayerAbility* Player::getAbility(){
+
    return curAbility;
 }
 
