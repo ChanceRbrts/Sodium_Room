@@ -63,7 +63,7 @@ void Lighter::update(double deltaTime, bool* keyPressed, bool* keyHeld){
     // The lighter can't last forever, so let's figure out a cooldown system.
     if (on && cooldown < maxCooldown){
         // Start a timer for when we need to dimish the lighter.
-        cooldown += deltaTime*cooloffFactor;
+        cooldown += deltaTime;
         if (cooldown > maxCooldown) cooldown = maxCooldown;
     } else if (on){
         // Slowly diminish the lighter's radius.
@@ -72,14 +72,14 @@ void Lighter::update(double deltaTime, bool* keyPressed, bool* keyHeld){
             fluid = 0;
             on = false;
         }
-    } else if (cooldown > 0){
-        // Prioritize the cooldown to the lighter radius.
-        cooldown -= deltaTime*cooloffFactor;
-        if (cooldown <= 0) cooldown = 0;
-    } else if (fluid < maxFluid) {
-        // Once we have a stable lighter, increase the radius again.
+    } else if (fluid < maxFluid && cooldown < maxCooldown) {
+        // Prioritize the lighter radius to the cooldown.
         fluid += deltaTime*incFactor;
         if (fluid > maxFluid) fluid = maxFluid;
+    } else if (cooldown > 0){
+        // Once we have a large lighter, increase the cooldown again.
+        cooldown -= deltaTime*cooloffFactor;
+        if (cooldown <= 0) cooldown = 0;
     }
 }
 
