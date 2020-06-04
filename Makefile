@@ -84,6 +84,7 @@ clean:
 	cd utils && rm -f *.o *.a
 	cd glutils/$(GLB) && rm -f *.o *.a
 	cd gameFiles && rm -f *.o *.a
+	cd gameFiles/playerObjects && rm -f *.o *.a
 	cd gameFiles/gsObjects && rm -f *.o *.a
 	cd gameFiles/gsObjects/area-jungle && rm -f *.o *.a
 	cd gameFiles/gsObjects/state-objects && rm -f *.o *.a

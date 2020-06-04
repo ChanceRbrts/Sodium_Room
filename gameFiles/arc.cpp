@@ -14,6 +14,7 @@ Arc::Arc(double X, double Y, double R, double D1, double D2, double RC, double G
     bCol = BC;
     alpha = 1;
     monocolor = mono;
+    defBehavior = false;
 }
 
 Arc::~Arc(){
@@ -71,6 +72,10 @@ void Arc::setAlpha(double A){
     alpha = A > 1 ? 1 : (A < 0 ? 0 : A);
 }
 
+void Arc::makeDefault(){
+    defBehavior = true;
+}
+
 ArcInfo Arc::getInfo(int id){
-    return (ArcInfo){id, rCol, gCol, bCol, monocolor};
+    return (ArcInfo){id, rCol, gCol, bCol, monocolor, defBehavior};
 }

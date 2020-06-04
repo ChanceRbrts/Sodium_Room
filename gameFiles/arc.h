@@ -8,6 +8,7 @@ struct ArcInfo{
     int id;
     double r, g, b;
     bool monocolor;
+    bool defBehavior;
 };
 
 class Arc{
@@ -20,6 +21,7 @@ class Arc{
         double d1, d2;
         bool connected;
         bool monocolor;
+        bool defBehavior;
     public:
         Arc(double X, double Y, double R, double D1, double D2, double RC, double GC, double BC, bool mono);
         ~Arc();
@@ -37,6 +39,7 @@ class Arc{
         void draw(GLUtil* glu);
         void setColor(double R, double G, double B);
         void setAlpha(double A);
+        void makeDefault();
         ArcInfo getInfo(int id);
 };
 

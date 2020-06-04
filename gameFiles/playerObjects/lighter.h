@@ -15,6 +15,7 @@ class Lighter : public PlayerAbility {
         void lightFlicker(double deltaTime);
     public:
         Lighter();
+        ~Lighter();
         void update(double deltaTime, bool* keyPressed, bool* keyHeld);
         void fUpdate(double deltaTime);
         void draw(GLDraw* gld, GLShaders* gls);

@@ -16,9 +16,14 @@ Lighter::Lighter() : PlayerAbility(0, 0, 1, 1){
     maxAnimTime = 1/15.0;
     animTime = maxAnimTime;
     a = new Arc(0, 0, 4, -M_PI, M_PI, 1, 1, 1, false);
+    a->makeDefault();
     on = false;
     solid = false;
     name = "Lighter";
+}
+
+Lighter::~Lighter(){
+    delete a;
 }
 
 void Lighter::toggleLight(){
@@ -43,6 +48,8 @@ void Lighter::lightFlicker(double deltaTime){
         // This goes from prevAlpha to newAlpha; sin goes from 1 to -1.
         double nAlpha = avg-sinSize*sin(M_PI*animTime/maxAnimTime);
         a->setAlpha(nAlpha);
+        double newColor = 1.0+0.25*((newAlpha-0.25)/0.75);
+        a->setColor(newColor, newColor, newColor);
     }
 }
 
@@ -84,7 +91,7 @@ void Lighter::fUpdate(double deltaTime){
 }
 
 void Lighter::collided(Instance* o, double deltaTime){
-    if (o->getName().compare("Rain") == 0){
+    if (o->getName().compare("Rain") == 0 && on){
         // Rain makes things harder for a lighter.
         fluid -= deltaTime*meltFactor;
     }

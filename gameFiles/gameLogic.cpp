@@ -61,9 +61,14 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    LevelList* lList = loadedLevels;
    // collObjs is used for collision checking.
    std::vector<Instance *> collObjs;
+   Arc* pAr = nullptr;
    if (player != nullptr){ 
       player->upd(deltaTime, keyPressed, keyHeld, player);
       collObjs.push_back(player);
+      if (player->getName().compare("Player") == 0){
+         PlayerAbility* pA = ((Player *)player)->getAbility();
+         if (pA != nullptr) pAr = pA->getArc();
+      }
    }
    int levID = 0;
    while (lList != nullptr){
@@ -78,6 +83,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          in->i->upd(deltaTime, keyPressed, keyHeld, player);
          Instances* next = in->next;
          // Levels have arcs that may collide with objects in there.
+         if (pAr != nullptr) in->i->arcCol(pAr, deltaTime, -1);
          for (int a = 0; a < l->arcs.size(); a++){
             in->i->arcCol(l->arcs[a], deltaTime, a+levID);
          }
