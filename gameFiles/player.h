@@ -24,6 +24,7 @@ class Player : public Instance{
       double prevdX;
       double jumpMultiplier;
       bool jumpFrame;
+      bool facingRight;
       PlayerAbility* curAbility;
    public:
       Player(double X, double Y);
@@ -46,6 +47,7 @@ class Player : public Instance{
       void changeJumpMultiplier(double j);
       PlayerAbility* getAbility();
       void giveAbility(PlayerAbility* plAb);
+      bool isFacingRight();
 };
 
 #endif

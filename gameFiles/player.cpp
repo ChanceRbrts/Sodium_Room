@@ -13,6 +13,7 @@ Player::Player(double X, double Y) : Instance(X, Y, 1, 1){
    jumpFrame = false;
    jumpMultiplier = 1;
    curAbility = nullptr;
+   facingRight = true;
 }
 
 void Player::update(double deltaTime, bool* keyPressed, bool* keyHeld){
@@ -28,9 +29,11 @@ void Player::update(double deltaTime, bool* keyPressed, bool* keyHeld){
    jumpTime = jumpTime>0?jumpTime-deltaTime:0;
    // Moving Horizontally
    if (keyHeld[BUTTON_LEFT] && !keyHeld[BUTTON_RIGHT]){
+      if (dX < 0) facingRight = false;
       dX -= dX < 0 ? 384*deltaTime : 768*deltaTime;
       if (dX < -384) dX = -384;
    } else if (keyHeld[BUTTON_RIGHT] && !keyHeld[BUTTON_LEFT]){
+      if (dX > 0) facingRight = true;
       dX += dX > 0 ? 384*deltaTime : 768*deltaTime;
       if (dX > 384) dX = 384;
    } else{
@@ -91,6 +94,10 @@ bool Player::isLocked(){
 
 bool Player::isJumping(){
    return jumpFrame;
+}
+
+bool Player::isFacingRight(){
+   return facingRight;
 }
 
 void Player::changeJumpMultiplier(double j){

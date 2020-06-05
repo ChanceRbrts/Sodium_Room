@@ -19,5 +19,6 @@
 #include "gsObjects/state-objects/keyLock.h"
 
 #include "playerObjects/lighter.h"
+#include "playerObjects/flashlight.h"
 
 #endif
