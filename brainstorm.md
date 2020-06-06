@@ -1,3 +1,7 @@
+# What is this?
+
+This was a set of the README that I made that was just brainstorming different ideas for the game before I had a clear grasp on the mechanics. This is a kind of "things that I can do with shaders" that may appear in the late-game.
+
 # Shader Stuff
  
 ## Rain (Done)
@@ -15,7 +19,7 @@ Parts of the level that stretch and depress from the view of the player. If you'
 ## Walls that close and open up to something different (Not Started)
 A different version of the hidden chambers, perhaps?
 
-## Rooms that act different when illuminated in different light (Not Started) (MAIN MECHANIC: Next on TODO)
+## Rooms that act different when illuminated in different light (MAIN MECHANIC)
 This could be an interesting set of rooms to explore.
 
 ## Reset Rooms (Not Started)

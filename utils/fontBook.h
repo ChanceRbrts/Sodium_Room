@@ -11,11 +11,17 @@
  */
 class FontBook{
    private:
+      /// The map of fonts that are currently in the game
       static std::map<std::string, std::map<char, pointInt>> fontBook;
+      /// Used to generate textures from font names
       static GLTextureGen* glt;
    public:
-      // Something to just create an empty map.
+      /// Something to just create an empty map.
       static std::map<std::string, std::map<char, pointInt>> emptyMap();
+      /**
+       * Something to initialize the fontbook.
+       * @param glu The GLUtil class to steal the GLTextureGen from.
+       */
       static void initialize(GLUtil* glu);
       /**
        * Puts a font into the font book.

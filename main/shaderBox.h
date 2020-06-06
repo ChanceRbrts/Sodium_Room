@@ -19,13 +19,21 @@
  */
 class ShaderBox{
    protected:
+      /// Whether or not we need to remove the shaderbox.
       bool remove;
+      /// Positional Variables
       double x, y, w, h;
+      /// If we are drawing a view on some sort of offset, specify that here.
       double xOffset, yOffset;
+      /// IDs for the framebuffer, the texture, and the renderbuffer for the frame buffer.
       unsigned int frameID, texID, renID;
+      /// The uniforms that we use for the shader used.
       std::map<std::string, float> uniforms;
+      /// The IDs of the framebuffer.
       std::string fullID, solidID, drawID;
+      /// Whether or not to follow the player.
       bool follow;
+      /// The GLUtil to use to mess with the Shaderbox
       GLUtil* glu;
    public:
       /**
@@ -40,21 +48,21 @@ class ShaderBox{
        * @param GLU The GLUnit that we bind to this frame buffer.
        */
       ShaderBox(double X, double Y, double W, double H, std::string vertShader, std::string fragShader, GLUtil* GLU);
-      // Deconstructor.
+      /// Deconstructor.
       virtual ~ShaderBox();
-      // Tells the engine to draw to this frame buffer.
+      /// Tells the engine to draw to this frame buffer.
       void drawOnBox();
-      // Flags the shaderbox as needing to be removed.
+      /// Flags the shaderbox as needing to be removed.
       void removeMe();
-      // Show whether or not we can remove this object.
+      /// Show whether or not we can remove this object.
       bool canRemove(){ return remove; }
-      // Tells the engine to stop drawing to this frame buffer.
+      /// Tells the engine to stop drawing to this frame buffer.
       void drawOutBox();
-      // Draw the frame buffer to the screen.
+      /// Draw the frame buffer to the screen.
       void draw();
-      // Whether or not this shaderbox follows the player.
+      /// Whether or not this shaderbox follows the player.
       bool followPlayer(){ return follow; }
-      // Draw a red sqaure where the frame buffer would be. (Used for debugging)
+      /// Draw a red sqaure where the frame buffer would be. (Used for debugging)
       void drawBoundary();
       bool canDraw();
       /**

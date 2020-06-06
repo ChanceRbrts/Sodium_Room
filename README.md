@@ -43,7 +43,7 @@ Rooftops - On the top of the opening; Unsure what effect to put here yet...
 
 The Tower - A tower that constructs itself up as you go near it. Could introduce doors that are drawn in? Could be part of the garden? Teaches you to look for hidden blocks.
 
-Void - An area that's only available through a few weird means. Seems to appear whenever it wants. What will probably be the weirdest area.
+Space/Null/Void - An area that's only available through a few weird means. Seems to appear whenever it wants. What will probably be the weirdest area.
 
 # Build Instructions
 
