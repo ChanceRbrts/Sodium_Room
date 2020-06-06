@@ -20,6 +20,7 @@ void GameLogic::loadLevel(Level* l){
       player = new Player(playerLoc.x/32, playerLoc.y/32);
       // TODO: Find a better place for this.
       ((Player *)player)->giveAbility(new Lighter());
+      // ((Player *)player)->giveAbility(new Flashlight());
    }
    LevelList* lev = new LevelList();
    lev->lev = l;
