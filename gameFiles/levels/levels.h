@@ -10,9 +10,14 @@
 #include "testLevels/testHorizontalEnclosed.h"
 #include "testLevels/testJungleObjects.h"
 
+/**
+ * A simple list of all the levels.
+ */
 class Levels{
    public:
+      /// The list of levels
       std::vector<Level *> lev;
+      /// The constructor of the levels.
       Levels();
 };
 

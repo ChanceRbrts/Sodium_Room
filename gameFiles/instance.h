@@ -15,63 +15,119 @@ class Instance{
    protected:
       // The list of textures for the class. Probably will be used for animations?
       //std::vector<int> textures;
-      // Whether or not we have a texture to use.
+      /// Whether or not we have a texture to use.
       bool hasTexture;
-      // The current textureID that we want to use.
+      /// The current textureID that we want to use.
       int textureID;
-      // Terminal Velocity
+      /// Terminal Velocity
       double termY;
-      /*
+      /**
        * The color of the instance when drawn as a rectangle.
        * (If you want to use a texture, make sure r, g, and b are all 1.)
        */
       double r, g, b;
+      /// Multipliers for dX and dY
       double dXModifier, dYModifier;
+      /// Used for slowly changing the dX multiplier
       double startDXM, targetDXM;
+      /// Used for slowly changing the dY multiplier
       double startDYM, targetDYM;
+      /// The amount of time to change the dX or dY multiplier
       double dXChangeTime, dYChangeTime;
-      bool gravity, onGround, immovable, solid;
-      // Should always be false except for the player.
+      /// Whether the instance is affected by gravity.
+      bool gravity;
+      /// Whether the instance is standing on ground.
+      bool onGround;
+      /// Whether or not the instance can be moved via collisions.
+      bool immovable;
+      /// Whether or not the instance typically uses solid collisions.
+      bool solid;
+      /// Should always be false except for the player.
       bool playerRef;
+      /// Whether or not the instance wants to be deleted.
       bool remove;
+      /// Whether or not the instance is visible to the screen.
       bool hidden;
+      /// Whether or not the instance has the same hitbox as a wall.
       bool stuckToWall;
+      /// The dX and dY that the player had before collision checks.
       double collDX, collDY;
       // The boolean to say whether or not you need the GLUtil class and not just GLDraw and GLShaders for drawing.
       bool needExtra;
-      // Some objects need to do solid collisions with only some objects.
-      // If solid is true, this is a blacklist; if solid is false, this is a whitelist for solid object collisions.
+      /**
+       * Some objects need to do solid collisions with only some objects.
+       * If solid is true, this is a blacklist; if solid is false, this is a whitelist for solid object collisions.
+       */
       std::vector<std::string> colList;
+      /// A list of arcs that the instance collided with.
       std::vector<ArcInfo> arcList;
-      // Useful for identifying different objects
+      /// Useful for identifying different objects.
       std::string name;
-      // Simple gravity calculations.
+      /**
+       * Simple gravity calculations
+       * @param deltaTime The time in between this frame and the previous frame.
+       */
       void doGravity(double deltaTime);
    public:
-      // Instances that were created by this one. (That work globally.)
+      /// Instances that were created by this one. (To be added to the game logic.)
       std::vector<Instance *> toAdd;
+      /// The position of the instance.
       double x, y;
-      // Velocity (Pixels per seconds)
+      /// Velocity (Pixels per seconds)
       double dX, dY;
+      /// The previous velocity (Pixels per seconds)
       double prevDX, prevDY;
+      /// The size of the instance.
       double w, h;
+      /// @return The ID of the texture to use.
       int texID(){return textureID;};
+      /// @return Whether or not the instance can mess with the level.
       virtual bool canMessWithLevel(){return false;};
+      /// @return The red tint of the instance.
       double getR(){return r;};
+      /// @return The green tint of the instance.
       double getG(){return g;};
+      /// @return The blue tint of the instance.
       double getB(){return b;};
+      /// @return The x velocity before collision checks.
       double getCollDX(){return collDX;};
+      /// @return The y velocity before collision checks.
       double getCollDY(){return collDY;};
+      /// Make the instance think it's on the ground.
       void ground(){onGround = true;};
+      /// @return A list of arc representations that the instance is currently colliding with.
       std::vector<ArcInfo> getArcList(){return arcList;};
+      /**
+       * Decide whether or not the instance is visible.
+       * @param h Is the instance invisible?
+       */
       void hide(bool h);
+      /**
+       * Linearly change the multiplier for velocity.
+       * @param horizontal Whether or not the multiplier change is for dX and not dY
+       * @param to What to change the velocity multiplier to.
+       * @param timeMod The amount of time to take to change the multiplier to.
+       * @param changeSpeed Whether or not to adjust the velocity to the new multiplier (Makes timeMod 0)
+       */
       void changeDVModifier(bool horizontal, double to, double timeMod, bool changeSpeed);
+      /**
+       * Change the current texture
+       * @param tex The texture ID to change the texture into.
+       * @param untint Whether or not to remove the tint of the instance.
+       */
       void changeTexture(int tex, bool untint);
-      // See if the object needs to be deleted.
+      /// @return Whether or not the instance wants to be deleted.
       bool canRemove(){return remove;};
+      /// @return Whether or not the instance is a player.
       bool isPlayer(){return playerRef;};
       // Check the whitelist/blacklist with the other index. 
+      /**
+       * Check whether or not the instance is solid in relation to another instance.
+       * @param other The name of the other instance to check with.
+       * @return Whether or not the instance is solid.
+       */
       bool isSolid(std::string other);
+      /// @return The name of the instance.
       std::string getName(){return name;};
       /**
        * Constructor for the instance.
@@ -82,6 +138,7 @@ class Instance{
        * @param H The height of the instance.
        */
       Instance(double X, double Y, double W, double H);
+      /// The Deconstructor for the instance.
       virtual ~Instance(){};
       /**
        * Updates the object. This is the function that you want to call.
@@ -168,11 +225,14 @@ class Instance{
 };
 
 /**
- * A double linked list for Instances.
+ * A doubly linked list for Instances.
  */
 struct Instances{
+   /// @param i The current instance.
    Instance* i;
+   /// @param prev The instance before this one on the linked list.
    Instances* prev;
+   /// @param next The instance after this one on the linked list.
    Instances* next;
 };
 
