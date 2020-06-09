@@ -1,6 +1,6 @@
 # What is this?
 
-This was a set of the README that I made that was just brainstorming different ideas for the game before I had a clear grasp on the mechanics. This is a kind of "things that I can do with shaders" that may appear in the late-game.
+This was a set of the README that I made that was just brainstorming different ideas for the game before I had a clear grasp on the mechanics. This is a kind of "things that I can do with shaders" that I might use if I decide it works with the game.
 
 # Shader Stuff
  

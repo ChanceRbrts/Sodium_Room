@@ -1,12 +1,8 @@
 # Sodium Room
 
-This is a game where there are different "lights" in the room that change the properties of the objects around it.
+This is a game where there are different "lights" in the room that change the properties of the objects around it. For example, rain could have things melt if they stand still in this game; however, shining a red light shining on rain could have the rain melt things instantly.
 
-# Main Game Idea
-
-This is definitely going to be some sort of Platformer (maybe Metroidvania?).
-I want this project to be two things.
-
+## Early Ideas
 * I want this to be a project where I'm experimenting with shaders. As such, I want stuff to be somewhat shader heavy. I also want the ideas to be weird, due to the second point.
 
 * I want the game to be very dream like. I want this game to introduce dream logic as time progresses, and then use or subvert that dream logic to mess with the player.
@@ -18,24 +14,30 @@ I want this project to be two things.
  
 ## Gameplay Loop
 Each area has a thing at the end which you need, but which alters the other areas. For example, the top of the tower could have a switch that swaps some kind of hidden blocks or something.
-Taking a page from Celeste and teaching you mechanics as you go through which allows you to explore other areas.
+It would also be cool to learn from games like Celeste and slowly teach mechanics as the game progresses.
 
-The main mechanic will be the color lights that are going around; These lights will highlight different areas and change properties of different objects.
+The main mechanic will be the color lights that are going around; These lights will highlight different areas and change properties of different objects. This includes the player eventually picking up items that can affect lighting.
+
 ???
 
-### Possible Mechanics
+### Mechanics
+
+Lighter - This mechanic emits a "normalizing" light. This light reveals what everything actually looks like and restores everything back to its default behavior, but it runs out after a few seconds.
+
+Flashlight - This mechanic emits a light of a color specified by batteries that you will (eventually be able to) pick up 
+
+#### Possible Mechanics
 Rope - Allows you to climb to out of reach areas assuming your throw range is good. Also allows you to swing on the rope. (Maybe have it so you can jump and throw the rope?)
 
 
 ## End Goal
-Find whatever you can to determine where you are when you're asleep? (If going with the Avatar-ish Unethical Turing Test idea)
-See what's hiding in the middle of the void?
+TBD
 
 # Possible Areas
 ## Garden Demo (WIP)
 Opening - A cityscape that starts out gloomy and then turns to rain as you go into the main door of the house. As you go in the house, the door erases itself? (Meant only as a tutorial, as well as a way to unlock a New Game+)
 
-Rainforest/Garden - A garden where there's a ton of rain and honey around it. Possible enemies could include growing plants, or something like that. At the end of the garden will be a flashlight. 
+Rainforest/Garden - A garden where there's a ton of rain and honey around it. Possible enemies could include growing plants, or some sort of wildlife. At the end of the garden will be a flashlight, which is explained up above. 
 
 ## Other Possible Areas
 
