@@ -12,7 +12,9 @@
  */
 class Character : public Instance{
    private:
+      /// The texture that corresponds to that character.
       int tex;
+      /// TODO: The integer corresponding to how the character should move.
       int mode;
    public:
       /**
@@ -51,34 +53,52 @@ class Character : public Instance{
  */
 class TextBox : public Instance{
    private:
+      /// The fonts being used in the text box.
       std::vector<std::string> loadedFonts;
+      /// The lines that are being rendered through the text box.
       std::vector<std::string> lines;
+      /// The current position on the line when creating text.
       int currentLinePos;
+      /// The last character visible.
       int currentCharVisible;
+      /// The current line being rendered.
       int line;
+      /// The font currently being used.
       std::string font;
+      /// The line that will eventually be rendered.
       std::string finishedLine;
-      std::string currentFont;
+      /// The list of characters that's currently being rendered.
       std::vector<Character *> currentLine;
+      /// How long until the next character render.
       double timer;
+      /// The max amount of time in animation for character rendering.
       double maxTimer;
+      /// Where to start writign text.
       double startXOffset;
+      /**
+       * A function to analyze commands used.
+       * @param comm The command to analyze
+       */
       void analyzeCommands(std::string comm);
       /**
        * Splits apart special commands.
        * @param command The command to run.
        */
       void texBoxCommands(std::string command);
+      /// A function to create new character to eventually render.
       void createCharacters();
    public:
       /**
+       * TODO: Constructor for the text box.
        * @param filename The file to read lines from on the text box.
        */
       TextBox(std::string filename);
       /**
+       * Constructor for the text box.
        * @param lines The lines to read on the text box.
        */
       TextBox(std::vector<std::string> textLines);
+      /// Deconstructor for the textbox.
       ~TextBox();
       /**
        * Updates the text box to display a message.

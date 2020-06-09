@@ -81,6 +81,11 @@ void Rain::collided(Instance *o, double deltaTime){
             }
         }
         if (!keepGoing) continue;
+        if (aI.defBehavior){
+            fall = (rainMode == 1);
+            up = (rainMode == 2);
+            break;
+        }
         if (aI.r > 0.5 && aI.b < 0.5){ // Red Rain
             fall = true;
         } else if (aI.r < 0.5 && aI.b > 0.5){ // Blue Rain

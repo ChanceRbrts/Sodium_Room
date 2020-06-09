@@ -17,7 +17,7 @@ void PointLight::draw(GLDraw* gld, GLShaders* gls){
 }
 
 void PointLight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
-    updatePos(deltaTime);
+    updatePos(deltaTime, keyPressed, keyHeld, player);
     updateArc(deltaTime);
 }
 

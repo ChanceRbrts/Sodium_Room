@@ -42,6 +42,12 @@ void HoneyPlatform::update(double deltaTime, bool* keyPressed, bool* keyHeld){
         goalColorR += arcList[i].r;
         goalColorG += arcList[i].g;
         goalColorB += arcList[i].b;
+        if (arcList[i].defBehavior){
+            goalColorR = 240/255.0*arcList.size();
+            goalColorG = 190/255.0*arcList.size();
+            goalColorB = 30/255.0*arcList.size();
+            break;
+        }
     }
     if (arcList.size() > 0){
         goalColorR /= arcList.size();

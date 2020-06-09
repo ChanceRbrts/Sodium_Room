@@ -14,6 +14,7 @@ uniform float yScale;
 uniform float r;
 uniform float g;
 uniform float b;
+uniform float a;
 uniform bool mono;
 uniform sampler2D tex;
 
@@ -36,6 +37,7 @@ void main(void){
     alpha -= (d1-d)/(d1-d1X)*float(d < d1);
     alpha -= (d-D2)/(d2X-D2)*float(d > D2);
     alpha -= (fullDist-rad)/(rad*.1)*float(fullDist > rad);
+    alpha *= a;
     vec4 sCol = gl_Color*texture2D(tex, gl_TexCoord[0].xy);
     float weight = r+g+b;
     float trueCol = sCol.r*r/weight+sCol.g*g/weight+sCol.b*b/weight;

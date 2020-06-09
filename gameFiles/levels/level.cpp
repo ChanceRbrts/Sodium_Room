@@ -183,6 +183,24 @@ void Level::draw(GLUtil* glu, Instance* player){
       shade->drawOutBox();
       shade->draw();
    }
+   if (player == nullptr) return;
+   PlayerAbility* pA = ((Player*)player)->getAbility();
+   if (pA == nullptr) return;
+   // If the player is in the bounds of the level, draw the player's ability.
+   if (player->x+player->w >= xOff && player->y+player->h >= yOff && player->x <= xOff+w && player->y <= yOff+h){
+      pA->draw(glu);
+      Arc* a = pA->getArc();
+      if (a == nullptr) return;
+      a->draw(glu);
+      ShaderBox* s = a->getShaderBox();
+      if (s->canDraw()){
+         s->drawOnBox();
+         drawObjects(glu, player, 0);
+         s->drawOutBox();
+         s->draw();
+      }
+   }
+   
 }
 
 void Level::updateLevel(double deltaTime, Instance* player){

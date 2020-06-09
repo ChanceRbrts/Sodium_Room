@@ -46,14 +46,15 @@ glutils/glutil.a:glutils/glConstants.o glutils/$(GLB)/glControls.o glutils/$(GLB
 		glutils/$(GLB)/glDraw.o glutils/$(GLB)/glShaders.o glutils/$(GLB)/glUtil.o
 	ar -rcs $@ $^
 
-utils/util.a:utils/fontBook.o utils/texBook.o
+utils/util.a:utils/fontBook.o utils/texBook.o utils/gameState.o
 	ar -rcs $@ $^
 
 gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gameFiles/player.o\
 		main/shaderBox.o gameFiles/shaderboxes/longShaderbox.o gameFiles/textBox.o\
 		gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o\
-		gameFiles/gsObjects/area-jungle/honeyPlatform.o\
-		gameFiles/gsObjects/area-jungle/pointLight.o
+		gameFiles/gsObjects/area-jungle/honeyPlatform.o gameFiles/gsObjects/area-jungle/pointLight.o\
+		gameFiles/gsObjects/state-objects/button.o gameFiles/gsObjects/state-objects/keyLock.o\
+		gameFiles/playerObjects/lighter.o gameFiles/playerObjects/flashlight.o
 	ar -rcs $@ $^
 
 gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/levelExample.o\
@@ -83,7 +84,10 @@ clean:
 	cd utils && rm -f *.o *.a
 	cd glutils/$(GLB) && rm -f *.o *.a
 	cd gameFiles && rm -f *.o *.a
+	cd gameFiles/playerObjects && rm -f *.o *.a
 	cd gameFiles/gsObjects && rm -f *.o *.a
+	cd gameFiles/gsObjects/area-jungle && rm -f *.o *.a
+	cd gameFiles/gsObjects/state-objects && rm -f *.o *.a
 	cd gameFiles/levels && rm -f *.o *.a
 	cd gameFiles/levels/testLevels && rm -f *.o *.a
 	cd gameFiles/shaderboxes && rm -f *.o *.a

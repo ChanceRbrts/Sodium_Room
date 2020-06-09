@@ -15,5 +15,10 @@
 #include "gsObjects/grate.h"
 #include "gsObjects/area-jungle/honeyPlatform.h"
 #include "gsObjects/area-jungle/pointLight.h"
+#include "gsObjects/state-objects/button.h"
+#include "gsObjects/state-objects/keyLock.h"
+
+#include "playerObjects/lighter.h"
+#include "playerObjects/flashlight.h"
 
 #endif

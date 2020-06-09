@@ -11,11 +11,17 @@
  */
 class TexBook{
     private:
+        /// The map of textures.
         static std::map<std::string, unsigned int> texBook;
+        /// Used to generate textures from files
         static GLTextureGen* glt;
     public:
-        // Something to just create an empty map.
+        /// Something to just create an empty map.
         static std::map<std::string, unsigned int> emptyMap();
+        /**
+        * Something to initialize the texbook.
+        * @param glu The GLUtil class to steal the GLTextureGen from.
+        */
         static void initialize(GLUtil* glu);
         /**
          * Puts a texture into the texture book.

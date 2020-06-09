@@ -17,6 +17,8 @@ std::vector<Instance *> TestJungleObjects::makeLevel(std::vector<Instance*> prev
     previous.push_back(new Player(23, 4));
     previous.push_back(new HoneyPlatform(8, 14, 4, true));
     previous.push_back(new HoneyPlatform(19, 7, 5, false));
+    previous.push_back(new Button(13, 13, 0, "b1", 3));
+    previous.push_back(new Key(25, 4, "testKey"));
     createPointLights();
     for (int i = 0; i < pLight.size(); i++){
         previous.push_back(pLight[i]);
@@ -49,10 +51,11 @@ void TestJungleObjects::updateLevel(double deltaTime, Instance* player){
     sineWaveCounter += deltaTime;
     while (sineWaveCounter > 8){
         sineWaveCounter -= 8;
-        colorPicker = (colorPicker+1)%3;
+        // colorPicker = (colorPicker+1)%3;
     }
     double angle1 = M_PI/2-M_PI/2*cos(sineWaveCounter*M_PI/4);
     a1->setAngle(angle1-M_PI*1/16, angle1+M_PI*1/16);
+    colorPicker = GameState::getSaveI("b1");
     double red1 = colorPicker == 0 ? 1 : 0;
     double green1 = colorPicker == 1 ? 1 : 0;
     double blue1 = colorPicker == 2 ? 1 : 0;
