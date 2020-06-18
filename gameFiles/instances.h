@@ -7,6 +7,7 @@
 // The list of instances that are currently in the game should go here.
 #include "solid.h"
 #include "player.h"
+#include "instanceCreator.h"
 // HUD
 #include "textBox.h"
 

@@ -56,7 +56,7 @@ class Level{
       /// The path to the file that generates the level.
       std::string filePath;
       /// The level's instances. 
-      Instances* insts;
+      Instances* insts, lastInsts;
       /// The level's shaderboxes
       std::vector<ShaderBox*> shades;
       /// The level's arcs

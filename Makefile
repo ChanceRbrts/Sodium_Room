@@ -50,15 +50,16 @@ utils/util.a:utils/fontBook.o utils/texBook.o utils/gameState.o
 	ar -rcs $@ $^
 
 gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gameFiles/player.o\
-		main/shaderBox.o gameFiles/shaderboxes/longShaderbox.o gameFiles/textBox.o\
-		gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o\
+		gameFiles/instanceCreator.o main/shaderBox.o gameFiles/shaderboxes/longShaderbox.o\
+		gameFiles/textBox.o gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o\
 		gameFiles/gsObjects/area-jungle/honeyPlatform.o gameFiles/gsObjects/area-jungle/pointLight.o\
 		gameFiles/gsObjects/state-objects/button.o gameFiles/gsObjects/state-objects/keyLock.o\
 		gameFiles/playerObjects/lighter.o gameFiles/playerObjects/flashlight.o
 	ar -rcs $@ $^
 
 gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/levelExample.o\
-		gameFiles/levels/testLevels/testRain.o gameFiles/levels/testLevels/testJungleObjects.o
+		gameFiles/levels/testLevels/testRain.o gameFiles/levels/testLevels/testJungleObjects.o\
+		gameFiles/levels/mainLevels/introLevel.o
 	ar -rcs $@ $^
 
 gameFiles/instancesext.a:gameFiles/instancelev.o gameFiles/gsObjects/enclosedLevel.o\
