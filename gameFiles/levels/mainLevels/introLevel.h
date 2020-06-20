@@ -8,6 +8,7 @@ class IntroLevel : public Level {
         InstCreate* iC;
     public:
         IntroLevel();
+        ~IntroLevel();
         void updateLevel(double deltaTime, Instance* player);
 };
 
