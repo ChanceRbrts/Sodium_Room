@@ -59,7 +59,7 @@ gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gam
 
 gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/levelExample.o\
 		gameFiles/levels/testLevels/testRain.o gameFiles/levels/testLevels/testJungleObjects.o\
-		gameFiles/levels/mainLevels/introLevel.o
+		gameFiles/levels/mainLevels/introLevel.o gameFiles/levels/jungleLevels/rainHallway.o
 	ar -rcs $@ $^
 
 gameFiles/instancesext.a:gameFiles/instancelev.o gameFiles/gsObjects/enclosedLevel.o\
@@ -91,4 +91,6 @@ clean:
 	cd gameFiles/gsObjects/state-objects && rm -f *.o *.a
 	cd gameFiles/levels && rm -f *.o *.a
 	cd gameFiles/levels/testLevels && rm -f *.o *.a
+	cd gameFiles/levels/jungleLevels && rm -f *.o *.a
+	cd gameFiles/levels/mainLevels && rm -f *.o *.a
 	cd gameFiles/shaderboxes && rm -f *.o *.a

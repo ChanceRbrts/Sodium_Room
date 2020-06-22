@@ -5,7 +5,7 @@ GameLogic::GameLogic(){
    createdFonts = false;
    loadedLevels = nullptr;
    player = nullptr;
-   loadLevel(levels->lev[4]);
+   loadLevel(levels->lev[LEV_JUNG_RAINHALLWAY]);
 }
 
 GameLogic::~GameLogic(){
