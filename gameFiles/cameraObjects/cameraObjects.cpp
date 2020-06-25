@@ -1,5 +1,26 @@
 #include "cameraObjects.h"
 
+Camera::Camera(){}
+
+void Camera::setTarget(double targetX, double targetY){
+    tarX = targetX;
+    tarY = targetY;
+}
+
+void Camera::startMovement(double deltaTime){
+    dX = (tarX-x)/deltaTime;
+    dY = (tarY-y)/deltaTime;
+}
+
+void Camera::finishMovement(double deltaTime){
+    /// TODO: Large distance gaps should look natural?
+    int sign = dX > 0 ? 1 : -1;
+    if (dX*sign > 1100) dX = 800*sign;
+    if (dY*sign > 1100) dY = 800*sign;
+    x += dX*deltaTime;
+    y += dY*deltaTime;
+}
+
 CameraObject::CameraObject(){}
 
 OneWayCameraObject::OneWayCameraObject(double X, double Y, double W, int direction) : CameraObject(){

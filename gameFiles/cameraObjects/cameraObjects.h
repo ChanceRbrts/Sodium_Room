@@ -7,13 +7,17 @@ class Camera {
     private:
         /// These deal with the position of the camera.
         double x, y;
+        double tarX, tarY;
     public:
         Camera();
         /// These are the velocities of the camera.
         double dX, dY;
+        void setTarget(double targetX, double targetY);
         double getX(){ return x; };
         double getY(){ return y; };
         void moveCamera(Instance* player);
+        void startMovement(double deltaTime);
+        void finishMovement(double deltaTime);
 };
 
 class CameraObject {

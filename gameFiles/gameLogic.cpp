@@ -5,6 +5,7 @@ GameLogic::GameLogic(){
    createdFonts = false;
    loadedLevels = nullptr;
    player = nullptr;
+   camera = new Camera();
    loadLevel(levels->lev[LEV_JUNG_RAINHALLWAY]);
 }
 
@@ -140,7 +141,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
       lList = lList->next;
    }
    // Update the camera.
-   if (player != nullptr) followPlayer(glu);
+   updateCamera(deltaTime, glu);
    // Update the shaderboxes that need updating.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
@@ -165,6 +166,27 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    glu->control->resetControls();
 }
 
+void GameLogic::updateCamera(double deltaTime, GLUtil* glu){
+   // Start by getting the target of the camera.
+   if (player != nullptr){
+      followPlayer(glu);
+   }
+   camera->startMovement(deltaTime);
+   // Then, constrain it to different parts of the levels.
+   if (loadedLevels != nullptr){
+      for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+         std::vector<CameraObject*> cO = l->lev->camObjs;
+         for (int i = 0; i < cO.size(); i++){
+            cO[i]->modifyCamera(camera, deltaTime);
+         }
+      }
+   }
+   // Finally, update the camera positon.
+   camera->finishMovement(deltaTime);
+   glu->draw->camX = camera->getX();
+   glu->draw->camY = camera->getY();
+}
+
 void GameLogic::followPlayer(GLUtil* glu){
    // Very simple following the player code; Might be changed later?
    double cX = player->x+player->w/2-glu->draw->getWidth()/2;
@@ -186,8 +208,7 @@ void GameLogic::followPlayer(GLUtil* glu){
    }
    cX = std::max(minX, std::min(cX, maxX));
    cY = std::max(minY, std::min(cY, maxY));
-   glu->draw->camX = cX;
-   glu->draw->camY = cY;
+   camera->setTarget(cX, cY);
 }
 
 void GameLogic::draw(GLUtil* glu){
