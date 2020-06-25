@@ -22,7 +22,7 @@ class CameraObject {
         virtual void modifyCamera(Camera* c, double deltaTime){};
 };
 
-class OneWayCameraObject : CameraObject {
+class OneWayCameraObject : public CameraObject {
     private:
         float x, y;
         float w;

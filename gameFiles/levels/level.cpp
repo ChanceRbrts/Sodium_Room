@@ -146,6 +146,11 @@ std::vector<Arc*> Level::createArcs(){
    return empty;
 }
 
+std::vector<CameraObject*> Level::createCameraObjects(){
+   std::vector<CameraObject*> empty;
+   return empty;
+}
+
 void Level::draw(GLUtil* glu, Instance* player){
    if (hasBackground){
       GLDraw* gld = glu->draw;

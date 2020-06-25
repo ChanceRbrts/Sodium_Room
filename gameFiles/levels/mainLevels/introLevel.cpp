@@ -17,8 +17,12 @@ std::vector<Instance *> IntroLevel::makeLevel(std::vector<Instance*> previous){
     return previous;
 }
 
+std::vector<CameraObject *> IntroLevel::createCameraObjects(){
+    std::vector<CameraObject *> cams;
+    cams.push_back(new OneWayCameraObject(0, 15, w/32, 0));
+}
+
 void IntroLevel::updateLevel(double deltaTime, Instance* player){
-    h = 15;
     // As the player goes across the introduction, different cutscene elements will show up in the HUD.
     // Once you've gone past the grate, the rain will start falling.
     if (!GameState::getSaveB("int_startOutdoorRain") && player->x > w/2+getXOff()){

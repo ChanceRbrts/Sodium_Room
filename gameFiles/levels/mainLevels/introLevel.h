@@ -5,6 +5,7 @@
 class IntroLevel : public Level {
     private:
         std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
+        std::vector<CameraObject *> createCameraObjects();
         InstCreate* iC;
     public:
         IntroLevel();

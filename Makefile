@@ -54,7 +54,8 @@ gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gam
 		gameFiles/textBox.o gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o\
 		gameFiles/gsObjects/area-jungle/honeyPlatform.o gameFiles/gsObjects/area-jungle/pointLight.o\
 		gameFiles/gsObjects/state-objects/button.o gameFiles/gsObjects/state-objects/keyLock.o\
-		gameFiles/playerObjects/lighter.o gameFiles/playerObjects/flashlight.o
+		gameFiles/playerObjects/lighter.o gameFiles/playerObjects/flashlight.o\
+		gameFiles/cameraObjects/cameraObjects.o
 	ar -rcs $@ $^
 
 gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/levelExample.o\
@@ -94,3 +95,4 @@ clean:
 	cd gameFiles/levels/jungleLevels && rm -f *.o *.a
 	cd gameFiles/levels/mainLevels && rm -f *.o *.a
 	cd gameFiles/shaderboxes && rm -f *.o *.a
+	cd gameFiles/cameraObjects && rm -f *.o *.a
