@@ -1,7 +1,7 @@
 #ifndef dwr_camera_object
 #define dwr_camera_object
 
-#include "instance.h"
+#include "../instance.h"
 
 class Camera {
     private:
@@ -21,12 +21,13 @@ class Camera {
         double getY(){ return y; };
         void moveCamera(Instance* player);
         void startMovement(double deltaTime);
-        void finishMovement(double deltaTime);
+        void finishMovement(double deltaTime, bool loaded);
 };
 
 class CameraObject {
     public:
         CameraObject();
+        virtual ~CameraObject(){};
         virtual void modifyCamera(Camera* c, double deltaTime, double W, double H){};
 };
 
@@ -45,6 +46,8 @@ class OneWayCameraObject : public CameraObject {
          */
         OneWayCameraObject(double X, double Y, double W, int direction);
         void modifyCamera(Camera* c, double deltaTime, double W, double H);
+        void changeX(double X);
+        void changeY(double Y);
 };
 
 #endif

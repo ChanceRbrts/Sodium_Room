@@ -7,7 +7,7 @@ GameLogic::GameLogic(){
    loadedLevels = nullptr;
    player = nullptr;
    camera = new Camera();
-   loadLevel(levels->lev[LEV_JUNG_RAINHALLWAY]);
+   loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
 }
 
 GameLogic::~GameLogic(){
@@ -173,7 +173,6 @@ void GameLogic::updateCamera(double deltaTime, GLUtil* glu){
       pointDouble pD = followPlayer(glu);
       if (loadedCam) camera->setTarget(pD.x, pD.y);
       else camera->setPosition(pD.x, pD.y);
-      loadedCam = true;
    }
    camera->startMovement(deltaTime);
    // Then, constrain it to different parts of the levels.
@@ -188,7 +187,8 @@ void GameLogic::updateCamera(double deltaTime, GLUtil* glu){
       }
    }
    // Finally, update the camera positon.
-   camera->finishMovement(deltaTime);
+   camera->finishMovement(deltaTime, loadedCam);
+   loadedCam = true;
    glu->draw->camX = camera->getX();
    glu->draw->camY = camera->getY();
 }

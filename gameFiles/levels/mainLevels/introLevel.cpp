@@ -20,6 +20,7 @@ std::vector<Instance *> IntroLevel::makeLevel(std::vector<Instance*> previous){
 std::vector<CameraObject *> IntroLevel::createCameraObjects(){
     std::vector<CameraObject *> cams;
     cams.push_back(new OneWayCameraObject(0, 15, w/32, 0));
+    return cams;
 }
 
 void IntroLevel::updateLevel(double deltaTime, Instance* player){
@@ -39,4 +40,7 @@ void IntroLevel::updateLevel(double deltaTime, Instance* player){
         iC->addInstance(new Rain(54, 0, 34, 0));
     }
     // This leads to the end where you go through a door and the Sodium Room logo pops up.
+    if (player->y > 448){
+        ((OneWayCameraObject *)(camObjs[0]))->changeY(h);
+    } else ((OneWayCameraObject *)(camObjs[0]))->changeY(480);
 }
