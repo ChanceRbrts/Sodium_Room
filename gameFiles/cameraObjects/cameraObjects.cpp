@@ -1,10 +1,26 @@
 #include "cameraObjects.h"
 
-Camera::Camera(){}
+Camera::Camera(){
+    x = 0;
+    y = 0;
+    tarX = 0;
+    tarY = 0;
+    diffX = 0;
+    diffY = 0;
+    progressX = 0;
+    progressY = 0;
+    animTime = -1;
+    maxAnimTime = 1;
+}
 
 void Camera::setTarget(double targetX, double targetY){
     tarX = targetX;
     tarY = targetY;
+}
+
+void Camera::setPosition(double X, double Y){
+    x = X;
+    y = Y;
 }
 
 void Camera::startMovement(double deltaTime){
@@ -14,11 +30,47 @@ void Camera::startMovement(double deltaTime){
 
 void Camera::finishMovement(double deltaTime){
     /// TODO: Large distance gaps should look natural?
-    int sign = dX > 0 ? 1 : -1;
-    if (dX*sign > 1100) dX = 800*sign;
-    if (dY*sign > 1100) dY = 800*sign;
+    // If we have an updated
+    if (animTime >= 0){
+        dX -= (diffX-progressX)/deltaTime;
+        dY -= (diffY-progressY)/deltaTime;
+    }
+    int xSign = dX > 0 ? 1 : -1;
+    int ySign = dY > 0 ? 1 : -1;
+    // See if we need to go across a large distance (18px/frame or higher) and account for that.
+    if (dX*sign > 1080 || dY*sign > 1080){
+        diffX = diffX-progressX+dX*deltaTime;
+        diffY = diffY-progressY+dY*deltaTime;
+        // 1080/60 = 18
+        if (abs(diffX) < 18 && abs(diffY) < 18){
+            // The camera doesn't have to jump a large distance anymore.
+            x += dX*deltaTime;
+            y += dY*deltaTime;
+            animTime = -1;
+            return;
+        }
+        progressX = 0;
+        progressY = 0;
+        dX = 0;
+        dY = 0;
+        animTime = 0;
+    }
     x += dX*deltaTime;
     y += dY*deltaTime;
+    if (animTime < 0) return;
+    // If we have a large gap, start the animation for that.
+    animTime += deltaTime;
+    if (animTime > maxAnimTime) animTime = maxAnimTime;
+    // Move camera to the next distance.
+    double totalDistMod = pow(sin(M_PI/2*anim/maxAnimTime), 2);
+    double nextDistX = diffX*totalDistMod-progressX;
+    x += nextDistX;
+    progressX += nextDistX;
+    double nextDisY = diffY*totalDistMod-progressY;
+    y += nextDistY;
+    progressY += nextDistY;
+    // Once we're done with the animation, stop it.
+    if (animTime >= maxAnimTime) animTime = -1;
 }
 
 CameraObject::CameraObject(){}
@@ -30,8 +82,9 @@ OneWayCameraObject::OneWayCameraObject(double X, double Y, double W, int directi
     dir = direction;
 }
 
-void OneWayCameraObject::modifyCamera(Camera* c, double deltaTime){
+void OneWayCameraObject::modifyCamera(Camera* c, double deltaTime, double W, double H){
     double p = dir%2 == 0 ? c->getX() : c->getY();
+    p += dir/2 == 0 ? (dir%2 == 0 ? W : H) : 0;
     double* dP = dir%2 == 0 ? &(c->dX) : &(c->dY);
     double lim = dir%2 == 0 ? x : y;
     int sign = dir/2 == 0 ? 1 : -1;
