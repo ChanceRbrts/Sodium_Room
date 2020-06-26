@@ -2,6 +2,7 @@
 #include <math.h>
 
 Rain::Rain(double X, double Y, double W, int mode) : Instance(X, Y, W, 0){
+    loadedIn = false;
     rainMode = mode;
     startY = y;
     lastDY = 0;
@@ -45,6 +46,7 @@ void Rain::initShaders(GLShaders* gls){
 }
 
 void Rain::update(double deltaTime, bool* keyPressed, bool* keyHeld){
+    loadedIn = true;
     // So collision is handled with dY... So I have to account for that.
     lastDY = dY;
     // Get our 5 second interval here.
@@ -52,7 +54,7 @@ void Rain::update(double deltaTime, bool* keyPressed, bool* keyHeld){
 }
 
 void Rain::fUpdate(double deltaTime){
-    if (dY == 0 || time > 4){
+    if (loadedIn && (dY == 0 || time > 4)){
         gravity = false;
         dY = 0;
     }
@@ -72,6 +74,14 @@ void Rain::collided(Instance *o, double deltaTime){
     // Now, we need to get the arcs that this is affected by.
     for (int i = 0; i < arcList.size(); i++){
         ArcInfo aI = arcList[i];
+        // So far, the lighter is the only thing that has this.
+        // The lighter does not collide with the player, so I'll put this here for now.
+        // If in the future I have another defBehavior arc, I may move this.
+        if (aI.defBehavior){
+            fall = (rainMode == 1);
+            up = (rainMode == 2);
+            break;
+        }
         // Look at the player's arcs and see if they're affected by the same ID.
         bool keepGoing = false;
         for (int j = 0; j < oList.size(); j++){
@@ -81,11 +91,6 @@ void Rain::collided(Instance *o, double deltaTime){
             }
         }
         if (!keepGoing) continue;
-        if (aI.defBehavior){
-            fall = (rainMode == 1);
-            up = (rainMode == 2);
-            break;
-        }
         if (aI.r > 0.5 && aI.b < 0.5){ // Red Rain
             fall = true;
         } else if (aI.r < 0.5 && aI.b > 0.5){ // Blue Rain

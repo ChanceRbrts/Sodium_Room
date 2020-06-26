@@ -28,6 +28,10 @@ class GameLogic{
       Instances* hud;
       /// Last instance of the HUD. (End of linked list)
       Instances* lastHud;
+      /// The camera of the level.
+      Camera* camera;
+      /// Whether or not the camera's position has been set yet.
+      bool loadedCam;
       /**
        * A simple linked list adder
        * @param prev The instances node to add to.
@@ -63,10 +67,16 @@ class GameLogic{
        */
       void update(double deltaTime, GLUtil* glu);
       /**
-       * Makes the camera follow the player.
-       * @param glu The GLUtil class; Used only for the Controls right now.
+       * This updates the camera to it's next position.
+       * @param deltaTime 
+       * @param glu The GLUtil class; Used to update camX and camY.
        */
-      void followPlayer(GLUtil* glu);
+      void updateCamera(double deltaTime, GLUtil* glu);
+      /**
+       * Makes the camera follow the player.
+       * @param glu The GLUtil class; Used to update camX and camY.
+       */
+      pointDouble followPlayer(GLUtil* glu);
       /**
        * The actual draw loop. 
        * This goes through each of the shader boxes and draws stuff.

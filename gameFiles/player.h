@@ -94,6 +94,12 @@ class Player : public Instance{
       void giveAbility(PlayerAbility* plAb);
       /// @return Whether or not the player is currently facing right.
       bool isFacingRight();
+      /**
+       * This is implemented so the PlayerAbility have collided behaviors.
+       * @param o The instance that's being collided with.
+       * @param deltaTime The time in between this frame and the previous frame.
+       */
+      void collided(Instance* o, double deltaTime);
 };
 
 #endif

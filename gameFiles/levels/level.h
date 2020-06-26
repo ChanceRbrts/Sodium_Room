@@ -2,6 +2,7 @@
 #define dos_game_level
 
 #include "../instances.h"
+#include "../cameraObjects/cameraObjects.h"
 #include "../../main/shaderBox.h"
 #include <regex>
 
@@ -35,6 +36,8 @@ class Level{
       virtual std::vector<ShaderBox*> createShaderBoxes(GLUtil* glu);
       /// @return A list of the arcs in the room.
       virtual std::vector<Arc*> createArcs();
+      /// @return A list of the camera objects in the room.
+      virtual std::vector<CameraObject*> createCameraObjects();
       /**
        * This draws the objects in the room
        * @param glu The GLUtil to use for drawing
@@ -56,11 +59,13 @@ class Level{
       /// The path to the file that generates the level.
       std::string filePath;
       /// The level's instances. 
-      Instances* insts;
+      Instances* insts, lastInsts;
       /// The level's shaderboxes
       std::vector<ShaderBox*> shades;
       /// The level's arcs
       std::vector<Arc*> arcs;
+      /// The level's camera objects.
+      std::vector<CameraObject*> camObjs;
       /// A Constructor for the level.
       Level();
       /// A Deconstructor for the level.

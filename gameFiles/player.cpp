@@ -105,6 +105,10 @@ void Player::changeJumpMultiplier(double j){
    jumpMultiplier = j;
 }
 
+void Player::collided(Instance* o, double deltaTime){
+   curAbility->collided(o, deltaTime);
+}
+
 void Player::giveAbility(PlayerAbility* plAb){
    curAbility = plAb;
 }

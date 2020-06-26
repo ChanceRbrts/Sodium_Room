@@ -79,6 +79,7 @@ pointDouble Level::createLevel(){
    }
    instances = makeLevel(instances);
    arcs = createArcs();
+   camObjs = createCameraObjects();
    while (insts != nullptr){
       Instances* del = insts;
       insts = insts->next;
@@ -122,6 +123,11 @@ void Level::destroyLevel(){
       delete shades[i];
    }
    shades.clear();
+   // Deallocate our camera objects here.
+   for (int i = 0; i < camObjs.size(); i++){
+      delete camObjs[i];
+   }
+   camObjs.clear();
    // Deallocate our level here.
    while (insts != nullptr){
       Instances* del = insts;
@@ -143,6 +149,11 @@ std::vector<ShaderBox*> Level::createShaderBoxes(GLUtil* glu){
 
 std::vector<Arc*> Level::createArcs(){
    std::vector<Arc*> empty;
+   return empty;
+}
+
+std::vector<CameraObject*> Level::createCameraObjects(){
+   std::vector<CameraObject*> empty;
    return empty;
 }
 

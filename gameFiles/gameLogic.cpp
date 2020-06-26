@@ -3,9 +3,11 @@
 GameLogic::GameLogic(){
    levels = new Levels();
    createdFonts = false;
+   loadedCam = false;
    loadedLevels = nullptr;
    player = nullptr;
-   loadLevel(levels->lev[4]);
+   camera = new Camera();
+   loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
 }
 
 GameLogic::~GameLogic(){
@@ -140,7 +142,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
       lList = lList->next;
    }
    // Update the camera.
-   if (player != nullptr) followPlayer(glu);
+   updateCamera(deltaTime, glu);
    // Update the shaderboxes that need updating.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
@@ -165,7 +167,33 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    glu->control->resetControls();
 }
 
-void GameLogic::followPlayer(GLUtil* glu){
+void GameLogic::updateCamera(double deltaTime, GLUtil* glu){
+   // Start by getting the target of the camera.
+   if (player != nullptr){
+      pointDouble pD = followPlayer(glu);
+      if (loadedCam) camera->setTarget(pD.x, pD.y);
+      else camera->setPosition(pD.x, pD.y);
+   }
+   camera->startMovement(deltaTime);
+   // Then, constrain it to different parts of the levels.
+   if (loadedLevels != nullptr){
+      for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+         std::vector<CameraObject*> cO = l->lev->camObjs;
+         double wid = glu->draw->getWidth();
+         double hei = glu->draw->getHeight();
+         for (int i = 0; i < cO.size(); i++){
+            cO[i]->modifyCamera(camera, deltaTime, wid, hei);
+         }
+      }
+   }
+   // Finally, update the camera positon.
+   camera->finishMovement(deltaTime, loadedCam);
+   loadedCam = true;
+   glu->draw->camX = camera->getX();
+   glu->draw->camY = camera->getY();
+}
+
+pointDouble GameLogic::followPlayer(GLUtil* glu){
    // Very simple following the player code; Might be changed later?
    double cX = player->x+player->w/2-glu->draw->getWidth()/2;
    double cY = player->y+player->h/2-glu->draw->getHeight()/2;
@@ -186,8 +214,7 @@ void GameLogic::followPlayer(GLUtil* glu){
    }
    cX = std::max(minX, std::min(cX, maxX));
    cY = std::max(minY, std::min(cY, maxY));
-   glu->draw->camX = cX;
-   glu->draw->camY = cY;
+   return (pointDouble){cX, cY, 0};
 }
 
 void GameLogic::draw(GLUtil* glu){

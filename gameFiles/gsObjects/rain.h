@@ -15,6 +15,8 @@ class Rain : public Instance {
     private:
         /// Whether or not we need to check if we have created a shader for this object.
         bool shaderCheck;
+        /// Whether or not we've had an update frame yet.
+        bool loadedIn;
         /// The current behavior of the rain (0->Default, 1->Instant, 2->Upside-Down)
         int rainMode;
         /// Used with having the rain fall.

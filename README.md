@@ -9,8 +9,6 @@ This is a game where there are different "lights" in the room that change the pr
  
 # Gameplay/Story
  
-## Lore
-???
  
 ## Gameplay Loop
 Each area has a thing at the end which you need, but which alters the other areas. For example, the top of the tower could have a switch that swaps some kind of hidden blocks or something.
@@ -62,4 +60,3 @@ Make sure to get both of the binaries. From there, open the .dmgs, and move the 
 ## Compilation
 Run make to compile the program.
 Run `./game` to then run the game.
-
