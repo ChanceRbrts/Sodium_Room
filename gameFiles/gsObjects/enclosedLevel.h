@@ -11,6 +11,8 @@ class EnclosedLevel : public InstanceLev {
     private:
         /// A check to see if this needs to create shaders
         bool shaderCheck;
+        /// Whether or not this is connected to an arc.
+        bool connected;
         /// Whether or not the level opens up horizontally or vertically.
         bool openHorizontally;
         /// Whether or not the instance needs to push part of the other levels.
@@ -34,6 +36,8 @@ class EnclosedLevel : public InstanceLev {
          * @param gls The GLUtil's shader functions.
          */
         void checkShaders(GLShaders* gls);
+        /// This checks the arc list to update whether or not the level is opened or closed.
+        void checkOpen();
     public:
         /// A boolean to determine if the level should expand or collapse
         bool open;
@@ -65,6 +69,8 @@ class EnclosedLevel : public InstanceLev {
          * @param player The player of the game.
          */
         void messWithLevels(LevelList* levs, Instance* player);
+        /// This disconnects the enclosed level from an arc.
+        void disconnect();
 };
 
 #endif

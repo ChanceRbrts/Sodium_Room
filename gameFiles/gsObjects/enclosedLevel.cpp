@@ -23,9 +23,12 @@ EnclosedLevel::EnclosedLevel(double X, double Y, double W, double H, Level* l) :
     maxOpenTime = 1;
     open = false;
     needExtra = true;
+    connected = true;
 }
 
 void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
+    // Check to see if the level should be opened or closed.
+    if (connected) checkOpen();
     time = fmod(time+deltaTime, 1);
     prevLevelUp = levelUp;
     lastW = openHorizontally ? w : h;
@@ -173,4 +176,21 @@ void EnclosedLevel::messWithLevels(LevelList* levs, Instance* player){
         if (openHorizontally && player->x > x) player->x += w-lastW;
         else if (!openHorizontally && player->y > y) player->y += h-lastW;
     }
+}
+
+void EnclosedLevel::checkOpen(){
+    open = false;
+    // The level should open when we an arc is colliding with it.
+    for (int i = 0; i < arcList.size; i++){
+        ArcInfo* a = arcList[i];
+        if (abs(a->r-lev->r) < 0.1 && abs(a->g-lev->g) < 0.1 && 
+            abs(a->b-lev->b) < 0.1){
+            open = true;
+            return;
+        }
+    }
+}
+
+void EnclosedLevel::disconnect(){
+    connected = false;
 }

@@ -319,4 +319,5 @@ void Level::bisectLevel(bool horizontal, float splitLocation, float offset, Inst
          if (i->i->y-yOff < splitLocation) i->i->y = splitLocation+yOff;
       }
    }
+   /// TODO: Add stuff for shaderboxes and arcs (and camera objects).
 }
