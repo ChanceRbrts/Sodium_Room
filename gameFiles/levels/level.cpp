@@ -319,5 +319,24 @@ void Level::bisectLevel(bool horizontal, float splitLocation, float offset, Inst
          if (i->i->y-yOff < splitLocation) i->i->y = splitLocation+yOff;
       }
    }
-   /// TODO: Add stuff for shaderboxes and arcs (and camera objects).
+   // Arcs are like instances, so move them like that.
+   for (int i = 0; i < arcs.size(); i++){
+      Arc* a = arcs[i];
+      double X = a->getX();
+      double Y = a->getY();
+      if (horizontal && X-xOff >= splitLocation){
+         a->setPosition(X+offset, Y);
+         if (a->getX()-xOff < splitLocation) a->setPosition(splitLocation+xOff, Y);
+      } else if (!horizontal && Y-yOff >= splitLocation){
+         a->setPosition(X, Y+offset);
+         if (a->getY()-yOff < splitLocation) a->setPosition(X, splitLocation+yOff);
+      }
+   }
+   // Since camera objects deal with camera stuff, there may be some interesting behaviors.
+   // These probably need to be accounted for.
+   for (int i = 0; i < camObjs.size(); i++){
+      
+   }
+   /// TODO: Add stuff for shaderboxes?
+
 }
