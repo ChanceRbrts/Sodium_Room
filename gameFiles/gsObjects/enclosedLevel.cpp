@@ -181,10 +181,10 @@ void EnclosedLevel::messWithLevels(LevelList* levs, Instance* player){
 void EnclosedLevel::checkOpen(){
     open = false;
     // The level should open when we an arc is colliding with it.
-    for (int i = 0; i < arcList.size; i++){
-        ArcInfo* a = arcList[i];
-        if (abs(a->r-lev->r) < 0.1 && abs(a->g-lev->g) < 0.1 && 
-            abs(a->b-lev->b) < 0.1){
+    for (int i = 0; i < arcList.size(); i++){
+        ArcInfo a = arcList[i];
+        if (abs(a.r-lev->r) < 0.1 && abs(a.g-lev->g) < 0.1 && 
+            abs(a.b-lev->b) < 0.1){
             open = true;
             return;
         }
