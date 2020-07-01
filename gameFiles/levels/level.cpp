@@ -335,7 +335,7 @@ void Level::bisectLevel(bool horizontal, float splitLocation, float offset, Inst
    // Since camera objects deal with camera stuff, there may be some interesting behaviors.
    // These probably need to be accounted for.
    for (int i = 0; i < camObjs.size(); i++){
-      
+      camObjs[i]->bisectObject(horizontal, splitLocation, offset);
    }
    /// TODO: Add stuff for shaderboxes?
 

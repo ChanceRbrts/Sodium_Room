@@ -102,6 +102,20 @@ void OneWayCameraObject::modifyCamera(Camera* c, double deltaTime, double W, dou
     }
 }
 
+void OneWayCameraObject::bisectObject(bool horizontal, float splitLocation, float offset){
+    double* p = horizontal ? &x : &y;
+    if (*p > splitLocation){
+        *p += offset;
+        if (*p < splitLocation) *p = splitLocation;
+    }
+    if (*p < splitLocation && *p+w > splitLocation){
+        // In this case, w needs to change.
+        // Either that, or the object will need to bisect as well.
+        w += offset;
+        if (*p+w < splitLocation) w = splitLocation-*p;
+    }
+}
+
 void OneWayCameraObject::changeX(double X){
     x = X;
 }
