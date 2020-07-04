@@ -93,6 +93,10 @@ OneWayCameraObject::OneWayCameraObject(double X, double Y, double W, int directi
 void OneWayCameraObject::modifyCamera(Camera* c, double deltaTime, double W, double H){
     double p = dir%2 == 0 ? c->getY() : c->getX();
     p += dir/2 == 0 ? (dir%2 == 0 ? H : W) : 0;
+    double q = dir%2 == 0 ? c->getX() : c->getY();
+    double myQ = dir%2 == 0 ? x : y;
+    // If the one way camera object can't possibly be on screen, don't do other checks.
+    if (myQ+w < q || myQ > q+(dir%2 == 0 ? W : H)) return;
     double* dP = dir%2 == 0 ? &(c->dY) : &(c->dX);
     double lim = dir%2 == 0 ? y : x;
     int sign = dir/2 == 0 ? 1 : -1;
@@ -108,7 +112,7 @@ void OneWayCameraObject::bisectObject(bool horizontal, float splitLocation, floa
         *p += offset;
         if (*p < splitLocation) *p = splitLocation;
     }
-    if (*p < splitLocation && *p+w > splitLocation){
+    if (horizontal == dir%2 && *p < splitLocation && *p+w > splitLocation){
         // In this case, w needs to change.
         // Either that, or the object will need to bisect as well.
         w += offset;
