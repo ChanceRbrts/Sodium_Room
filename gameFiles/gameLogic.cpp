@@ -7,7 +7,7 @@ GameLogic::GameLogic(){
    loadedLevels = nullptr;
    player = nullptr;
    camera = new Camera();
-   loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
+   loadLevel(levels->lev[LEV_TEST_RAIN]);
 }
 
 GameLogic::~GameLogic(){
