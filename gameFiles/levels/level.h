@@ -60,6 +60,8 @@ class Level{
       std::string filePath;
       /// The level's instances. 
       Instances* insts, lastInsts;
+      /// Layers that tell us when to draw an instance.
+      std::vector<Instances*> layers;
       /// The level's shaderboxes
       std::vector<ShaderBox*> shades;
       /// The level's arcs

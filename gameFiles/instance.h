@@ -234,6 +234,21 @@ struct Instances{
    Instances* prev;
    /// @param next The instance after this one on the linked list.
    Instances* next;
+   /// @param draw The instances that represents where it's being drawn.
+   Instances* drawn;
+};
+
+/**
+ * A pointer to a Instances list with an integer attached to it.
+ * This is used for 
+ */
+struct Layer{
+   /// The current layer of the drawing code.
+   double layer;
+   /// The instance that's at the beginning of the list.
+   Instances* first;
+   /// The instance that's at the end of the list.
+   Instances* last;
 };
 
 #endif
