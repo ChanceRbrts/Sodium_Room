@@ -7,6 +7,8 @@
 #include "arc.h"
 #include <math.h>
 
+#define LAYER_NORMAL 0
+
 /**
  * The Object Class; these are the instances that we are updating!
  * (Called Instance here because I'm used to not saying Object for these)
@@ -63,6 +65,13 @@ class Instance{
       std::vector<ArcInfo> arcList;
       /// Useful for identifying different objects.
       std::string name;
+      /// The drawing layers that the instance draws to.
+      std::vector<int> layers; 
+      /**
+       * Initializes the layers vector to determine what layers to draw to.
+       * @return The layers to draw to.
+       */
+      virtual std::vector<int> initLayers();
       /**
        * Simple gravity calculations
        * @param deltaTime The time in between this frame and the previous frame.

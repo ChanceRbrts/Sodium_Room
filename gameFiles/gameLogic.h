@@ -30,6 +30,8 @@ class GameLogic{
       Instances* lastHud;
       /// The camera of the level.
       Camera* camera;
+      /// The shaderbox that the level draws to before the screen.
+      ShaderBox* drawBox;
       /// Whether or not the camera's position has been set yet.
       bool loadedCam;
       /**

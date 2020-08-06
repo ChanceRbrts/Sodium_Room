@@ -36,6 +36,12 @@ Instance::Instance(double X, double Y, double W, double H){
    needExtra = false;
    stuckToWall = false;
    name = "Instance";
+   initLayers();
+}
+
+std::vector<int> Instance::initLayers(){
+   layers.push_back(LAYER_NORMAL);
+   return layers;
 }
 
 void Instance::doGravity(double deltaTime){

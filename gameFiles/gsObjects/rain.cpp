@@ -36,6 +36,12 @@ Rain::~Rain(){
     colors.clear();
 }
 
+std::vector<int> Rain::initLayers(){
+    layers.push_back(LAYER_NORMAL-1);
+    layers.push_back(LAYER_NORMAL+1);
+    return layers;
+}
+
 void Rain::initShaders(GLShaders* gls){
     if (!gls->programExists("rainShader")){
         gls->createProgram("gameFiles/shaders/rain", "", "rainShader");
@@ -180,6 +186,12 @@ RainPlayer::~RainPlayer(){
     vertices.clear();
     colors.clear();
     // texs.clear();
+}
+
+std::vector<int> RainPlayer::initLayers(){
+    layers.push_back(LAYER_NORMAL-1);
+    layers.push_back(LAYER_NORMAL+1);
+    return layers;
 }
 
 void RainPlayer::fUpdate(double deltaTime){
