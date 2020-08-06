@@ -117,7 +117,7 @@ void Rain::collided(Instance *o, double deltaTime){
     }
 }
 
-void Rain::draw(GLDraw* gld, GLShaders* gls){
+void Rain::draw(GLDraw* gld, GLShaders* gls, int layer){
     if (shaderCheck){
         initShaders(gls);
         shaderCheck = false;
@@ -218,7 +218,7 @@ void RainPlayer::fUpdate(double deltaTime){
     p->dY = 0;
 }
 
-void RainPlayer::draw(GLDraw* gld, GLShaders* gls){
+void RainPlayer::draw(GLDraw* gld, GLShaders* gls, int layer){
     int program = gls->bindShader("rainPlayer");
     pointDouble xy = gld->vPoint(x, y);
     gls->addUniform(program, "x", xy.x);

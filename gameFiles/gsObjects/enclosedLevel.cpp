@@ -59,7 +59,7 @@ void EnclosedLevel::checkShaders(GLShaders* gls){
     }
 }
 
-void EnclosedLevel::drawEX(GLUtil* glu){
+void EnclosedLevel::drawEX(GLUtil* glu, int layer){
     GLDraw* gld = glu->draw;
     GLShaders* gls = glu->shade;
     // Check if the necessary shaders are loaded in.

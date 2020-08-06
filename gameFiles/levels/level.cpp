@@ -199,7 +199,7 @@ void Level::draw(GLUtil* glu, Instance* player){
    if (pA == nullptr) return;
    // If the player is in the bounds of the level, draw the player's ability.
    if (player->x+player->w >= xOff && player->y+player->h >= yOff && player->x <= xOff+w && player->y <= yOff+h){
-      pA->draw(glu);
+      pA->draw(glu, 0);
       Arc* a = pA->getArc();
       if (a == nullptr) return;
       a->draw(glu);
@@ -224,7 +224,7 @@ void Level::drawObjects(GLUtil* glu, Instance* player, int mode){
    double cY = glu->draw->camY;
    if (player != nullptr){
       if (player->x < cX+wid && player->x+player->w > cX && player->y < cY+hei && player->y+player->h > cY){
-         player->draw(glu);
+         player->draw(glu, 0);
       }
    }
    if (insts != nullptr){
@@ -232,7 +232,7 @@ void Level::drawObjects(GLUtil* glu, Instance* player, int mode){
          Instance* in = i->i;
          // Check if the instance is in the bounds of the screen.
          if (in->x < cX+wid && in->x+in->w > cX && in->y < cY+hei && in->y+in->h > cY){
-            in->draw(glu);
+            in->draw(glu, 0);
          } 
       }
    }

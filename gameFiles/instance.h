@@ -217,20 +217,23 @@ class Instance{
        * I force GLDraw and GLShaders here to recommend people only do drawing code.
        * @param gld The GLUtil's draw functions.
        * @param gls The GLUtil's shader functions.
+       * @param layer The layer that is currently being drawn to.
        */
-      virtual void draw(GLDraw* gld, GLShaders* gls);
+      virtual void draw(GLDraw* gld, GLShaders* gls, int layer);
       /**
        * The code to draw the instance. (This you want to implement.)
        * I recommend you use GLDraw.
        * This is ONLY if you need to use GLUtil for something other than drawing or shading.
        * @param glu The GLUtil to use for drawing.
+       * @param layer The layer that is currently being drawn to.
        */
-      virtual void drawEX(GLUtil* glu);
+      virtual void drawEX(GLUtil* glu, int layer);
       /**
        * The code to draw the instance.
        * @param glu The GLUtil to use for drawing.
+       * @param layer The layer that is currently being drawn to.
        */
-      void draw(GLUtil* glu);
+      void draw(GLUtil* glu, int layer);
 };
 
 /**

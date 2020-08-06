@@ -125,19 +125,19 @@ void Instance::changeDVModifier(bool horizontal, double to, double timeMod, bool
    *dVChangeTime = timeMod;
 }
 
-void Instance::draw(GLUtil* glu){
+void Instance::draw(GLUtil* glu, int layer){
    if (!hidden && !needExtra){
-      draw(glu->draw, glu->shade);
+      draw(glu->draw, glu->shade, layer);
    } else if (!hidden){
-      drawEX(glu);
+      drawEX(glu, layer);
    }
 }
 
-void Instance::drawEX(GLUtil* glu){
-   draw(glu->draw, glu->shade);
+void Instance::drawEX(GLUtil* glu, int layer){
+   draw(glu->draw, glu->shade, layer);
 }
 
-void Instance::draw(GLDraw* gld, GLShaders* gls){
+void Instance::draw(GLDraw* gld, GLShaders* gls, int layer){
    if (hasTexture){
       gld->enableTextures();
       gld->bindTexture(textureID);

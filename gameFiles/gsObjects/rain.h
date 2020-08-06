@@ -72,8 +72,9 @@ class Rain : public Instance {
          * Deals with drawing the rain.
          * @param gld The GLUtil's draw functions.
          * @param gls The GLUtil's shader functions.
+         * @param layer The layer that is currently being drawn to.
          */
-        void draw(GLDraw* gld, GLShaders* gls);
+        void draw(GLDraw* gld, GLShaders* gls, int layer);
 };
 
 /**
@@ -124,8 +125,9 @@ class RainPlayer : public Instance{
          * Deals with drawing the rain.
          * @param gld The GLUtil's draw functions.
          * @param gls The GLUtil's shader functions.
+         * @param layer The layer that is currently being drawn to.
          */
-        void draw(GLDraw* gld, GLShaders* gls);
+        void draw(GLDraw* gld, GLShaders* gls, int layer);
 };
 
 #endif

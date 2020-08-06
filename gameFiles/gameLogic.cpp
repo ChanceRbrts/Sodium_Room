@@ -234,7 +234,7 @@ void GameLogic::draw(GLUtil* glu){
    gld->pushCameraMem(0, 0, gld->getWidth(), gld->getHeight());
    if (hud != nullptr && hud->next != nullptr){
       for (Instances* i = hud->next; i != nullptr; i = i->next){
-         i->i->draw(glu);
+         i->i->draw(glu, 0);
       }
    }
    gld->popCameraMem();

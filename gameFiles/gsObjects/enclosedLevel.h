@@ -53,8 +53,9 @@ class EnclosedLevel : public InstanceLev {
         /**
          * Draws the collapsible level.
          * @param glu The GLUtil to use.
+         * @param layer The layer that is currently being drawn to.
          */
-        void drawEX(GLUtil* glu);
+        void drawEX(GLUtil* glu, int layer);
         /**
          * Updates the collapsible level
          * @param deltaTime The time in between the previous frame and this frame.
