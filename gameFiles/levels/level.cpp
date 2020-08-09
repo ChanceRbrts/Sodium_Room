@@ -109,20 +109,20 @@ pointDouble Level::createLevel(){
          std::vector<int> instLayers = instances[i]->getLayers();
          for (int j = 0; j < instLayers.size(); j++){
             int layer = instLayers[j];
-            std::map<int, Layer>::iterator it = layers.find(layer);
+            std::map<int, Layer *>::iterator it = layers.find(layer);
             DrawnInstance* dI = new DrawnInstance();
             dI->i = instances[i];
             dI->layer = layer;
             inst->drawn.push_back(dI);
             if (it == layers.end()){
                // If there is no layer, make one with this instance.
-               layers.insert({layer, (Layer){dI, dI}});
+               layers.insert({layer, new (Layer){dI, dI}});
             } else{
-               Layer l = layers.at(layer);
+               Layer* l = layers.at(layer);
                // Put at the end of this drawing layer.
-               l.last->next = dI;
-               dI->prev = l.last;
-               l.last = dI;
+               l->last->next = dI;
+               dI->prev = l->last;
+               l->last = dI;
             }
          }
       }
@@ -154,10 +154,10 @@ void Level::destroyLevel(){
       delete del;
    }
    // Deallocate our drawn layers here.
-   std::map<int, Layer>::iterator layerIt = layers.begin();
+   std::map<int, Layer *>::iterator layerIt = layers.begin();
    while (layerIt != layers.end()){
-      Layer l = layerIt->second;
-      DrawnInstance* dI = l.first;
+      Layer* l = layerIt->second;
+      DrawnInstance* dI = l->first;
       while (dI != nullptr){
          DrawnInstance* del = dI;
          dI = dI->next;
@@ -371,4 +371,17 @@ void Level::bisectLevel(bool horizontal, float splitLocation, float offset, Inst
    }
    /// TODO: Add stuff for shaderboxes?
 
+}
+
+std::map<int, std::vector<Layer *>> Level::getLayers(std::map<int, std::vector<Layer *>> prevLayers){
+   std::map<int, Layer *>::iterator layerIt = layers.begin();
+   while (layerIt != layers.end()){
+      std::map<int, std::vector<Layer *>>::iterator it = prevLayers.find(layerIt->first);
+      if (it == prevLayers.end()){
+         std::vector<Layer *> l;
+         l.push_back(layerIt->second);
+         prevLayers.insert({layerIt->first, l});
+      }
+   }
+   return prevLayers;
 }

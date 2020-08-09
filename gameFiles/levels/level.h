@@ -48,7 +48,7 @@ class Level{
       /// The offset of where the instances are in the level.
       float xOff, yOff;
       /// The layers that are being drawn to in the level, and the instances of which to draw the layers on.
-      std::map<int, Layer> layers;
+      std::map<int, Layer *> layers;
    public:
       /// The width and height of the level.
       float w, h;
@@ -113,12 +113,10 @@ class Level{
        */
       void bisectLevel(bool horizontal, float splitLocation, float offset, Instance* cause);
       /**
-       * This adds to a list of ...
-       * Will this actually run faster in the long run? I don't think so.
        * @param prevLayers Layers that are already needed to be drawn to. 
        * @return The layers that need to be drawn.
        */
-      std::map<int, std::vector<Instance *>> getLayers(std::map<int, std::vector<Instance *>> prevLayers);
+      std::map<int, std::vector<Layer *>> getLayers(std::map<int, std::vector<Layer *>> prevLayers);
 };
 
 /**
