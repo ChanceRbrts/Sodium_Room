@@ -47,6 +47,8 @@ class Level{
       void drawObjects(GLUtil* glu, Instance* player, int mode);
       /// The offset of where the instances are in the level.
       float xOff, yOff;
+      /// The layers that are being drawn to in the level, and the instances of which to draw the layers on.
+      std::map<int, Layer> layers;
    public:
       /// The width and height of the level.
       float w, h;
@@ -60,8 +62,6 @@ class Level{
       std::string filePath;
       /// The level's instances. 
       Instances* insts, lastInsts;
-      /// Layers that tell us when to draw an instance.
-      std::vector<Instances*> layers;
       /// The level's shaderboxes
       std::vector<ShaderBox*> shades;
       /// The level's arcs
@@ -112,6 +112,13 @@ class Level{
        * @param cause The instance that's causing the split (so it doesn't accidentally move)
        */
       void bisectLevel(bool horizontal, float splitLocation, float offset, Instance* cause);
+      /**
+       * This adds to a list of ...
+       * Will this actually run faster in the long run? I don't think so.
+       * @param prevLayers Layers that are already needed to be drawn to. 
+       * @return The layers that need to be drawn.
+       */
+      std::map<int, std::vector<Instance *>> getLayers(std::map<int, std::vector<Instance *>> prevLayers);
 };
 
 /**

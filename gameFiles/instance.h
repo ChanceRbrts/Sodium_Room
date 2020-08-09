@@ -8,6 +8,7 @@
 #include <math.h>
 
 #define LAYER_NORMAL 0
+#define LAYER_BACK -2147483647
 
 /**
  * The Object Class; these are the instances that we are updating!
@@ -234,6 +235,12 @@ class Instance{
        * @param layer The layer that is currently being drawn to.
        */
       void draw(GLUtil* glu, int layer);
+      /**
+       * Get the layers that this instance needs to be drawn to.
+       * A layer in this case represents the drawing order, where a smaller layer means it's drawn first.
+       * @return The list of layers to draw to.
+       */
+      std::vector<int> getLayers(){ return layers; };
 };
 
 /**
@@ -247,20 +254,30 @@ struct Instances{
    /// @param next The instance after this one on the linked list.
    Instances* next;
    /// @param draw The instances that represents where it's being drawn.
-   Instances* drawn;
+   std::vector<DrawnInstance*> drawn;
+};
+
+/// A doubly linked list for Instances, but used in the case of drawing order.
+struct DrawnInstance{
+   /// The layer to draw to. This determines the order in which instances get drawn.
+   int layer;
+   /// The instance to draw.
+   Instance* i;
+   /// The instance that's before this in the drawing order in this layer.
+   DrawnInstance* prev;
+   /// The instance that's after this in the drawing order in this layer.
+   DrawnInstance* next;
 };
 
 /**
- * A pointer to a Instances list with an integer attached to it.
+ * A pointer to a Instances list with the beginning and end attached to it.
  * This is used for 
  */
 struct Layer{
-   /// The current layer of the drawing code.
-   double layer;
    /// The instance that's at the beginning of the list.
-   Instances* first;
+   DrawnInstance* first;
    /// The instance that's at the end of the list.
-   Instances* last;
+   DrawnInstance* last;
 };
 
 #endif

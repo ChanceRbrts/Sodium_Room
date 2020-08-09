@@ -106,6 +106,25 @@ pointDouble Level::createLevel(){
             inst->prev = is;
             is = inst;
          }
+         std::vector<int> instLayers = instances[i]->getLayers();
+         for (int j = 0; j < instLayers.size(); j++){
+            int layer = instLayers[j];
+            std::map<int, Layer>::iterator it = layers.find(layer);
+            DrawnInstance* dI = new DrawnInstance();
+            dI->i = instances[i];
+            dI->layer = layer;
+            inst->drawn.push_back(dI);
+            if (it == layers.end()){
+               // If there is no layer, make one with this instance.
+               layers.insert({layer, (Layer){dI, dI}});
+            } else{
+               Layer l = layers.at(layer);
+               // Put at the end of this drawing layer.
+               l.last->next = dI;
+               dI->prev = l.last;
+               l.last = dI;
+            }
+         }
       }
    }
    instances.clear();
@@ -134,6 +153,19 @@ void Level::destroyLevel(){
       insts = insts->next;
       delete del;
    }
+   // Deallocate our drawn layers here.
+   std::map<int, Layer>::iterator layerIt = layers.begin();
+   while (layerIt != layers.end()){
+      Layer l = layerIt->second;
+      DrawnInstance* dI = l.first;
+      while (dI != nullptr){
+         DrawnInstance* del = dI;
+         dI = dI->next;
+         delete del;
+      }
+      layerIt++;
+   }
+   layers.clear();
    // In case we remake this level, we should have it remake our shaderboxes.
    createdShaderboxes = false;
 }
