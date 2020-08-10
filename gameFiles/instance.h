@@ -8,7 +8,7 @@
 #include <math.h>
 
 #define LAYER_NORMAL 0
-#define LAYER_BACK -2147483647
+#define LAYER_BACK -2147483648
 
 /**
  * The Object Class; these are the instances that we are updating!
@@ -267,17 +267,6 @@ struct DrawnInstance{
    DrawnInstance* prev;
    /// The instance that's after this in the drawing order in this layer.
    DrawnInstance* next;
-};
-
-/**
- * A pointer to a Instances list with the beginning and end attached to it.
- * This is used for 
- */
-struct Layer{
-   /// The instance that's at the beginning of the list.
-   DrawnInstance* first;
-   /// The instance that's at the end of the list.
-   DrawnInstance* last;
 };
 
 #endif

@@ -171,8 +171,8 @@ std::vector<CameraObject*> Level::createCameraObjects(){
    return empty;
 }
 
-void Level::draw(GLUtil* glu, Instance* player){
-   if (hasBackground){
+void Level::drawLayer(GLUtil* glu, int layer){
+   if (layer == LAYER_BACK && hasBackground){
       GLDraw* gld = glu->draw;
       // TODO: Draw the background.
       gld->color(r,g,b);
@@ -183,7 +183,13 @@ void Level::draw(GLUtil* glu, Instance* player){
       gld->vertW(xOff+w,yOff+h);
       gld->vertW(xOff+w,yOff);
       gld->end();
+      return;
    }
+   // Actually draw the objects in the current layer.
+   drawObjects(glu, layer, 0);
+}
+
+void Level::drawShaderboxes(GLUtil* glu, Instance* player){
    // Update our arcs here. 
    // (Doing this before creating the shaderboxes so we don't have a ton of nullptrs.)
    for (int i = 0; i < arcs.size(); i++){
@@ -197,14 +203,16 @@ void Level::draw(GLUtil* glu, Instance* player){
       }
       createdShaderboxes = true;
    }
-   // Draw our objects once.
-   drawObjects(glu, player, 0);
    // Draw everything to each of the shader boxes, then draw that shaderbox.
    for (int i = 0; i < shades.size(); i++){
       ShaderBox* shade = shades[i];
       if (!(shade->canDraw())) continue;
       shade->drawOnBox();
-      drawObjects(glu, player, 0);
+      std::map<int, Layer*>::iterator lI = layers.begin();
+      while (lI != layers.end()){
+         drawObjects(glu, lI->first, 0);
+         lI++;
+      }
       shade->drawOutBox();
       shade->draw();
    }
@@ -220,39 +228,39 @@ void Level::draw(GLUtil* glu, Instance* player){
       ShaderBox* s = a->getShaderBox();
       if (s->canDraw()){
          s->drawOnBox();
-         drawObjects(glu, player, 0);
+         std::map<int, Layer*>::iterator lI = layers.begin();
+         while (lI != layers.end()){
+            drawObjects(glu, lI->first, 0);
+            lI++;
+         }
          s->drawOutBox();
          s->draw();
       }
    }
-   
 }
 
 void Level::updateLevel(double deltaTime, Instance* player){
 }
 
-void Level::drawObjects(GLUtil* glu, Instance* player, int mode){
+void Level::drawObjects(GLUtil* glu, int layer, int mode){
    double wid = glu->draw->getWidth();
    double hei = glu->draw->getHeight();
    double cX = glu->draw->camX;
    double cY = glu->draw->camY;
-   if (player != nullptr){
-      if (player->x < cX+wid && player->x+player->w > cX && player->y < cY+hei && player->y+player->h > cY){
-         player->draw(glu, 0);
-      }
-   }
-   if (insts != nullptr){
-      for (Instances* i = insts; i != nullptr; i = i->next){
-         Instance* in = i->i;
-         // Check if the instance is in the bounds of the screen.
-         if (in->x < cX+wid && in->x+in->w > cX && in->y < cY+hei && in->y+in->h > cY){
-            in->draw(glu, 0);
-         } 
-      }
+   std::map<int, Layer*>::iterator lI = layers.find(layer);
+   if (lI == layers.end()) return;
+   Layer* l = layers.at(layer);
+   if (l == nullptr || l->first == nullptr) return;
+   for (DrawnInstance* d = l->first; d != nullptr; d = d->next){
+      Instance* in = d->i;
+      // Check if the instance is in the bounds of the screen.
+      if (in->x < cX+wid && in->x+in->w > cX && in->y < cY+hei && in->y+in->h > cY){
+         in->draw(glu, 0);
+      } 
    }
 }
 
-void Level::moveInstance(Instances* move, Level* otherLev){
+bool Level::moveInstance(Instances* move, Level* otherLev){
    if (move->prev == nullptr){
       // We got the head of our linked list
       insts = move->next;
@@ -267,15 +275,17 @@ void Level::moveInstance(Instances* move, Level* otherLev){
    i->y += otherLev->yOff-yOff;
    otherLev->insts = move->next;
    // Finally, we need to move the drawn instances over.
-   removeFromLayers(move);
-   otherLev->addToLayers(move);
+   bool changeLayers = removeFromLayers(move);
+   changeLayers = otherLev->addToLayers(move) || changeLayers;
    /// TODO: Make a check to see if layers need to be redrawn.
+   return changeLayers;
 }
 
-void Level::moveOutOfBounds(void* lv){
+bool Level::moveOutOfBounds(void* lv){
    LevelList* lev = (LevelList *)lv;
-   if (lev == nullptr) return;
+   if (lev == nullptr) return false;
    // For now, this is a simple out of bounds checker.
+   bool ret = false;
    Instances* i = insts;
    while (i != nullptr){
       // Consider the midpoint of an instance.
@@ -290,7 +300,7 @@ void Level::moveOutOfBounds(void* lv){
                if (pointX >= level->xOff && pointX <= level->xOff+level->w &&
                      pointY >= level->yOff && pointY <= level->yOff+level->h){
                   // Move the instance to this level.
-                  moveInstance(i, level);
+                  ret = moveInstance(i, level) || ret;
                   break;
                }
             }
@@ -299,7 +309,7 @@ void Level::moveOutOfBounds(void* lv){
       i = next;
    }
    // TODO(?): Greedy checker to see if an object from an enclosing room has fallen into bounds.
-   return;
+   return ret;
 }
 
 float Level::getXOff(){ return xOff; }
@@ -367,6 +377,8 @@ std::map<int, std::vector<Layer *>> Level::getLayers(std::map<int, std::vector<L
          std::vector<Layer *> l;
          l.push_back(layerIt->second);
          prevLayers.insert({layerIt->first, l});
+      } else {
+         prevLayers.at(layerIt->first).push_back(layerIt->second);
       }
    }
    return prevLayers;
@@ -387,7 +399,7 @@ bool Level::addToLayers(Instances* in){
       in->drawn.push_back(dI);
       if (it == layers.end()){
          // If there is no layer, make one with this instance.
-         layers.insert({layer, new (Layer){dI, dI}});
+         layers.insert({layer, new (Layer){this, dI, dI}});
          addedALayer = true;
       } else{
          Layer* l = layers.at(layer);

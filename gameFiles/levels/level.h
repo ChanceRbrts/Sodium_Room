@@ -26,8 +26,9 @@ class Level{
        * This function moves an instance from one level to another level.
        * @param move The Instance of this level to be moved into the other level.
        * @param otherLev The other level that we're comparing this to.
+       * @return Whether or not the draw order needs to be changed.
        */
-      void moveInstance(Instances* move, Level* otherLev);
+      bool moveInstance(Instances* move, Level* otherLev);
       /**
        * This function returns all of the shaderboxes in the room.
        * @param glu The GLUtil to use for drawing.
@@ -41,10 +42,9 @@ class Level{
       /**
        * This draws the objects in the room
        * @param glu The GLUtil to use for drawing
-       * @param player The player of the game
        * @param mode TODO: ? Whether or not to draw the player in the room or something?
        */
-      void drawObjects(GLUtil* glu, Instance* player, int mode);
+      void drawObjects(GLUtil* glu, int layer, int mode);
       /// The offset of where the instances are in the level.
       float xOff, yOff;
       /// The layers that are being drawn to in the level, and the instances of which to draw the layers on.
@@ -77,16 +77,24 @@ class Level{
       /// Destroy the current level.
       void destroyLevel();
       /**
-       * Draw the level
+       * Draw the level at the current drawing layer.
+       * It is assumed that the drawing layer will numerically increase.
        * @param glu The GLUtil to use for drawing
-       * @param player The player of the game
+       * @param layer The layer that is being drawn to.
        */
-      void draw(GLUtil* glu, Instance* player);
+      void drawLayer(GLUtil* glu, int layer);
+      /**
+       * Draw the shaderboxes in the level.
+       * @param glu The GLUtil to use for drawing.
+       * @param player The player of the game.
+       */
+      void drawShaderboxes(GLUtil* glu, Instance* player);
       /**
        * Checks to see if an instance is out of bounds, and moves it to another level if so.
        * @param lv The list of levels in loaded in the game.
+       * @return Whether or not the drawing order needs to be changed.
        */
-      void moveOutOfBounds(void* lev);
+      bool moveOutOfBounds(void* lev);
       /// @return The current x offset of the level.
       float getXOff();
       /// @return The current y offset of the level.
@@ -130,6 +138,19 @@ class Level{
        * @return If a layer has been removed from the instance. If so, the layers to be drawn may need to be updated.
        */
       bool removeFromLayers(Instances* in);
+};
+
+/**
+ * A pointer to a Instances list with the beginning and end attached to it.
+ * This is used for 
+ */
+struct Layer{
+   /// The level this layer belongs to.
+   Level* lev;
+   /// The instance that's at the beginning of the list.
+   DrawnInstance* first;
+   /// The instance that's at the end of the list.
+   DrawnInstance* last;
 };
 
 /**

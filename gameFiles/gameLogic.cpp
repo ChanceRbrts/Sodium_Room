@@ -7,6 +7,7 @@ GameLogic::GameLogic(){
    loadedLevels = nullptr;
    player = nullptr;
    camera = new Camera();
+   reloadLayers = false;
    loadLevel(levels->lev[LEV_TEST_RAIN]);
 }
 
@@ -35,6 +36,7 @@ void GameLogic::loadLevel(Level* l){
    lastLoaded = lev;
    hud = new Instances();
    lastHud = hud;
+   reloadLayers = true;
    /*
    // Start of Removal.
    // This is just a test for a text box.
@@ -51,6 +53,7 @@ void GameLogic::unloadLevel(LevelList* l){
    l->lev->destroyLevel();
    if (l->prev != nullptr) l->prev->next = l->next;
    if (l->next != nullptr) l->next->prev = l->prev;
+   reloadLayers = true;
    // We don't want to actually deallocate the level here.
    delete l;
 }
@@ -99,7 +102,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          if (in->i->canRemove()){
             Instances* toRemove = in;
             removeFromList(toRemove, &(l->insts));
-            l->removeFromLayers(toRemove);
+            reloadLayers = l->removeFromLayers(toRemove) || reloadLayers;
             /// TODO: Update the drawing order?
          } else collObjs.push_back(in->i);
          in = next;
@@ -130,7 +133,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          if (in->i->toAdd.size() > 0){
             for (int i = 0; i < in->i->toAdd.size(); i++){
                Instances* newInst = addToList(in, in->i->toAdd[i]);
-               l->addToLayers(newInst);
+               reloadLayers = l->addToLayers(newInst) || reloadLayers;
                /// TODO: Update the drawing layers?
             }
             in->i->toAdd.clear();
@@ -142,7 +145,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    // Finally, make sure instances are in their right levels!
    lList = loadedLevels;
    while (lList != nullptr){
-      lList->lev->moveOutOfBounds(loadedLevels);
+      reloadLayers = lList->lev->moveOutOfBounds(loadedLevels) || reloadLayers;
       lList = lList->next;
    }
    // Update the camera.
@@ -222,15 +225,48 @@ pointDouble GameLogic::followPlayer(GLUtil* glu){
 }
 
 void GameLogic::draw(GLUtil* glu){
+   if (reloadLayers){
+      layers = generateLayers();
+      reloadLayers = false;
+   }
    // Make textures for default fonts here.
    if (!createdFonts){
       FontBook::initialize(glu);
       FontBook::loadFont("Courier New");
       createdFonts = true;
    }
+   // Draw the backgrounds first.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
-         l->lev->draw(glu, player);
+         l->lev->drawLayer(glu, LAYER_BACK);
+      }
+   }
+   // Draw the layers of the objects.
+   // TODO: Draw the player somewhere.
+   std::map<int, std::vector<Layer *>>::iterator dI = layers.begin();
+   for (; dI != layers.end(); dI++){
+      for (int i = 0; i < dI->second.size(); i++){
+         if (dI->second[i] == nullptr){
+            // If a layer is a nullptr, assume it belongs to the game logic, and is thus the player.
+            if (player != nullptr){
+               double cX = glu->draw->camX;
+               double cY = glu->draw->camY;
+               double wid = glu->draw->getWidth();
+               double hei = glu->draw->getHeight();
+               if (player->x < cX+wid && player->x+player->w > cX && player->y < cY+hei && player->y+player->h > cY){
+                  player->draw(glu, dI->first);
+               }
+            }
+            player->draw(glu, dI->first);
+         } else{
+            dI->second[i]->lev->drawLayer(glu, dI->first);
+         }
+      }
+   }
+   // Draw the shaderboxes next.
+   if (loadedLevels != nullptr){
+      for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+         l->lev->drawShaderboxes(glu, player);
       }
    }
    // We want the HUD to be static on the screen.
@@ -242,6 +278,25 @@ void GameLogic::draw(GLUtil* glu){
       }
    }
    gld->popCameraMem();
+}
+
+std::map<int, std::vector<Layer *>> GameLogic::generateLayers(){
+   layers.clear();
+   // Since the player is with the Game Logic, there is no layer that it's a part of.
+   if (player != nullptr){
+      std::vector<int> pLayers = player->getLayers();
+      for (int i = 0; i < pLayers.size(); i++){
+         std::vector<Layer*> l;
+         l.push_back(nullptr);
+         layers.insert({pLayers[i], l});
+      }
+   }
+   if (loadedLevels == nullptr) return layers;
+   for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+      // Get the layers to be drawn to by the level here.
+      layers = l->lev->getLayers(layers);
+   }
+   return layers;
 }
 
 /**
