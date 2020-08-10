@@ -117,6 +117,19 @@ class Level{
        * @return The layers that need to be drawn.
        */
       std::map<int, std::vector<Layer *>> getLayers(std::map<int, std::vector<Layer *>> prevLayers);
+      /**
+       * Add an instance to the drawn layers of the current level.
+       * @param in Contains the instance to add to be drawn to this level.
+       * @return If a new layer has been added to the instance. If so, the layers to be drawn may need to be updated.
+       */
+      bool addToLayers(Instances* in);
+      /**
+       * Assumption: The instance being removed is from the current level.
+       * Remove an instance from the drawn layers of the current level.
+       * @param in Contains the instance to remove from this level.
+       * @return If a layer has been removed from the instance. If so, the layers to be drawn may need to be updated.
+       */
+      bool removeFromLayers(Instances* in);
 };
 
 /**

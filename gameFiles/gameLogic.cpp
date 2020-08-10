@@ -99,6 +99,8 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          if (in->i->canRemove()){
             Instances* toRemove = in;
             removeFromList(toRemove, &(l->insts));
+            l->removeFromLayers(toRemove);
+            /// TODO: Update the drawing order?
          } else collObjs.push_back(in->i);
          in = next;
       }
@@ -127,7 +129,9 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          // Add objects that may have been added by our object.
          if (in->i->toAdd.size() > 0){
             for (int i = 0; i < in->i->toAdd.size(); i++){
-               addToList(in, in->i->toAdd[i]);
+               Instances* newInst = addToList(in, in->i->toAdd[i]);
+               l->addToLayers(newInst);
+               /// TODO: Update the drawing layers?
             }
             in->i->toAdd.clear();
          }

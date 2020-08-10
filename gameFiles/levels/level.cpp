@@ -106,25 +106,7 @@ pointDouble Level::createLevel(){
             inst->prev = is;
             is = inst;
          }
-         std::vector<int> instLayers = instances[i]->getLayers();
-         for (int j = 0; j < instLayers.size(); j++){
-            int layer = instLayers[j];
-            std::map<int, Layer *>::iterator it = layers.find(layer);
-            DrawnInstance* dI = new DrawnInstance();
-            dI->i = instances[i];
-            dI->layer = layer;
-            inst->drawn.push_back(dI);
-            if (it == layers.end()){
-               // If there is no layer, make one with this instance.
-               layers.insert({layer, new (Layer){dI, dI}});
-            } else{
-               Layer* l = layers.at(layer);
-               // Put at the end of this drawing layer.
-               l->last->next = dI;
-               dI->prev = l->last;
-               l->last = dI;
-            }
-         }
+         addToLayers(inst);
       }
    }
    instances.clear();
@@ -284,6 +266,10 @@ void Level::moveInstance(Instances* move, Level* otherLev){
    i->x += otherLev->xOff-xOff;
    i->y += otherLev->yOff-yOff;
    otherLev->insts = move->next;
+   // Finally, we need to move the drawn instances over.
+   removeFromLayers(move);
+   otherLev->addToLayers(move);
+   /// TODO: Make a check to see if layers need to be redrawn.
 }
 
 void Level::moveOutOfBounds(void* lv){
@@ -384,4 +370,59 @@ std::map<int, std::vector<Layer *>> Level::getLayers(std::map<int, std::vector<L
       }
    }
    return prevLayers;
+}
+
+bool Level::addToLayers(Instances* in){
+   Instance* inst = in->i;
+   std::vector<int> instLayers = inst->getLayers();
+   bool addedALayer = false;
+   for (int i = 0; i < instLayers.size(); i++){
+      int layer = instLayers[i];
+      std::map<int, Layer *>::iterator it = layers.find(layer);
+      DrawnInstance* dI = new DrawnInstance();
+      dI->i = inst;
+      dI->prev = nullptr;
+      dI->next = nullptr;
+      dI->layer = layer;
+      in->drawn.push_back(dI);
+      if (it == layers.end()){
+         // If there is no layer, make one with this instance.
+         layers.insert({layer, new (Layer){dI, dI}});
+         addedALayer = true;
+      } else{
+         Layer* l = layers.at(layer);
+         // Put at the end of this drawing layer.
+         l->last->next = dI;
+         dI->prev = l->last;
+         l->last = dI;
+      }
+   }
+   return addedALayer;
+}
+
+bool Level::removeFromLayers(Instances* in){
+   bool removedALayer = false;
+   for (int i = 0; i < in->drawn.size(); i++){
+      DrawnInstance* dI = in->drawn[i];
+      Layer* l = layers.at(dI->layer);
+      // Update the layer if we no longer have something at the beginning or the end of the list.
+      // Otherwise, keep the linked list connected.
+      if (dI->prev == nullptr){
+         assert(dI == l->first);
+         l->first = dI->next;
+      } else dI->prev->next = dI->next;
+      if (dI->next == nullptr){
+         assert(dI == l->last);
+         l->last = dI->prev;
+      } else dI->next->prev = dI->prev;
+      // If there's nothing in the layer anymore, remove it.
+      if (dI->prev == nullptr && dI->next == nullptr){
+         layers.erase(dI->layer);
+         removedALayer = true;
+         delete l;
+      }
+      delete dI;
+   }
+   in->drawn.clear();
+   return removedALayer;
 }
