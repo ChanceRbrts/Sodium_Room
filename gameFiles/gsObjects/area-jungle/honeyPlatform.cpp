@@ -93,7 +93,7 @@ void HoneyPlatform::update(double deltaTime, bool* keyPressed, bool* keyHeld){
 }
 
 /*
-void HoneyPlatform::draw(GLDraw* gld, GLShaders* gls){
+void HoneyPlatform::draw(GLDraw* gld, GLShaders* gls, int layer){
 
 }
 */

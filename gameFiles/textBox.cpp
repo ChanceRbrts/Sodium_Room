@@ -256,7 +256,7 @@ void TextBox::update(double deltaTime, bool* keyPressed, bool* keyHeld){
    }
 }
 
-void TextBox::draw(GLDraw* gld, GLShaders* gls){
+void TextBox::draw(GLDraw* gld, GLShaders* gls, int layer){
    double sW = 4;
    w = gld->getWidth();
    h = gld->getHeight()/4;
@@ -291,7 +291,7 @@ void TextBox::draw(GLDraw* gld, GLShaders* gls){
    gld->end();
    // Draw the characters.
    for (int i = 0; i < currentLine.size() && i < currentCharVisible; i++){
-      currentLine[i]->draw(gld, gls);
+      currentLine[i]->draw(gld, gls, layer);
    }
 }
 
@@ -316,7 +316,7 @@ void Character::update(double deltaTime, bool* keyPressed, bool* keyHeld){
    }
 }
 
-void Character::draw(GLDraw* gld, GLShaders* gls){
+void Character::draw(GLDraw* gld, GLShaders* gls, int layer){
    if (x == 0 && y == 0) return;
    gld->color(r, g, b, 1);
    gld->enableTextures();

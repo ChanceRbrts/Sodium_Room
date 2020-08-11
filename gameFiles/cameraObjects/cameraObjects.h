@@ -29,12 +29,13 @@ class CameraObject {
         CameraObject();
         virtual ~CameraObject(){};
         virtual void modifyCamera(Camera* c, double deltaTime, double W, double H){};
+        virtual void bisectObject(bool horizontal, float splitLocation, float offset){};
 };
 
 class OneWayCameraObject : public CameraObject {
     private:
-        float x, y;
-        float w;
+        double x, y;
+        double w;
         int dir;
     public:
         /**
@@ -46,6 +47,7 @@ class OneWayCameraObject : public CameraObject {
          */
         OneWayCameraObject(double X, double Y, double W, int direction);
         void modifyCamera(Camera* c, double deltaTime, double W, double H);
+        void bisectObject(bool horizontal, float splitLocation, float offset);
         void changeX(double X);
         void changeY(double Y);
 };

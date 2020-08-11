@@ -17,7 +17,7 @@ std::vector<ShaderBox *> TestRain::createShaderBoxes(GLUtil* glu){
    return shadings;
 }
 
-std::vector<Instance *>  TestRain::makeLevel(std::vector<Instance*> previous){
+std::vector<Instance *> TestRain::makeLevel(std::vector<Instance*> previous){
    previous.push_back(new Player(10, 5));
    previous.push_back(new Grate(12, 6, 7));
    previous.push_back(new Rain(12, 1, 7, 0));

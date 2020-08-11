@@ -157,10 +157,12 @@ void GLDraw::start(){
    glClearColor(0.5, 0.5, 0.5, 1.0);
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
    glPushAttrib(GL_TRANSFORM_BIT|GL_ENABLE_BIT);
+   // glEnable(GL_DEPTH_TEST);
 }
 
 void GLDraw::finish(){
    SDL_Info* info = (SDL_Info *)extraInfo;
+   // glDisable(GL_DEPTH_TEST);
    glPopAttrib();
    glFlush();
    SDL_GL_SwapWindow(info->window);

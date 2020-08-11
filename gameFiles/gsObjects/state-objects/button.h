@@ -69,7 +69,7 @@ class Button : public Instance {
          * @param keyHeld The array of the keys that are held down.
          */
         void update(double deltaTime, bool* keyPressed, bool* keyHeld);
-        // void draw(GLDraw* gld, GLShaders* gls);
+        // void draw(GLDraw* gld, GLShaders* gls, int layer);
         /**
          * Deals with collisions of the object.
          * @param o The other object that's colliding with the button.

@@ -35,7 +35,22 @@ Instance::Instance(double X, double Y, double W, double H){
    hidden = false;
    needExtra = false;
    stuckToWall = false;
+   initedLayers = false;
    name = "Instance";
+}
+
+std::vector<int> Instance::initLayers(){
+   layers.push_back(LAYER_NORMAL);
+   return layers;
+}
+
+std::vector<int> Instance::getLayers(){
+   // If we haven't gotten our layers yet, do that.
+   if (!initedLayers){
+      layers = initLayers();
+      initedLayers = true;
+   }
+   return layers;
 }
 
 void Instance::doGravity(double deltaTime){
@@ -119,19 +134,19 @@ void Instance::changeDVModifier(bool horizontal, double to, double timeMod, bool
    *dVChangeTime = timeMod;
 }
 
-void Instance::draw(GLUtil* glu){
+void Instance::draw(GLUtil* glu, int layer){
    if (!hidden && !needExtra){
-      draw(glu->draw, glu->shade);
+      draw(glu->draw, glu->shade, layer);
    } else if (!hidden){
-      drawEX(glu);
+      drawEX(glu, layer);
    }
 }
 
-void Instance::drawEX(GLUtil* glu){
-   draw(glu->draw, glu->shade);
+void Instance::drawEX(GLUtil* glu, int layer){
+   draw(glu->draw, glu->shade, layer);
 }
 
-void Instance::draw(GLDraw* gld, GLShaders* gls){
+void Instance::draw(GLDraw* gld, GLShaders* gls, int layer){
    if (hasTexture){
       gld->enableTextures();
       gld->bindTexture(textureID);

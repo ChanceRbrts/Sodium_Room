@@ -34,7 +34,7 @@ class HoneyPlatform : public Instance {
          * @param horizontal Whether or not W affects the width or height of the platform.
          */
         HoneyPlatform(double X, double Y, double W, bool horizontal);
-        // void draw(GLDraw* gld, GLShaders* gls);
+        // void draw(GLDraw* gld, GLShaders* gls, int layer);
         /**
          * The update function for the honey platform.
          * @param deltaTime The time in between this frame and the previous frame.

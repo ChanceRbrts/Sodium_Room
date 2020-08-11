@@ -97,7 +97,7 @@ void Lighter::collided(Instance* o, double deltaTime){
     }
 }
 
-void Lighter::draw(GLDraw* gld, GLShaders* gls){
+void Lighter::draw(GLDraw* gld, GLShaders* gls, int layer){
     // Do some drawing code here at some point.
     // For now, do nothing.
 }

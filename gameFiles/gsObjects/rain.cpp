@@ -36,6 +36,12 @@ Rain::~Rain(){
     colors.clear();
 }
 
+std::vector<int> Rain::initLayers(){
+    layers.push_back(LAYER_NORMAL-1);
+    layers.push_back(LAYER_NORMAL+1);
+    return layers;
+}
+
 void Rain::initShaders(GLShaders* gls){
     if (!gls->programExists("rainShader")){
         gls->createProgram("gameFiles/shaders/rain", "", "rainShader");
@@ -111,7 +117,7 @@ void Rain::collided(Instance *o, double deltaTime){
     }
 }
 
-void Rain::draw(GLDraw* gld, GLShaders* gls){
+void Rain::draw(GLDraw* gld, GLShaders* gls, int layer){
     if (shaderCheck){
         initShaders(gls);
         shaderCheck = false;
@@ -130,7 +136,8 @@ void Rain::draw(GLDraw* gld, GLShaders* gls){
     gls->addUniform(program, "unitX", 2/gld->getWidth());
     gls->addUniform(program, "unitY", -2/gld->getHeight());
     gls->addUniform(program, "time", time);
-    gld->drawArray(&vertices[0], &colors[0], nullptr, vertices.size()/3, 3, 3, "LINES");
+    int offset = layer > LAYER_NORMAL ? vertices.size()/2 : 0;
+    gld->drawArray(&vertices[0+offset], &colors[0+offset], nullptr, vertices.size()/6, 3, 3, "LINES");
     gls->unbindShader();
     /*
     // For right now, this is a simple transparent rectangle so I can test things.
@@ -182,6 +189,12 @@ RainPlayer::~RainPlayer(){
     // texs.clear();
 }
 
+std::vector<int> RainPlayer::initLayers(){
+    layers.push_back(LAYER_NORMAL-1);
+    layers.push_back(LAYER_NORMAL+1);
+    return layers;
+}
+
 void RainPlayer::fUpdate(double deltaTime){
     // This instance was stopped.
     if (dY == 0 && time > 0 && !backTogether){
@@ -206,7 +219,7 @@ void RainPlayer::fUpdate(double deltaTime){
     p->dY = 0;
 }
 
-void RainPlayer::draw(GLDraw* gld, GLShaders* gls){
+void RainPlayer::draw(GLDraw* gld, GLShaders* gls, int layer){
     int program = gls->bindShader("rainPlayer");
     pointDouble xy = gld->vPoint(x, y);
     gls->addUniform(program, "x", xy.x);

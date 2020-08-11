@@ -32,6 +32,13 @@ class Rain : public Instance {
          * @param gls The GLUtil's shader functions.
          */
         void initShaders(GLShaders* gls);
+    protected:
+        /**
+         * Initializes the drawing layers.
+         * This is special since we need to draw rain on 2 different layers.
+         * @return The layers to draw to.
+         */
+        std::vector<int> initLayers();
     public:
         /**
          * Constructor for the Rain
@@ -65,8 +72,9 @@ class Rain : public Instance {
          * Deals with drawing the rain.
          * @param gld The GLUtil's draw functions.
          * @param gls The GLUtil's shader functions.
+         * @param layer The layer that is currently being drawn to.
          */
-        void draw(GLDraw* gld, GLShaders* gls);
+        void draw(GLDraw* gld, GLShaders* gls, int layer);
 };
 
 /**
@@ -92,6 +100,13 @@ class RainPlayer : public Instance{
         /// The colors of the vertices of the player.
         std::vector<float> colors;
         // std::vector<float> texs;
+    protected:
+        /**
+         * Initializes the drawing layers.
+         * This is special since we need to draw rain on 2 different layers.
+         * @return The layers to draw to.
+         */
+        std::vector<int> initLayers();
     public:
         /**
          * The constructor of the RainPlayer
@@ -110,8 +125,9 @@ class RainPlayer : public Instance{
          * Deals with drawing the rain.
          * @param gld The GLUtil's draw functions.
          * @param gls The GLUtil's shader functions.
+         * @param layer The layer that is currently being drawn to.
          */
-        void draw(GLDraw* gld, GLShaders* gls);
+        void draw(GLDraw* gld, GLShaders* gls, int layer);
 };
 
 #endif

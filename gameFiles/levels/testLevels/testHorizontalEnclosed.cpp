@@ -11,6 +11,7 @@ std::vector<Instance *> TestHorizontalEnclosed::makeLevel(std::vector<Instance*>
     previous.push_back(new Player(17, 13));
     prevX = 17*32;
     encLev = new EnclosedLevel(4, 0, 0, h/32, new TestHorizontalInner());
+    encLev->disconnect();
     previous.push_back(encLev);
     return previous;
 }

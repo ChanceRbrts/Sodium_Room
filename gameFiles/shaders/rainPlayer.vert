@@ -41,5 +41,6 @@ void main(void){
     // trueY = y + (pos.y-pos.z*64)*unitY;
     trueY = y+(trueY+pos.y)*unitY;
     gl_FrontColor = gl_Color;
-    gl_Position = gl_ModelViewProjectionMatrix*vec4(trueX*pos.w, trueY*pos.w, 0, pos.w);
+    float z = 0.1*(1-2*float(mod(pos.z, 0.02) > 0.01));
+    gl_Position = gl_ModelViewProjectionMatrix*vec4(trueX*pos.w, trueY*pos.w, z, pos.w);
 }

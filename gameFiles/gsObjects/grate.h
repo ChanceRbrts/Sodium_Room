@@ -8,6 +8,11 @@
  * This will most likely be extended to to include textures and stuff.
  */
 class Grate : public Instance{
+   private:
+      /// Whether or not the texture has been loaded to this instance yet.
+      bool loadedTexture;
+      /// This makes sure the grate texture is loaded for this grate.
+      void loadTexture();
    public:
       /**
        * A constructor for a grate.
@@ -16,6 +21,14 @@ class Grate : public Instance{
        * @param W The width of the grate. (World coords)
        */
       Grate(double X, double Y, double W);
+      /**
+       * The drawing code of the grate.
+       * Makes sure the grate is drawn based on the grate spritesheet.
+       * @param gld The GLUtil's draw functions.
+       * @param gls The GLUtil's shader functions.
+       * @param layer The layer that is currently being drawn to.
+       */
+      void draw(GLDraw* gld, GLShaders* gls, int layer);
 };
 
 #endif

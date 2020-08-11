@@ -23,9 +23,17 @@ EnclosedLevel::EnclosedLevel(double X, double Y, double W, double H, Level* l) :
     maxOpenTime = 1;
     open = false;
     needExtra = true;
+    connected = true;
+}
+
+std::vector<int> EnclosedLevel::initLayers(){
+    layers.push_back(LAYER_FRONT);
+    return layers;
 }
 
 void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
+    // Check to see if the level should be opened or closed.
+    if (connected) checkOpen();
     time = fmod(time+deltaTime, 1);
     prevLevelUp = levelUp;
     lastW = openHorizontally ? w : h;
@@ -56,7 +64,7 @@ void EnclosedLevel::checkShaders(GLShaders* gls){
     }
 }
 
-void EnclosedLevel::drawEX(GLUtil* glu){
+void EnclosedLevel::drawEX(GLUtil* glu, int layer){
     GLDraw* gld = glu->draw;
     GLShaders* gls = glu->shade;
     // Check if the necessary shaders are loaded in.
@@ -103,7 +111,14 @@ void EnclosedLevel::drawEX(GLUtil* glu){
         gld->pushCameraMem(gld->camX, y+transY*scale, gld->getWidth(), scale*gld->getHeight());
     }
     // Now, draw the contained level!
-    lev->draw(glu, nullptr);
+    std::map<int, std::vector<Layer*>> levLays;
+    levLays = lev->getLayers(levLays);
+    std::map<int, std::vector<Layer*>>::iterator layI = levLays.begin();
+    lev->drawLayer(glu, LAYER_BACK);
+    for (; layI != levLays.end(); layI++){
+        lev->drawLayer(glu, layI->first);
+    }
+    lev->drawShaderboxes(glu, nullptr);
     gld->popCameraMem();
     // Now, draw the diamond.
     gld->color(lev->r*0.75, lev->g*0.75, lev->b*0.75, 0.5);
@@ -173,4 +188,21 @@ void EnclosedLevel::messWithLevels(LevelList* levs, Instance* player){
         if (openHorizontally && player->x > x) player->x += w-lastW;
         else if (!openHorizontally && player->y > y) player->y += h-lastW;
     }
+}
+
+void EnclosedLevel::checkOpen(){
+    open = false;
+    // The level should open when we an arc is colliding with it.
+    for (int i = 0; i < arcList.size(); i++){
+        ArcInfo a = arcList[i];
+        if (abs(a.r-lev->r) < 0.1 && abs(a.g-lev->g) < 0.1 && 
+            abs(a.b-lev->b) < 0.1){
+            open = true;
+            return;
+        }
+    }
+}
+
+void EnclosedLevel::disconnect(){
+    connected = false;
 }

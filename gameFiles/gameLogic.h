@@ -30,6 +30,8 @@ class GameLogic{
       Instances* lastHud;
       /// The camera of the level.
       Camera* camera;
+      /// The shaderbox that the level draws to before the screen.
+      ShaderBox* drawBox;
       /// Whether or not the camera's position has been set yet.
       bool loadedCam;
       /**
@@ -45,6 +47,19 @@ class GameLogic{
        * @param start The start of the current linked list.
        */
       void removeFromList(Instances* i, Instances** start);
+      /**
+       * The drawing layers that each level needs to draw to.
+       * The idea is to draw instances in layers that are in numerical order.
+       */
+      std::map<int, std::vector<Layer *>> layers;
+      /**
+       * Creates a map that maps integers to layers within Levels to draw to the screen.
+       * The idea is that the layers are drawn in numerical order.
+       * @return A map that corresponds to <layerID, Layer> pairs.
+       */
+      std::map<int, std::vector<Layer *>> generateLayers();
+      /// Whether or not the drawn layers need to be reloaded.
+      bool reloadLayers;
    public:
       /// The constructor of the GameLogic.
       GameLogic();
