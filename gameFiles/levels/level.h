@@ -10,6 +10,21 @@
 #define TEXTURES 1
 #define LAYOUT 2
 
+class Level;
+
+/**
+ * A pointer to a Instances list with the beginning and end attached to it.
+ * This is used for 
+ */
+struct Layer{
+   /// The level this layer belongs to.
+   Level* lev;
+   /// The instance that's at the beginning of the list.
+   DrawnInstance* first;
+   /// The instance that's at the end of the list.
+   DrawnInstance* last;
+};
+
 /**
  * A basic level class.
  * This provides the instances and their layouts.
@@ -138,19 +153,6 @@ class Level{
        * @return If a layer has been removed from the instance. If so, the layers to be drawn may need to be updated.
        */
       bool removeFromLayers(Instances* in);
-};
-
-/**
- * A pointer to a Instances list with the beginning and end attached to it.
- * This is used for 
- */
-struct Layer{
-   /// The level this layer belongs to.
-   Level* lev;
-   /// The instance that's at the beginning of the list.
-   DrawnInstance* first;
-   /// The instance that's at the end of the list.
-   DrawnInstance* last;
 };
 
 /**

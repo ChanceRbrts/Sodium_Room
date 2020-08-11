@@ -48,8 +48,7 @@ void main(void){
     // h is guaranteed to be negative in this use case.
     yToUse = max(y+h, y+yToUse*unitY);
     // Rain is visible; Let's make sure to draw with z=0 and with the appropriate x and y values.
-    float z = 0.1*(1-2*float(mod(pos.z, 0.02) > 0.01));
-    vec4 inSight = vec4(trueX*pos.w, yToUse*pos.w, z, pos.w);
+    vec4 inSight = vec4(trueX*pos.w, yToUse*pos.w, 0, pos.w);
     // Rain is not visible in this case.
     vec4 outOfSight = vec4(-999, -999, -999, 1);
     gl_FrontColor = gl_Color;

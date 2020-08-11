@@ -9,6 +9,7 @@
 
 #define LAYER_NORMAL 0
 #define LAYER_BACK -2147483648
+#define LAYER_FRONT 2147483647
 
 /**
  * The Object Class; these are the instances that we are updating!
@@ -57,6 +58,8 @@ class Instance{
       double collDX, collDY;
       // The boolean to say whether or not you need the GLUtil class and not just GLDraw and GLShaders for drawing.
       bool needExtra;
+      // Whether or not we initialized drawing layers.
+      bool initedLayers;
       /**
        * Some objects need to do solid collisions with only some objects.
        * If solid is true, this is a blacklist; if solid is false, this is a whitelist for solid object collisions.
@@ -240,7 +243,19 @@ class Instance{
        * A layer in this case represents the drawing order, where a smaller layer means it's drawn first.
        * @return The list of layers to draw to.
        */
-      std::vector<int> getLayers(){ return layers; };
+      std::vector<int> getLayers();
+};
+
+/// A doubly linked list for Instances, but used in the case of drawing order.
+struct DrawnInstance{
+   /// The layer to draw to. This determines the order in which instances get drawn.
+   int layer;
+   /// The instance to draw.
+   Instance* i;
+   /// The instance that's before this in the drawing order in this layer.
+   DrawnInstance* prev;
+   /// The instance that's after this in the drawing order in this layer.
+   DrawnInstance* next;
 };
 
 /**
@@ -255,18 +270,6 @@ struct Instances{
    Instances* next;
    /// @param draw The instances that represents where it's being drawn.
    std::vector<DrawnInstance*> drawn;
-};
-
-/// A doubly linked list for Instances, but used in the case of drawing order.
-struct DrawnInstance{
-   /// The layer to draw to. This determines the order in which instances get drawn.
-   int layer;
-   /// The instance to draw.
-   Instance* i;
-   /// The instance that's before this in the drawing order in this layer.
-   DrawnInstance* prev;
-   /// The instance that's after this in the drawing order in this layer.
-   DrawnInstance* next;
 };
 
 #endif

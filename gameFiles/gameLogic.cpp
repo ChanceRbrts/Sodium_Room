@@ -242,7 +242,6 @@ void GameLogic::draw(GLUtil* glu){
       }
    }
    // Draw the layers of the objects.
-   // TODO: Draw the player somewhere.
    std::map<int, std::vector<Layer *>>::iterator dI = layers.begin();
    for (; dI != layers.end(); dI++){
       for (int i = 0; i < dI->second.size(); i++){
@@ -257,7 +256,6 @@ void GameLogic::draw(GLUtil* glu){
                   player->draw(glu, dI->first);
                }
             }
-            player->draw(glu, dI->first);
          } else{
             dI->second[i]->lev->drawLayer(glu, dI->first);
          }

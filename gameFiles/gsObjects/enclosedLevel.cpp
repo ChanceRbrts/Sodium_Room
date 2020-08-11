@@ -26,6 +26,11 @@ EnclosedLevel::EnclosedLevel(double X, double Y, double W, double H, Level* l) :
     connected = true;
 }
 
+std::vector<int> EnclosedLevel::initLayers(){
+    layers.push_back(LAYER_FRONT);
+    return layers;
+}
+
 void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
     // Check to see if the level should be opened or closed.
     if (connected) checkOpen();
@@ -106,7 +111,14 @@ void EnclosedLevel::drawEX(GLUtil* glu, int layer){
         gld->pushCameraMem(gld->camX, y+transY*scale, gld->getWidth(), scale*gld->getHeight());
     }
     // Now, draw the contained level!
-    lev->draw(glu, nullptr);
+    std::map<int, std::vector<Layer*>> levLays;
+    levLays = lev->getLayers(levLays);
+    std::map<int, std::vector<Layer*>>::iterator layI = levLays.begin();
+    lev->drawLayer(glu, LAYER_BACK);
+    for (; layI != levLays.end(); layI++){
+        lev->drawLayer(glu, layI->first);
+    }
+    lev->drawShaderboxes(glu, nullptr);
     gld->popCameraMem();
     // Now, draw the diamond.
     gld->color(lev->r*0.75, lev->g*0.75, lev->b*0.75, 0.5);

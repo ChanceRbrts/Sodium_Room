@@ -209,7 +209,23 @@ void Level::drawShaderboxes(GLUtil* glu, Instance* player){
       if (!(shade->canDraw())) continue;
       shade->drawOnBox();
       std::map<int, Layer*>::iterator lI = layers.begin();
+      bool drawnPlayer = false;
       while (lI != layers.end()){
+         if (player != nullptr){
+            std::vector<int> pLayers = player->getLayers();
+            if (!drawnPlayer && pLayers.size() > 0 && lI->first >= pLayers[0]){
+               drawnPlayer = true;
+               if (player != nullptr){
+                  double cX = glu->draw->camX;
+                  double cY = glu->draw->camY;
+                  double wid = glu->draw->getWidth();
+                  double hei = glu->draw->getHeight();
+                  if (player->x < cX+wid && player->x+player->w > cX && player->y < cY+hei && player->y+player->h > cY){
+                     player->draw(glu, lI->first);
+                  }
+               }
+            }
+         }
          drawObjects(glu, lI->first, 0);
          lI++;
       }
@@ -255,7 +271,7 @@ void Level::drawObjects(GLUtil* glu, int layer, int mode){
       Instance* in = d->i;
       // Check if the instance is in the bounds of the screen.
       if (in->x < cX+wid && in->x+in->w > cX && in->y < cY+hei && in->y+in->h > cY){
-         in->draw(glu, 0);
+         in->draw(glu, layer);
       } 
    }
 }
@@ -371,7 +387,7 @@ void Level::bisectLevel(bool horizontal, float splitLocation, float offset, Inst
 
 std::map<int, std::vector<Layer *>> Level::getLayers(std::map<int, std::vector<Layer *>> prevLayers){
    std::map<int, Layer *>::iterator layerIt = layers.begin();
-   while (layerIt != layers.end()){
+   for (; layerIt != layers.end(); layerIt++){
       std::map<int, std::vector<Layer *>>::iterator it = prevLayers.find(layerIt->first);
       if (it == prevLayers.end()){
          std::vector<Layer *> l;

@@ -35,12 +35,21 @@ Instance::Instance(double X, double Y, double W, double H){
    hidden = false;
    needExtra = false;
    stuckToWall = false;
+   initedLayers = false;
    name = "Instance";
-   initLayers();
 }
 
 std::vector<int> Instance::initLayers(){
    layers.push_back(LAYER_NORMAL);
+   return layers;
+}
+
+std::vector<int> Instance::getLayers(){
+   // If we haven't gotten our layers yet, do that.
+   if (!initedLayers){
+      layers = initLayers();
+      initedLayers = true;
+   }
    return layers;
 }
 
