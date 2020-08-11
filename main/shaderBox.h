@@ -85,5 +85,9 @@ class ShaderBox{
        * @param value The value of the uniform.
        */
       void addUniform(std::string name, float value);
+      /**
+       * Clears the shader box to have every value be 0.
+       */
+      void clearBox();
 };
 #endif

@@ -8,6 +8,9 @@ GameLogic::GameLogic(){
    player = nullptr;
    camera = new Camera();
    reloadLayers = false;
+   drawBox = nullptr;
+   arcBoxOne = nullptr;
+   arcBoxTwo = nullptr;
    loadLevel(levels->lev[LEV_TEST_MULTILIGHTS]);
 }
 
@@ -233,6 +236,15 @@ void GameLogic::draw(GLUtil* glu){
       FontBook::loadFont("Courier New");
       createdFonts = true;
    }
+   GLDraw* gld = glu->draw;
+   // Create our shaderboxes to draw to the screen.
+   if (drawBox == nullptr){
+      drawBox = new ShaderBox(0, 0, gld->getWidth(), gld->getHeight(), "", "", glu);
+      arcBoxOne = new ShaderBox(0, 0, gld->getWidth(), gld->getHeight(), "", "", glu);
+      arcBoxTwo = new ShaderBox(0, 0, gld->getWidth(), gld->getHeight(), "", "", glu);
+   }
+   drawBox->moveShaderBox(gld->camX, gld->camY);
+   drawBox->drawOnBox();
    // Draw the backgrounds first.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
@@ -259,6 +271,23 @@ void GameLogic::draw(GLUtil* glu){
          }
       }
    }
+   drawBox->drawOutBox();
+   drawBox->draw();
+   bool drawOne = true;
+   // Reset arcOne's values by drawing a black transparent rectangle on it.
+   arcBoxOne->drawOnBox();
+   arcBoxOne->drawOutBox();
+   // Now, draw the arcs.
+   if (loadedLevels != nullptr){
+      for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+         ShaderBox* aOne = drawOne ? arcBoxOne : arcBoxTwo;
+         ShaderBox* aTwo = drawOne ? arcBoxTwo : arcBoxOne;
+         bool swapThis = l->lev->drawArcs(glu, drawBox, aOne, aTwo);
+         drawOne ^= swapThis;
+      }
+   }
+   ShaderBox* drawMe = drawOne ? arcBoxOne : arcBoxTwo;
+   drawMe->draw();
    // Draw the shaderboxes next.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){

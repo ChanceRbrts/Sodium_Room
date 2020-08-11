@@ -362,20 +362,29 @@ class GLDraw{
       // Makes it so textures are no longer drawn.
       void disableTextures();
       /**
-       * Sets the color to draw.
+       * Sets the color to draw. (Without transparent blending)
        * @param r The value for red. (0-1)
        * @param g The value for green. (0-1)
        * @param b The value for blue. (0-1)
        */
       void color(double r, double g, double b);
       /**
-       * Sets the color to draw.
+       * Sets the color to draw. (With transparent blending)
        * @param r The value for red. (0-1)
        * @param g The value for green. (0-1)
        * @param b The value for blue. (0-1)
        * @param a The value for transparency. (0=Transparent, 1=Opaque)
        */
       void color(double r, double g, double b, double a);
+      /**
+       * Sets the color to draw.
+       * @param r The value for red. (0-1)
+       * @param g The value for green. (0-1)
+       * @param b The value for blue. (0-1)
+       * @param a The value for transparency. (0=Transparent, 1=Opaque)
+       * @param blend Whether or not to draw with transparent blending.
+       */
+      void color(double r, double g, double b, double a, bool blend);
       /**
        * Setting the texture coordinates to draw on a vertex.
        * @param s The x value of the texture (0-1)

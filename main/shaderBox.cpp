@@ -126,3 +126,17 @@ void ShaderBox::addUniform(std::string name, float value){
 void ShaderBox::removeMe(){
    remove = true;
 }
+
+void ShaderBox::clearBox(){
+   glu->draw->color(0, 0, 0, 0, false);
+   glu->draw->begin("QUADS");
+   glu->draw->texCoords(0, 1);
+   glu->draw->vertW(x+xOffset, y+yOffset);
+   glu->draw->texCoords(0, 0);
+   glu->draw->vertW(x+xOffset, y+h+yOffset);
+   glu->draw->texCoords(1, 0);
+   glu->draw->vertW(x+w+xOffset, y+h+yOffset);
+   glu->draw->texCoords(1, 1);
+   glu->draw->vertW(x+w+xOffset, y+yOffset);
+   glu->draw->end();
+}

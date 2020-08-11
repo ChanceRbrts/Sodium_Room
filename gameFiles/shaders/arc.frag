@@ -17,7 +17,7 @@ uniform float b;
 uniform float a;
 uniform bool mono;
 uniform sampler2D tex;
-// uniform sampler2D prevTex;
+uniform sampler2D prevTex;
 
 void main(void){
     float tPI = 6.28318530718;
@@ -50,6 +50,14 @@ void main(void){
     float trueCol = sCol.r*r/weight+sCol.g*g/weight+sCol.b*b/weight;
     vec4 col1 = vec4(trueCol*r, trueCol*g, trueCol*b, alpha);
     vec4 col = vec4(r, g, b, alpha)*sCol;
+    // Get the color of the fragment we need to add to the arc-ed shaderbox.
     vec4 toAdd = col1*float(mono)+col*float(!mono);
-    gl_FragColor = toAdd;
+    vec4 prevC = gl_Color*texture2D(prevTex, gl_TexCoord[0].xy);
+    // Colors are added in proportionally to their alpha values.
+    float newA = toAdd.a+prevC.a;
+    vec4 newVal = (toAdd*toAdd.a+prevC*prevC.a)/newA;
+    newA = 1*float(newA > 1)+newA*float(newA <= 1);
+    newVal.a = newA;
+    // vec4 rPrevC = vec4(prevC.r*prevC.a, prevC.g*prevC.a, prevC.b*prevC.a, prevC.a);
+    gl_FragColor = newVal;
 }
