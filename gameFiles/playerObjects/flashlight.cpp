@@ -70,7 +70,7 @@ void Flashlight::fUpdate(double deltaTime){
     a->setPosition(trueX, y);
 }
 
-void Flashlight::draw(GLDraw* gld, GLShaders* gls){
+void Flashlight::draw(GLDraw* gld, GLShaders* gls, int layer){
     // Eventually, this will draw the flashlight.
     // However, for now, it will do nothing.
 }

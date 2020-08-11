@@ -100,7 +100,6 @@ void OneWayCameraObject::modifyCamera(Camera* c, double deltaTime, double W, dou
     double* dP = dir%2 == 0 ? &(c->dY) : &(c->dX);
     double lim = dir%2 == 0 ? y : x;
     int sign = dir/2 == 0 ? 1 : -1;
-    printf("%f, %f\n", p*sign, (p+*dP*deltaTime)*sign);
     if (p*sign <= lim && (p+*dP*deltaTime)*sign > lim){
         *dP = (lim*sign-p)/deltaTime;
     }

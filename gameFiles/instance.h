@@ -7,6 +7,10 @@
 #include "arc.h"
 #include <math.h>
 
+#define LAYER_NORMAL 0
+#define LAYER_BACK -2147483648
+#define LAYER_FRONT 2147483647
+
 /**
  * The Object Class; these are the instances that we are updating!
  * (Called Instance here because I'm used to not saying Object for these)
@@ -54,6 +58,8 @@ class Instance{
       double collDX, collDY;
       // The boolean to say whether or not you need the GLUtil class and not just GLDraw and GLShaders for drawing.
       bool needExtra;
+      // Whether or not we initialized drawing layers.
+      bool initedLayers;
       /**
        * Some objects need to do solid collisions with only some objects.
        * If solid is true, this is a blacklist; if solid is false, this is a whitelist for solid object collisions.
@@ -63,6 +69,13 @@ class Instance{
       std::vector<ArcInfo> arcList;
       /// Useful for identifying different objects.
       std::string name;
+      /// The drawing layers that the instance draws to.
+      std::vector<int> layers; 
+      /**
+       * Initializes the layers vector to determine what layers to draw to.
+       * @return The layers to draw to.
+       */
+      virtual std::vector<int> initLayers();
       /**
        * Simple gravity calculations
        * @param deltaTime The time in between this frame and the previous frame.
@@ -208,20 +221,41 @@ class Instance{
        * I force GLDraw and GLShaders here to recommend people only do drawing code.
        * @param gld The GLUtil's draw functions.
        * @param gls The GLUtil's shader functions.
+       * @param layer The layer that is currently being drawn to.
        */
-      virtual void draw(GLDraw* gld, GLShaders* gls);
+      virtual void draw(GLDraw* gld, GLShaders* gls, int layer);
       /**
        * The code to draw the instance. (This you want to implement.)
        * I recommend you use GLDraw.
        * This is ONLY if you need to use GLUtil for something other than drawing or shading.
        * @param glu The GLUtil to use for drawing.
+       * @param layer The layer that is currently being drawn to.
        */
-      virtual void drawEX(GLUtil* glu);
+      virtual void drawEX(GLUtil* glu, int layer);
       /**
        * The code to draw the instance.
        * @param glu The GLUtil to use for drawing.
+       * @param layer The layer that is currently being drawn to.
        */
-      void draw(GLUtil* glu);
+      void draw(GLUtil* glu, int layer);
+      /**
+       * Get the layers that this instance needs to be drawn to.
+       * A layer in this case represents the drawing order, where a smaller layer means it's drawn first.
+       * @return The list of layers to draw to.
+       */
+      std::vector<int> getLayers();
+};
+
+/// A doubly linked list for Instances, but used in the case of drawing order.
+struct DrawnInstance{
+   /// The layer to draw to. This determines the order in which instances get drawn.
+   int layer;
+   /// The instance to draw.
+   Instance* i;
+   /// The instance that's before this in the drawing order in this layer.
+   DrawnInstance* prev;
+   /// The instance that's after this in the drawing order in this layer.
+   DrawnInstance* next;
 };
 
 /**
@@ -234,6 +268,8 @@ struct Instances{
    Instances* prev;
    /// @param next The instance after this one on the linked list.
    Instances* next;
+   /// @param draw The instances that represents where it's being drawn.
+   std::vector<DrawnInstance*> drawn;
 };
 
 #endif

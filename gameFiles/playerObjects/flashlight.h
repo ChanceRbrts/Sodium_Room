@@ -78,8 +78,9 @@ class Flashlight : public PlayerAbility {
          * This will draw the flashlight (eventually TODO:)
          * @param gld The GLUtil's draw functions.
          * @param gls The GLUtil's shader functions.
+         * @param layer The layer that is currently being drawn to.
          */
-        void draw(GLDraw* gld, GLShaders* gls);
+        void draw(GLDraw* gld, GLShaders* gls, int layer);
 };
 
 #endif

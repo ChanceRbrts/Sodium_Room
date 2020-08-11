@@ -2,7 +2,7 @@
 
 InstCreate::InstCreate() : Instance(0, 0, 1, 1){}
 
-void InstCreate::draw(GLDraw* gld, GLShaders* gls){}
+void InstCreate::draw(GLDraw* gld, GLShaders* gls, int layer){}
 
 void InstCreate::addInstance(Instance* i){
     toAdd.push_back(i);

@@ -15,8 +15,9 @@ class InstCreate : public Instance {
          * Blank draw command to do nothing.
          * @param gld GLUtil's draw functions.
          * @param gls GLUtil's shader functions.
+         * @param layer The layer that is currently being drawn to.
          */
-        void draw(GLDraw* gld, GLShaders* gls);
+        void draw(GLDraw* gld, GLShaders* gls, int layer);
         /**
          * Something to add to the instance list.
          * @param i The instance to add to the level.

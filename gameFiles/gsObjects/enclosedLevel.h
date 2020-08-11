@@ -38,6 +38,13 @@ class EnclosedLevel : public InstanceLev {
         void checkShaders(GLShaders* gls);
         /// This checks the arc list to update whether or not the level is opened or closed.
         void checkOpen();
+    protected:
+        /**
+         * Initializes the drawing layers.
+         * This is special since we need to draw rain on 2 different layers.
+         * @return The layers to draw to.
+         */
+        std::vector<int> initLayers();
     public:
         /// A boolean to determine if the level should expand or collapse
         bool open;
@@ -53,8 +60,9 @@ class EnclosedLevel : public InstanceLev {
         /**
          * Draws the collapsible level.
          * @param glu The GLUtil to use.
+         * @param layer The layer that is currently being drawn to.
          */
-        void drawEX(GLUtil* glu);
+        void drawEX(GLUtil* glu, int layer);
         /**
          * Updates the collapsible level
          * @param deltaTime The time in between the previous frame and this frame.

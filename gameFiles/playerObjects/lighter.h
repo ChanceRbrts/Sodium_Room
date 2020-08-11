@@ -52,8 +52,9 @@ class Lighter : public PlayerAbility {
          * This will (eventually, TODO:) draw the lighter. 
          * @param gld The GLUtil's draw functions.
          * @param gls The GLUtil's shader functions.
+         * @param layer The layer that is currently being drawn to.
          */
-        void draw(GLDraw* gld, GLShaders* gls);
+        void draw(GLDraw* gld, GLShaders* gls, int layer);
         /**
          * Code to deal with the player colliding with other instances.
          * @param o The instance that collided with the player.

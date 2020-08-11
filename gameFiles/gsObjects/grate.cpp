@@ -18,7 +18,7 @@ void Grate::loadTexture(){
    }
 }
 
-void Grate::draw(GLDraw* gld, GLShaders* gls){
+void Grate::draw(GLDraw* gld, GLShaders* gls, int layer){
    if (!loadedTexture){
       loadTexture();
       loadedTexture = true;

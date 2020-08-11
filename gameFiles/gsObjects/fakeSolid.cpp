@@ -64,7 +64,7 @@ void FakeSolid::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instan
     }
 }
 
-void FakeSolid::draw(GLDraw* gld, GLShaders* gls){
+void FakeSolid::draw(GLDraw* gld, GLShaders* gls, int layer){
     if (!loadedShader){
         checkShader(gls);
         loadedShader = true;

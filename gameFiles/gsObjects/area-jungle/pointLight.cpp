@@ -8,7 +8,7 @@ PointLight::PointLight(double X, double Y, Arc* l) : Instance(X, Y, 1/32.0, 1/32
     wide = 1;
 }
 
-void PointLight::draw(GLDraw* gld, GLShaders* gls){
+void PointLight::draw(GLDraw* gld, GLShaders* gls, int layer){
     // The arc will draw around the radius, so let's just draw this as a point.
     gld->begin("POINTS");
     gld->color(1, 1, 1);

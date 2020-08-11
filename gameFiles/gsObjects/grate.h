@@ -26,8 +26,9 @@ class Grate : public Instance{
        * Makes sure the grate is drawn based on the grate spritesheet.
        * @param gld The GLUtil's draw functions.
        * @param gls The GLUtil's shader functions.
+       * @param layer The layer that is currently being drawn to.
        */
-      void draw(GLDraw* gld, GLShaders* gls);
+      void draw(GLDraw* gld, GLShaders* gls, int layer);
 };
 
 #endif

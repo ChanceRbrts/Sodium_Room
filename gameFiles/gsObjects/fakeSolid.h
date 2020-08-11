@@ -46,8 +46,9 @@ class FakeSolid : public Instance{
          * Drawing code for the FakeSolid
          * @param gld The GLUtil's draw functions.
          * @param gls The GLUtil's shader functions.
+         * @param layer The layer that is currently being drawn to.
          */
-        void draw(GLDraw* gld, GLShaders* gls);
+        void draw(GLDraw* gld, GLShaders* gls, int layer);
         /**
          * This updates the FakeSolid, doing animation and checking where the player is.
          * @param deltaTime The time in between the previous frame and this frame.

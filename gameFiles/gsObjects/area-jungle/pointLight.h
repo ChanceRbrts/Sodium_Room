@@ -37,8 +37,9 @@ class PointLight : public Instance{
          * Draws the point and sets up the arc to be drawn.
          * @param gld The GLUtil's draw functions.
          * @param gls The GLUtil's shader functions.
+         * @param layer The layer that is currently being drawn to.
          */
-        void draw(GLDraw* gld, GLShaders* gls);
+        void draw(GLDraw* gld, GLShaders* gls, int layer);
         /**
          * Updates the object; Calls updatePos and then updateArc.
          * @param deltaTime The time in between the previous frame and this frame.
