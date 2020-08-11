@@ -8,7 +8,7 @@ GameLogic::GameLogic(){
    player = nullptr;
    camera = new Camera();
    reloadLayers = false;
-   loadLevel(levels->lev[LEV_TEST_RAIN]);
+   loadLevel(levels->lev[LEV_TEST_MULTILIGHTS]);
 }
 
 GameLogic::~GameLogic(){
@@ -103,7 +103,6 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
             Instances* toRemove = in;
             removeFromList(toRemove, &(l->insts));
             reloadLayers = l->removeFromLayers(toRemove) || reloadLayers;
-            /// TODO: Update the drawing order?
          } else collObjs.push_back(in->i);
          in = next;
       }
@@ -134,7 +133,6 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
             for (int i = 0; i < in->i->toAdd.size(); i++){
                Instances* newInst = addToList(in, in->i->toAdd[i]);
                reloadLayers = l->addToLayers(newInst) || reloadLayers;
-               /// TODO: Update the drawing layers?
             }
             in->i->toAdd.clear();
          }

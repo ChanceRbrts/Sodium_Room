@@ -17,31 +17,39 @@ uniform float b;
 uniform float a;
 uniform bool mono;
 uniform sampler2D tex;
+// uniform sampler2D prevTex;
 
 void main(void){
     float tPI = 6.28318530718;
+    // Convert world coordinates of the fragment into texture coordinates.
     float realX = gl_FragCoord.x*xScale+camX;
     float realY = (480-gl_FragCoord.y)*yScale+camY;
+    // Get the distance from this fragment and the center of the arc.
     float distX = realX-x;
     float distY = realY-y;
     float fullDist = sqrt(distX*distX+distY*distY);
+    // Get a degree in radians from the center.
     float d1X = d1 - tPI/48;
     float d2X = d2 + tPI/48;
     float d = atan(distY, distX);
+    // Make sure D2 is always greater than d1.
     float D2 = d2;
     D2 += tPI*float(d2 <= d1);
     d2X += tPI*float(d2 <= d1);
     d += tPI*float(d < d1X && d2 <= d1);
     if (fullDist > rad*1.1 || d1X > d || d2X < d) discard;
+    // Get the opaqueness of this fragment of the arc.
     float alpha = 1;
     alpha -= (d1-d)/(d1-d1X)*float(d < d1);
     alpha -= (d-D2)/(d2X-D2)*float(d > D2);
     alpha -= (fullDist-rad)/(rad*.1)*float(fullDist > rad);
     alpha *= a;
     vec4 sCol = gl_Color*texture2D(tex, gl_TexCoord[0].xy);
+    // Get both the monochrome color and the tinted color.
     float weight = r+g+b;
     float trueCol = sCol.r*r/weight+sCol.g*g/weight+sCol.b*b/weight;
     vec4 col1 = vec4(trueCol*r, trueCol*g, trueCol*b, alpha);
     vec4 col = vec4(r, g, b, alpha)*sCol;
-    gl_FragColor = col1*float(mono)+col*float(!mono);
+    vec4 toAdd = col1*float(mono)+col*float(!mono);
+    gl_FragColor = toAdd;
 }

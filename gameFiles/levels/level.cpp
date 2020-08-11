@@ -189,6 +189,15 @@ void Level::drawLayer(GLUtil* glu, int layer){
    drawObjects(glu, layer, 0);
 }
 
+bool Level::drawArcs(GLUtil* glu, ShaderBox* mainBox, ShaderBox* arcOne, ShaderBox* arcTwo){
+   /// TODO: Implement this.
+   // Update arcs before using them.
+   for (int i = 0; i < arcs.size(); i++){
+      arcs[i]->draw(glu);
+   }
+   return false;
+}
+
 void Level::drawShaderboxes(GLUtil* glu, Instance* player){
    // Update our arcs here. 
    // (Doing this before creating the shaderboxes so we don't have a ton of nullptrs.)
@@ -293,7 +302,6 @@ bool Level::moveInstance(Instances* move, Level* otherLev){
    // Finally, we need to move the drawn instances over.
    bool changeLayers = removeFromLayers(move);
    changeLayers = otherLev->addToLayers(move) || changeLayers;
-   /// TODO: Make a check to see if layers need to be redrawn.
    return changeLayers;
 }
 

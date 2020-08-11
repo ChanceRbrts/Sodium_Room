@@ -60,6 +60,7 @@ gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gam
 
 gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/levelExample.o\
 		gameFiles/levels/testLevels/testRain.o gameFiles/levels/testLevels/testJungleObjects.o\
+		gameFiles/levels/testLevels/testMultipleLights.o\
 		gameFiles/levels/mainLevels/introLevel.o gameFiles/levels/jungleLevels/rainHallway.o
 	ar -rcs $@ $^
 
