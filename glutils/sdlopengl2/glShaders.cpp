@@ -58,6 +58,10 @@ int GLShaders::createProgram(std::string vertName, std::string fragName, std::st
    if (vert) glAttachShader(program, vert);
    int frag = createShader(fragName+".frag", GL_FRAGMENT_SHADER);
    if (frag) glAttachShader(program, frag);
+   if (!vert && !frag){
+      glDeleteProgram(program);
+      return 0;
+   }
    glLinkProgram(program);
    // Thanks to https://www.khronos.org/opengl/wiki/Example_Code
    GLint isLinked = 0;
