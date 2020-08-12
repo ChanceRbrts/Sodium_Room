@@ -275,15 +275,16 @@ void GameLogic::draw(GLUtil* glu){
    drawBox->draw();
    bool drawOne = true;
    // Reset arcOne's values by drawing a black transparent rectangle on it.
-   arcBoxOne->drawOnBox();
-   arcBoxOne->drawOutBox();
+   arcBoxTwo->drawOnBox();
+   arcBoxTwo->clearBox();
+   arcBoxTwo->drawOutBox();
    // Now, draw the arcs.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
          ShaderBox* aOne = drawOne ? arcBoxOne : arcBoxTwo;
          ShaderBox* aTwo = drawOne ? arcBoxTwo : arcBoxOne;
-         bool swapThis = l->lev->drawArcs(glu, drawBox, aOne, aTwo);
-         drawOne ^= swapThis;
+         bool dontSwap = l->lev->drawArcs(glu, drawBox, aOne, aTwo);
+         drawOne ^= !dontSwap;
       }
    }
    ShaderBox* drawMe = drawOne ? arcBoxOne : arcBoxTwo;

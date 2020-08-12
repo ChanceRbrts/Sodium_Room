@@ -89,5 +89,7 @@ class ShaderBox{
        * Clears the shader box to have every value be 0.
        */
       void clearBox();
+      /// @return The texture ID of the shaderbox
+      unsigned int getTextureID();
 };
 #endif

@@ -38,28 +38,39 @@ void Arc::setAngle(double D1, double D2){
     d2 = fmod(D2+3*M_PI, M_PI*2)-M_PI;
 }
 
-void Arc::draw(GLUtil* glu){
+void Arc::draw(GLUtil* glu, ShaderBox* mainTex, ShaderBox* drawTo, int fromTex){
     // printf("%f, %f, %f!\n", x, y, r);
+    /*
     if (shade == nullptr){
         shade = new ShaderBox(0, 0, maxR*1.1/16, maxR*1.1/16, "", "arc", glu);
     }
-    shade->addUniform("x", x);
-    shade->addUniform("y", y);
-    shade->addUniform("rad", r);
-    shade->addUniform("d1", d1);
-    shade->addUniform("d2", d2);
-    shade->addUniform("r", rCol);
-    shade->addUniform("g", gCol);
-    shade->addUniform("b", bCol);
-    shade->addUniform("a", alpha);
-    shade->addUniform("xScale", 1);
-    shade->addUniform("yScale", 1);
-    shade->addUniform("camX", glu->draw->camX);
-    shade->addUniform("camY", glu->draw->camY);
-    shade->addUniform("unitX", 2/glu->draw->getWidth());
-    shade->addUniform("unitY", -2/glu->draw->getHeight());
-    shade->addUniform("mono", monocolor);
-    shade->moveShaderBox(x-maxR*1.1, y-maxR*1.1);
+    */
+    // Set the uniform values.
+    mainTex->addUniform("x", x);
+    mainTex->addUniform("y", y);
+    mainTex->addUniform("rad", r);
+    mainTex->addUniform("d1", d1);
+    mainTex->addUniform("d2", d2);
+    mainTex->addUniform("r", rCol);
+    mainTex->addUniform("g", gCol);
+    mainTex->addUniform("b", bCol);
+    mainTex->addUniform("a", alpha);
+    mainTex->addUniform("xScale", 1);
+    mainTex->addUniform("yScale", 1);
+    mainTex->addUniform("camX", glu->draw->camX);
+    mainTex->addUniform("camY", glu->draw->camY);
+    mainTex->addUniform("unitX", 2/glu->draw->getWidth());
+    mainTex->addUniform("unitY", -2/glu->draw->getHeight());
+    mainTex->addUniform("mono", monocolor);
+    mainTex->addUniform("prevTex", 1);
+    // Actually draw the arc onto the drawTo shaderbox.
+    glu->draw->color(1, 1, 1, 1, false);
+    drawTo->drawOnBox();
+    glu->draw->enableTextures();
+    glu->draw->bindTexture(fromTex, 1);
+    mainTex->draw();
+    drawTo->drawOutBox();
+    // shade->moveShaderBox(x-maxR*1.1, y-maxR*1.1);
 }
 
 void Arc::setColor(double R, double G, double B){

@@ -97,8 +97,11 @@ class Arc{
         /**
          * This sets up the shaderbox drawing code.
          * @param glu The GLUtil to use for drawing.
+         * @param mainTex The texture that has already been drawn before the arcs.
+         * @param drawTo The shaderbox that the arc is being drawn to.
+         * @param fromTex The textures that contain the information from the previous arcs.
          */
-        void draw(GLUtil* glu);
+        void draw(GLUtil* glu, ShaderBox* mainTex, ShaderBox* drawTo, int fromTex);
         /**
          * This changes the color of the arc.
          * @param R The new red color of the arc.

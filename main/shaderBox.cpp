@@ -16,7 +16,7 @@ ShaderBox::ShaderBox(double X, double Y, double W, double H, std::string vertSha
    renID = frameBufferParts.z;
    glu->shade->resizeFrameBuffer(frameID, texID, renID, glu->draw->getWidth(), glu->draw->getHeight());
    drawID = vertShader+fragShader;
-   if (!glu->shade->programExists(drawID)){
+   if (drawID.length() > 0 && !glu->shade->programExists(drawID)){
       glu->shade->createProgram("gameFiles/shaders/"+vertShader, "gameFiles/shaders/"+fragShader, drawID);
    }
    remove = false;
@@ -139,4 +139,8 @@ void ShaderBox::clearBox(){
    glu->draw->texCoords(1, 1);
    glu->draw->vertW(x+w+xOffset, y+yOffset);
    glu->draw->end();
+}
+
+unsigned int ShaderBox::getTextureID(){
+   return texID;
 }

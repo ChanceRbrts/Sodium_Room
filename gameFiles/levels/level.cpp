@@ -192,10 +192,15 @@ void Level::drawLayer(GLUtil* glu, int layer){
 bool Level::drawArcs(GLUtil* glu, ShaderBox* mainBox, ShaderBox* arcOne, ShaderBox* arcTwo){
    /// TODO: Implement this.
    // Update arcs before using them.
+   bool doNotSwap = true;
    for (int i = 0; i < arcs.size(); i++){
-      arcs[i]->draw(glu);
+      ShaderBox* aOne = doNotSwap ? arcOne : arcTwo;
+      ShaderBox* aTwo = doNotSwap ? arcTwo : arcOne;
+      
+      arcs[i]->draw(glu, mainBox, aOne, aTwo->getTextureID());
+      doNotSwap = !doNotSwap;
    }
-   return false;
+   return doNotSwap;
 }
 
 void Level::drawShaderboxes(GLUtil* glu, Instance* player){
