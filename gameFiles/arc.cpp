@@ -8,7 +8,6 @@ Arc::Arc(double X, double Y, double R, double D1, double D2, double RC, double G
     d1 = D1;
     d2 = D2;
     connected = true;
-    shade = nullptr;
     rCol = RC;
     gCol = GC;
     bCol = BC;
@@ -18,10 +17,6 @@ Arc::Arc(double X, double Y, double R, double D1, double D2, double RC, double G
 }
 
 Arc::~Arc(){
-    if (shade != nullptr){
-        if (connected) delete shade;
-        else shade->removeMe();
-    }
 }
 
 void Arc::setPosition(double X, double Y){
@@ -38,7 +33,7 @@ void Arc::setAngle(double D1, double D2){
     d2 = fmod(D2+3*M_PI, M_PI*2)-M_PI;
 }
 
-void Arc::draw(GLUtil* glu, ShaderBox* mainTex, ShaderBox* drawTo, int fromTex){
+void Arc::draw(GLUtil* glu, ShaderBox* mainTex, DualSBox drawTo, int fromTex, int fromAlpha){
     // printf("%f, %f, %f!\n", x, y, r);
     /*
     if (shade == nullptr){
@@ -62,14 +57,24 @@ void Arc::draw(GLUtil* glu, ShaderBox* mainTex, ShaderBox* drawTo, int fromTex){
     mainTex->addUniform("unitX", 2/glu->draw->getWidth());
     mainTex->addUniform("unitY", -2/glu->draw->getHeight());
     mainTex->addUniform("mono", monocolor);
-    mainTex->addUniform("prevTex", 1);
+    mainTex->addUniformI("prevTex", 1);
+    mainTex->addUniformI("prevAlpha", 2);
+    mainTex->addUniform("alphaTex", false);
     // Actually draw the arc onto the drawTo shaderbox.
-    glu->draw->color(1, 1, 1, 1, false);
-    drawTo->drawOnBox();
+    glu->draw->color(1, 1, 1, 1);
+    drawTo.first->drawOnBox();
     glu->draw->enableTextures();
     glu->draw->bindTexture(fromTex, 1);
+    glu->draw->bindTexture(fromAlpha, 2);
     mainTex->draw();
-    drawTo->drawOutBox();
+    drawTo.first->drawOutBox();
+    mainTex->addUniform("alphaTex", true);
+    drawTo.second->drawOnBox();
+    glu->draw->enableTextures();
+    glu->draw->bindTexture(fromTex, 1);
+    glu->draw->bindTexture(fromAlpha, 2);
+    mainTex->draw();
+    drawTo.second->drawOutBox();
     // shade->moveShaderBox(x-maxR*1.1, y-maxR*1.1);
 }
 

@@ -23,8 +23,6 @@ struct ArcInfo{
  */
 class Arc{
     protected:
-        /// The shaderbox that the arc draws to.
-        ShaderBox* shade;
         /// The center of the arc.
         double x, y;
         /// The radius of the arc.
@@ -86,8 +84,6 @@ class Arc{
         double getD2(){return d2;};
         /// @return The opaqueness of the arc.
         double getAlpha(){return alpha;}
-        /// @return The shaderbox that the Arc draws to.
-        ShaderBox* getShaderBox(){ return shade; }
         /**
          * Change the angle that the arc is at.
          * @param D1 The new starting angle of the arc in radians.
@@ -100,8 +96,9 @@ class Arc{
          * @param mainTex The texture that has already been drawn before the arcs.
          * @param drawTo The shaderbox that the arc is being drawn to.
          * @param fromTex The textures that contain the information from the previous arcs.
+         * @param fromAlpha The opaqueness texture from the previous arcs.
          */
-        void draw(GLUtil* glu, ShaderBox* mainTex, ShaderBox* drawTo, int fromTex);
+        void draw(GLUtil* glu, ShaderBox* mainTex, DualSBox drawTo, int fromTex, int fromAlpha);
         /**
          * This changes the color of the arc.
          * @param R The new red color of the arc.

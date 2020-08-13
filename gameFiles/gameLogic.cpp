@@ -9,8 +9,8 @@ GameLogic::GameLogic(){
    camera = new Camera();
    reloadLayers = false;
    drawBox = nullptr;
-   arcBoxOne = nullptr;
-   arcBoxTwo = nullptr;
+   arcBoxOne = (DualSBox){nullptr, nullptr};
+   arcBoxTwo = (DualSBox){nullptr, nullptr};
    loadLevel(levels->lev[LEV_TEST_MULTILIGHTS]);
 }
 
@@ -239,11 +239,19 @@ void GameLogic::draw(GLUtil* glu){
    GLDraw* gld = glu->draw;
    // Create our shaderboxes to draw to the screen.
    if (drawBox == nullptr){
-      drawBox = new ShaderBox(0, 0, gld->getWidth(), gld->getHeight(), "", "", glu);
-      arcBoxOne = new ShaderBox(0, 0, gld->getWidth(), gld->getHeight(), "", "", glu);
-      arcBoxTwo = new ShaderBox(0, 0, gld->getWidth(), gld->getHeight(), "", "", glu);
+      drawBox = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "", glu);
+      // The "first" of these pairs represent the colors.
+      // The "second" of these paris represent the opaqueness.
+      arcBoxOne.first = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "drawArc", glu);
+      arcBoxOne.second = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "", glu);
+      arcBoxTwo.first = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "drawArc", glu);
+      arcBoxTwo.second = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "", glu);
    }
    drawBox->moveShaderBox(gld->camX, gld->camY);
+   arcBoxOne.first->moveShaderBox(gld->camX, gld->camY);
+   arcBoxOne.second->moveShaderBox(gld->camX, gld->camY);
+   arcBoxTwo.first->moveShaderBox(gld->camX, gld->camY);
+   arcBoxTwo.second->moveShaderBox(gld->camX, gld->camY);
    drawBox->drawOnBox();
    // Draw the backgrounds first.
    if (loadedLevels != nullptr){
@@ -264,6 +272,8 @@ void GameLogic::draw(GLUtil* glu){
                double hei = glu->draw->getHeight();
                if (player->x < cX+wid && player->x+player->w > cX && player->y < cY+hei && player->y+player->h > cY){
                   player->draw(glu, dI->first);
+                  PlayerAbility* pA = ((Player*)player)->getAbility();
+                  if (pA != nullptr) pA->draw(glu, dI->first);
                }
             }
          } else{
@@ -274,21 +284,32 @@ void GameLogic::draw(GLUtil* glu){
    drawBox->drawOutBox();
    drawBox->draw();
    bool drawOne = true;
-   // Reset arcOne's values by drawing a black transparent rectangle on it.
-   arcBoxTwo->drawOnBox();
-   arcBoxTwo->clearBox();
-   arcBoxTwo->drawOutBox();
+   // Reset arcOne's alpha values by drawing a black transparent rectangle on it.
+   arcBoxOne.second->drawOnBox();
+   arcBoxOne.second->clearBox();
+   arcBoxOne.second->drawOutBox();
+   arcBoxTwo.second->drawOnBox();
+   arcBoxTwo.second->clearBox();
+   arcBoxTwo.second->drawOutBox();
+   drawBox->changeShader("", "arc");
    // Now, draw the arcs.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
-         ShaderBox* aOne = drawOne ? arcBoxOne : arcBoxTwo;
-         ShaderBox* aTwo = drawOne ? arcBoxTwo : arcBoxOne;
-         bool dontSwap = l->lev->drawArcs(glu, drawBox, aOne, aTwo);
+         DualSBox aOne = drawOne ? arcBoxOne : arcBoxTwo;
+         DualSBox aTwo = drawOne ? arcBoxTwo : arcBoxOne;
+         // Draw the player ability last, so pass in nullptr if this isn't the final level.
+         Instance* possPlay = l->next == nullptr ? player : nullptr;
+         bool dontSwap = l->lev->drawArcs(glu, drawBox, aOne, aTwo, possPlay);
          drawOne ^= !dontSwap;
       }
    }
-   ShaderBox* drawMe = drawOne ? arcBoxOne : arcBoxTwo;
-   drawMe->draw();
+   drawBox->changeShader("");
+   drawBox->setBlend(true);
+   DualSBox drawMe = drawOne ? arcBoxOne : arcBoxTwo;
+   // printf("%d\n", drawMe.second->getTextureID());
+   drawMe.first->addUniformI("alphaTex", 1);
+   gld->bindTexture(drawMe.second->getTextureID(), 1);
+   drawMe.first->draw();
    // Draw the shaderboxes next.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
@@ -296,7 +317,6 @@ void GameLogic::draw(GLUtil* glu){
       }
    }
    // We want the HUD to be static on the screen.
-   GLDraw* gld = glu->draw;
    gld->pushCameraMem(0, 0, gld->getWidth(), gld->getHeight());
    if (hud != nullptr && hud->next != nullptr){
       for (Instances* i = hud->next; i != nullptr; i = i->next){

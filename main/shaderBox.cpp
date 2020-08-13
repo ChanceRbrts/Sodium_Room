@@ -19,7 +19,9 @@ ShaderBox::ShaderBox(double X, double Y, double W, double H, std::string vertSha
    if (drawID.length() > 0 && !glu->shade->programExists(drawID)){
       glu->shade->createProgram("gameFiles/shaders/"+vertShader, "gameFiles/shaders/"+fragShader, drawID);
    }
+   fullID = "";
    remove = false;
+   blend = true;
 }
 
 ShaderBox::~ShaderBox(){
@@ -66,13 +68,16 @@ void ShaderBox::draw(){
             // printf("%s, %f\n", it->first.c_str(), it->second);
             glu->shade->addUniform(program, it->first, it->second);
          }
+         for (std::map<std::string, int>::iterator it = uniformIs.begin(); it != uniformIs.end(); it++){
+            glu->shade->addUniformI(program, it->first, it->second);
+         }
       }
       // else glu->shade->bindShader(0);
       // Draw our frame buffer to the screen!
       glu->draw->enableTextures();
       glu->draw->bindTexture(texID);
       // Actually draw the textures.
-      glu->draw->color(1, 1, 1, 1);
+      glu->draw->color(1, 1, 1, 1, blend);
       glu->draw->begin("QUADS");
       glu->draw->texCoords(0, 1);
       glu->draw->vertW(x+xOffset, y+yOffset);
@@ -123,12 +128,16 @@ void ShaderBox::addUniform(std::string name, float value){
    uniforms[name] = value;
 }
 
+void ShaderBox::addUniformI(std::string name, int value){
+   uniformIs[name] = value;
+}
+
 void ShaderBox::removeMe(){
    remove = true;
 }
 
 void ShaderBox::clearBox(){
-   glu->draw->color(0, 0, 0, 0, false);
+   glu->draw->color(0, 0, 0, 1);
    glu->draw->begin("QUADS");
    glu->draw->texCoords(0, 1);
    glu->draw->vertW(x+xOffset, y+yOffset);
@@ -143,4 +152,26 @@ void ShaderBox::clearBox(){
 
 unsigned int ShaderBox::getTextureID(){
    return texID;
+}
+
+bool ShaderBox::changeShader(std::string dID){
+   if (dID.length() > 0 && !glu->shade->programExists(dID)) return false;
+   drawID = dID;
+   return true;
+}
+
+bool ShaderBox::changeShader(std::string vert, std::string frag){
+   std::string dID = vert+frag;
+   if (dID.length() == 0 || glu->shade->programExists(dID)){
+      drawID = dID;
+      return true;
+   }
+   int val = glu->shade->createProgram("gameFiles/shaders/"+vert, "gameFiles/shaders/"+frag, dID);
+   if (val == 0) return false;
+   drawID = dID;
+   return true;
+}
+
+void ShaderBox::setBlend(bool b){
+   blend = b;
 }

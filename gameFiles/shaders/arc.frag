@@ -15,9 +15,11 @@ uniform float r;
 uniform float g;
 uniform float b;
 uniform float a;
+uniform bool alphaTex;
 uniform bool mono;
 uniform sampler2D tex;
 uniform sampler2D prevTex;
+uniform sampler2D prevAlpha;
 
 void main(void){
     float tPI = 6.28318530718;
@@ -37,13 +39,15 @@ void main(void){
     D2 += tPI*float(d2 <= d1);
     d2X += tPI*float(d2 <= d1);
     d += tPI*float(d < d1X && d2 <= d1);
-    if (fullDist > rad*1.1 || d1X > d || d2X < d) discard;
+    // if (fullDist > rad*1.1 || d1X > d || d2X < d) discard;
     // Get the opaqueness of this fragment of the arc.
     float alpha = 1;
     alpha -= (d1-d)/(d1-d1X)*float(d < d1);
     alpha -= (d-D2)/(d2X-D2)*float(d > D2);
     alpha -= (fullDist-rad)/(rad*.1)*float(fullDist > rad);
     alpha *= a;
+    // If the opaqueness should be 0, make sure it's actually 0.
+    alpha *= float(fullDist <= rad*1.1 && d1X <= d && d2X >= d);
     vec4 sCol = gl_Color*texture2D(tex, gl_TexCoord[0].xy);
     // Get both the monochrome color and the tinted color.
     float weight = r+g+b;
@@ -53,11 +57,15 @@ void main(void){
     // Get the color of the fragment we need to add to the arc-ed shaderbox.
     vec4 toAdd = col1*float(mono)+col*float(!mono);
     vec4 prevC = gl_Color*texture2D(prevTex, gl_TexCoord[0].xy);
+    float prevA = texture2D(prevAlpha, gl_TexCoord[0].xy).r;
     // Colors are added in proportionally to their alpha values.
-    float newA = toAdd.a+prevC.a;
-    vec4 newVal = (toAdd*toAdd.a+prevC*prevC.a)/newA;
+    float newA = toAdd.a+prevA;
+    vec4 newVal = (toAdd*toAdd.a+prevC*prevA);
     newA = 1*float(newA > 1)+newA*float(newA <= 1);
-    newVal.a = newA;
+    newVal /= newA;
+    newVal.a = 1;
+    vec4 realVal = newVal*float(!alphaTex)+vec4(newA, newA, newA, 1)*float(alphaTex);
+    // newVal.a = newA;
     // vec4 rPrevC = vec4(prevC.r*prevC.a, prevC.g*prevC.a, prevC.b*prevC.a, prevC.a);
-    gl_FragColor = newVal;
+    gl_FragColor = realVal;
 }

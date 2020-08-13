@@ -162,6 +162,10 @@ void GLShaders::addUniform(int program, std::string name, float val){
    glUniform1f(glGetUniformLocation(program, name.c_str()), val);
 }
 
+void GLShaders::addUniformI(int program, std::string name, int val){
+   glUniform1i(glGetUniformLocation(program, name.c_str()), int(val));
+}
+
 int GLShaders::addAttribute(int program, std::string att, float* pointer, int gap){
    int attInt = glGetAttribLocation(program, att.c_str());
    glEnableVertexAttribArray(attInt);

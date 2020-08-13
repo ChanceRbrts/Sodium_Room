@@ -104,9 +104,10 @@ class Level{
        * @param mainBox The shaderbox that was drawn to with the drawLayer steps.
        * @param arcOne The first shaderbox that the arcs draw to.
        * @param arcTwo The second shaderbox that the arcs draw to.
+       * @param player The player object if it has an arc that needs to be drawn WITH this level.
        * @return Whether or not arcOne is the final shaderbox that was drawn to.
        */
-      bool drawArcs(GLUtil* glu, ShaderBox* mainBox, ShaderBox* arcOne, ShaderBox* arcTwo);
+      bool drawArcs(GLUtil* glu, ShaderBox* mainBox, DualSBox arcOne, DualSBox arcTwo, Instance* player);
       /**
        * Draw the shaderboxes in the level.
        * @param glu The GLUtil to use for drawing.

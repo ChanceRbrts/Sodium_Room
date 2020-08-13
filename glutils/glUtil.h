@@ -233,6 +233,13 @@ class GLShaders{
       void addUniform(int program, std::string name, float uni);
 
       /**
+       * Adds a uniform interger value to the shader.
+       * @param name The string of the uniform value.
+       * @param uni The uniform value.
+       */
+      void addUniformI(int program, std::string name, int uni);
+
+      /**
        * Adds an attribute to the shader.
        * @param program The current shader.
        * @param att The attribute to add to the shader.

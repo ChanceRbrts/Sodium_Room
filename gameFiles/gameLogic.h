@@ -32,8 +32,8 @@ class GameLogic{
       Camera* camera;
       /// The shaderbox that the level draws to before the screen.
       ShaderBox* drawBox;
-      ShaderBox* arcBoxOne;
-      ShaderBox* arcBoxTwo;
+      DualSBox arcBoxOne;
+      DualSBox arcBoxTwo;
       /// Whether or not the camera's position has been set yet.
       bool loadedCam;
       /**

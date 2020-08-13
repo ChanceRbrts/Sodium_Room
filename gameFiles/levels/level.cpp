@@ -189,32 +189,32 @@ void Level::drawLayer(GLUtil* glu, int layer){
    drawObjects(glu, layer, 0);
 }
 
-bool Level::drawArcs(GLUtil* glu, ShaderBox* mainBox, ShaderBox* arcOne, ShaderBox* arcTwo){
+bool Level::drawArcs(GLUtil* glu, ShaderBox* mainBox, DualSBox arcOne, DualSBox arcTwo, Instance* player){
    /// TODO: Implement this.
    // Update arcs before using them.
    bool doNotSwap = true;
    for (int i = 0; i < arcs.size(); i++){
-      ShaderBox* aOne = doNotSwap ? arcOne : arcTwo;
-      ShaderBox* aTwo = doNotSwap ? arcTwo : arcOne;
-      
-      arcs[i]->draw(glu, mainBox, aOne, aTwo->getTextureID());
+      DualSBox aOne = doNotSwap ? arcOne : arcTwo;
+      DualSBox aTwo = doNotSwap ? arcTwo : arcOne;
+      arcs[i]->draw(glu, mainBox, aOne, aTwo.first->getTextureID(), aTwo.second->getTextureID());
       doNotSwap = !doNotSwap;
    }
-   return doNotSwap;
+   // See if the player has an arc that needs to be drawn now.
+   if (player == nullptr) return doNotSwap;
+   PlayerAbility* pA = ((Player *)player)->getAbility();
+   if (pA == nullptr || pA->getArc() == nullptr) return doNotSwap;
+   // Draw it now.
+   DualSBox aOne = doNotSwap ? arcOne : arcTwo;
+   DualSBox aTwo = doNotSwap ? arcTwo : arcOne;
+   pA->getArc()->draw(glu, mainBox, aOne, aTwo.first->getTextureID(), aTwo.second->getTextureID());
+   // Does the swap and the return.
+   return !doNotSwap;
 }
 
 void Level::drawShaderboxes(GLUtil* glu, Instance* player){
-   // Update our arcs here. 
-   // (Doing this before creating the shaderboxes so we don't have a ton of nullptrs.)
-   for (int i = 0; i < arcs.size(); i++){
-      arcs[i]->draw(glu);
-   }
    // Make sure we're drawing our shaderboxes first.
    if (!createdShaderboxes){
       shades = createShaderBoxes(glu);
-      for (int i = 0; i < arcs.size(); i++){
-         shades.push_back(arcs[i]->getShaderBox());
-      }
       createdShaderboxes = true;
    }
    // Draw everything to each of the shader boxes, then draw that shaderbox.
@@ -245,27 +245,6 @@ void Level::drawShaderboxes(GLUtil* glu, Instance* player){
       }
       shade->drawOutBox();
       shade->draw();
-   }
-   if (player == nullptr) return;
-   PlayerAbility* pA = ((Player*)player)->getAbility();
-   if (pA == nullptr) return;
-   // If the player is in the bounds of the level, draw the player's ability.
-   if (player->x+player->w >= xOff && player->y+player->h >= yOff && player->x <= xOff+w && player->y <= yOff+h){
-      pA->draw(glu, 0);
-      Arc* a = pA->getArc();
-      if (a == nullptr) return;
-      a->draw(glu);
-      ShaderBox* s = a->getShaderBox();
-      if (s->canDraw()){
-         s->drawOnBox();
-         std::map<int, Layer*>::iterator lI = layers.begin();
-         while (lI != layers.end()){
-            drawObjects(glu, lI->first, 0);
-            lI++;
-         }
-         s->drawOutBox();
-         s->draw();
-      }
    }
 }
 

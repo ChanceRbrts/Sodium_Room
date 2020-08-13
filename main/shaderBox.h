@@ -29,12 +29,16 @@ class ShaderBox{
       unsigned int frameID, texID, renID;
       /// The uniforms that we use for the shader used.
       std::map<std::string, float> uniforms;
+      /// The integer uniform that we use for the shader used.
+      std::map<std::string, int> uniformIs;
       /// The IDs of the framebuffer.
       std::string fullID, solidID, drawID;
       /// Whether or not to follow the player.
       bool follow;
       /// The GLUtil to use to mess with the Shaderbox
       GLUtil* glu;
+      /// Whether or not alpha blending will be used when drawing the shaderbox.
+      bool blend;
    public:
       /**
        * Creates a frame buffer that draws within dimensions specified and applies shaders to them.
@@ -64,9 +68,12 @@ class ShaderBox{
       bool followPlayer(){ return follow; }
       /// Draw a red sqaure where the frame buffer would be. (Used for debugging)
       void drawBoundary();
+      /// @return Whether or not the shaderbox is on the current screen.
       bool canDraw();
       /**
-       * 
+       * Moves the shaderbox to a position.
+       * @param X The left side of the shader box (in pixel coords)
+       * @param Y The top side of the shader box (in pixel coords)
        */
       virtual void moveShaderBox(double X, double Y);
       /**
@@ -86,10 +93,43 @@ class ShaderBox{
        */
       void addUniform(std::string name, float value);
       /**
+       * Adds a uniform value to the shader.
+       * This is an integer for the purposes of a sampler.
+       * @param name The identifier of the uniform.
+       * @param value The value of the uniform.
+       */
+      void addUniformI(std::string name, int value);
+      /**
        * Clears the shader box to have every value be 0.
        */
       void clearBox();
       /// @return The texture ID of the shaderbox
       unsigned int getTextureID();
+      /// @return The current ID of the shader.
+      std::string getDrawID(){ return drawID; };
+      /**
+       * Changes the shader to an ID of a currently known shader.
+       * @param dID The ID of a shader that has already been created.
+       * @return Whether or not the shader has changed into the new shader.
+       */
+      bool changeShader(std::string dID);
+      /**
+       * Changes the shader to a program with a vertex and fragment shader.
+       * @param vert The vertex shader to use.
+       * @param frag The fragment shader to use.
+       * @return Whether or not the shader has changed into the new shader.
+       */
+      bool changeShader(std::string vert, std::string frag);
+      /**
+       * Change whether or not the shaderbox should blend when drawing it.
+       * @param blnd Whether or not blending should be used.
+       */
+      void setBlend(bool b);
 };
+
+struct DualSBox{
+   ShaderBox* first;
+   ShaderBox* second;
+};
+
 #endif
