@@ -41,6 +41,8 @@ class Arc{
         bool monocolor;
         /// Whether or not the arc makes everything act with "default behavior." (Usually false)
         bool defBehavior;
+        /// Whether or not this arc blends with other arcs.
+        bool blendArc;
     public:
         /**
          * The constructor of the arc.
@@ -122,6 +124,11 @@ class Arc{
          * @return The data representation of the arc.
          */
         ArcInfo getInfo(int id);
+        /**
+         * Set whether or not the arc blends with other arcs.
+         * @param blend Whether or not the arc will blend with other arcs.
+         */
+        void setBlend(bool blend);
 };
 
 #endif

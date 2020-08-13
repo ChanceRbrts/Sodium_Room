@@ -14,6 +14,7 @@ Arc::Arc(double X, double Y, double R, double D1, double D2, double RC, double G
     alpha = 1;
     monocolor = mono;
     defBehavior = false;
+    blendArc = true;
 }
 
 Arc::~Arc(){
@@ -60,6 +61,7 @@ void Arc::draw(GLUtil* glu, ShaderBox* mainTex, DualSBox drawTo, int fromTex, in
     mainTex->addUniformI("prevTex", 1);
     mainTex->addUniformI("prevAlpha", 2);
     mainTex->addUniform("alphaTex", false);
+    mainTex->addUniform("blend", blendArc);
     // Actually draw the arc onto the drawTo shaderbox.
     glu->draw->color(1, 1, 1, 1);
     drawTo.first->drawOnBox();
@@ -90,6 +92,10 @@ void Arc::setAlpha(double A){
 
 void Arc::makeDefault(){
     defBehavior = true;
+}
+
+void Arc::setBlend(bool blend){
+    blendArc = blend;
 }
 
 ArcInfo Arc::getInfo(int id){

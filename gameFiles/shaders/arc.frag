@@ -17,6 +17,7 @@ uniform float b;
 uniform float a;
 uniform bool alphaTex;
 uniform bool mono;
+uniform bool blend;
 uniform sampler2D tex;
 uniform sampler2D prevTex;
 uniform sampler2D prevAlpha;
@@ -58,6 +59,8 @@ void main(void){
     vec4 toAdd = col1*float(mono)+col*float(!mono);
     vec4 prevC = gl_Color*texture2D(prevTex, gl_TexCoord[0].xy);
     float prevA = texture2D(prevAlpha, gl_TexCoord[0].xy).r;
+    // If there's no blending, make sure the new arc gets preference when it comes to transparency.
+    prevA = (1-toAdd.a)*float(!blend && toAdd.a+prevA > 1)+prevA*float(blend || toAdd.a+prevA <= 1);
     // Colors are added in proportionally to their alpha values.
     float newA = toAdd.a+prevA;
     vec4 newVal = (toAdd*toAdd.a+prevC*prevA);

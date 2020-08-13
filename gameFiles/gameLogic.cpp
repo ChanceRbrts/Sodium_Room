@@ -11,7 +11,7 @@ GameLogic::GameLogic(){
    drawBox = nullptr;
    arcBoxOne = (DualSBox){nullptr, nullptr};
    arcBoxTwo = (DualSBox){nullptr, nullptr};
-   loadLevel(levels->lev[LEV_TEST_MULTILIGHTS]);
+   loadLevel(levels->lev[LEV_TEST_RAIN]);
 }
 
 GameLogic::~GameLogic(){
@@ -67,7 +67,6 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    bool* keyHeld = glu->control->getKeyHeld();
    if (keyPressed[BUTTON_END]) exit(0);
    // Update each of the objects.
-   LevelList* lList = loadedLevels;
    // collObjs is used for collision checking.
    std::vector<Instance *> collObjs;
    Arc* pAr = nullptr;
@@ -80,6 +79,17 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
       }
    }
    int levID = 0;
+   LevelList* lList = loadedLevels;
+   // Get a list of all the arcs in the level.
+   std::vector<Arc *> arcs;
+   while (lList != nullptr){
+      Level* l = lList->lev;
+      for (int i = 0; i < l->arcs.size(); i++){
+         arcs.push_back(l->arcs[i]);
+      }
+      lList = lList->next;
+   }
+   lList = loadedLevels;
    while (lList != nullptr){
       Level* l = lList->lev;
       l->updateLevel(deltaTime, player);
@@ -91,10 +101,13 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
       while (in != nullptr){
          in->i->upd(deltaTime, keyPressed, keyHeld, player);
          Instances* next = in->next;
-         // Levels have arcs that may collide with objects in there.
+         // All arcs loaded in need to be tested with the instance.
+         // However, since not many levels will be loaded at once, this should be fine?
+         // It also helps that arc collisions aren't intensive if there's no way 
+         // the arc will ever collide with the instance.
          if (pAr != nullptr) in->i->arcCol(pAr, deltaTime, -1);
-         for (int a = 0; a < l->arcs.size(); a++){
-            in->i->arcCol(l->arcs[a], deltaTime, a+levID);
+         for (int a = 0; a < arcs.size(); a++){
+            in->i->arcCol(arcs[a], deltaTime, a+levID);
          }
          // If an instance can mess with the levels, allow it here.
          if (in->i->canMessWithLevel()){
@@ -149,6 +162,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
       reloadLayers = lList->lev->moveOutOfBounds(loadedLevels) || reloadLayers;
       lList = lList->next;
    }
+   arcs.clear();
    // Update the camera.
    updateCamera(deltaTime, glu);
    // Update the shaderboxes that need updating.
@@ -305,7 +319,7 @@ void GameLogic::draw(GLUtil* glu){
    }
    drawBox->changeShader("");
    drawBox->setBlend(true);
-   DualSBox drawMe = drawOne ? arcBoxOne : arcBoxTwo;
+   DualSBox drawMe = drawOne ? arcBoxTwo : arcBoxOne;
    // printf("%d\n", drawMe.second->getTextureID());
    drawMe.first->addUniformI("alphaTex", 1);
    gld->bindTexture(drawMe.second->getTextureID(), 1);

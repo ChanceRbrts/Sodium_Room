@@ -20,6 +20,7 @@ Lighter::Lighter() : PlayerAbility(0, 0, 1, 1){
     on = false;
     solid = false;
     name = "Lighter";
+    a->setBlend(false);
 }
 
 Lighter::~Lighter(){
