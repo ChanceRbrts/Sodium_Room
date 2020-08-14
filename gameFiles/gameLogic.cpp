@@ -117,8 +117,8 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          // If an object is destroyed, destroy it.
          if (in->i->canRemove()){
             Instances* toRemove = in;
-            removeFromList(toRemove, &(l->insts));
             reloadLayers = l->removeFromLayers(toRemove) || reloadLayers;
+            removeFromList(toRemove, &(l->insts));
          } else collObjs.push_back(in->i);
          in = next;
       }
