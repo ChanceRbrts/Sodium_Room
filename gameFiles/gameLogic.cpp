@@ -298,7 +298,7 @@ void GameLogic::draw(GLUtil* glu){
    drawBox->draw();
    // Draw the shaderboxes that should be drawn before the arc.
    for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
-      l->lev->drawShaderboxes(glu, player, false);
+      l->lev->drawShaderboxes(glu, player, false, drawBox);
    }
    bool drawOne = true;
    // Reset arcOne's alpha values by drawing a black transparent rectangle on it.
@@ -327,7 +327,7 @@ void GameLogic::draw(GLUtil* glu){
    drawMe.first->draw();
    // Draw the shaderboxes next.
    for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
-      l->lev->drawShaderboxes(glu, player, true);
+      l->lev->drawShaderboxes(glu, player, true, drawBox);
    }
    // We want the HUD to be static on the screen.
    gld->pushCameraMem(0, 0, gld->getWidth(), gld->getHeight());

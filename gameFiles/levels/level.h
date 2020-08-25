@@ -50,6 +50,14 @@ class Level{
        * @return A list of shaderboxes that are in the level.
        */
       virtual std::vector<ShaderBox*> createShaderBoxes(GLUtil* glu);
+      /**
+       * Draws all layers and possibly the arcs to the screen at once.
+       * Used only for drawing to a shaderbox.
+       * @param glu The GLUtil to use for drawing.
+       * @param player The player of the game.
+       * @param drewArcs Whether or not arcs have been drawn to the screen yet.
+       */
+      void fullDraw(GLUtil* glu, Instance* player, bool drawArcs);
       /// @return A list of the arcs in the room.
       virtual std::vector<Arc*> createArcs();
       /// @return A list of the camera objects in the room.
@@ -113,8 +121,9 @@ class Level{
        * @param glu The GLUtil to use for drawing.
        * @param player The player of the game.
        * @param drewArcs Whether or not arcs have been drawn to the screen yet.
+       * @param screen The shaderbox that corresponds to the current screen.
        */
-      void drawShaderboxes(GLUtil* glu, Instance* player, bool drewArcs);
+      void drawShaderboxes(GLUtil* glu, Instance* player, bool drewArcs, ShaderBox* screen);
       /**
        * Checks to see if an instance is out of bounds, and moves it to another level if so.
        * @param lv The list of levels in loaded in the game.

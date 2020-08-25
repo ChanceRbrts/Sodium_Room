@@ -39,8 +39,8 @@ class ShaderBox{
       GLUtil* glu;
       /// Whether or not alpha blending will be used when drawing the shaderbox.
       bool blend;
-      /// Whether or not there's a one to one semblance for pixels.
-      bool oneToOne;
+      /// Whether or not we can draw from the screen if part of the shaderbox is off the screen.
+      bool fastDraw;
       /// Whether or not the shaderbox needs to be drawn before the arcs are drawn.
       bool drawBeforeArc;
    public:
@@ -131,6 +131,21 @@ class ShaderBox{
       void setBlend(bool b);
       /// @return Whether or not to draw this shaderbox before drawing arcs.
       bool getDrawBeforeArc(){ return drawBeforeArc; };
+      /// @return Whether or not to use the screen to draw to the shaderbox.
+      bool getFastDraw(){ return fastDraw; };
+      /**
+       * Sets whether or not the screen should draw to the shaderbox.
+       * (NOTE: Set to true by default.)
+       * The alternative is drawing everything to the shaderbox.
+       * The downside to screen drawing is that if the shaderbox is 
+       * partially off the screen, it could mess up the shaders when drawing
+       * back to the screen.
+       * Setting this to off causes it to draw only this level, though.
+       * If another level's object overlaps with this shaderbox with this off,
+       * it won't draw and could break some things.
+       * @param fD Whether or not the screen should draw to the shaderbox.
+       */
+      void setFastDraw(bool fD);
 };
 
 struct DualSBox{

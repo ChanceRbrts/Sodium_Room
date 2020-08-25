@@ -211,7 +211,7 @@ bool Level::drawArcs(GLUtil* glu, ShaderBox* mainBox, DualSBox arcOne, DualSBox 
    return !doNotSwap;
 }
 
-void Level::drawShaderboxes(GLUtil* glu, Instance* player, bool drewArcs){
+void Level::drawShaderboxes(GLUtil* glu, Instance* player, bool drewArcs, ShaderBox* screen){
    // Make sure we're drawing our shaderboxes first.
    if (!createdShaderboxes){
       shades = createShaderBoxes(glu);
@@ -222,32 +222,46 @@ void Level::drawShaderboxes(GLUtil* glu, Instance* player, bool drewArcs){
       ShaderBox* shade = shades[i];
       if (!(shade->canDraw()) || shade->getDrawBeforeArc() == drewArcs) continue;
       shade->drawOnBox();
-      std::map<int, Layer*>::iterator lI = layers.begin();
-      bool drawnPlayer = false;
-      while (lI != layers.end()){
-         if (player != nullptr){
-            std::vector<int> pLayers = player->getLayers();
-            if (!drawnPlayer && pLayers.size() > 0 && lI->first >= pLayers[0]){
-               drawnPlayer = true;
-               if (player != nullptr){
-                  double cX = glu->draw->camX;
-                  double cY = glu->draw->camY;
-                  double wid = glu->draw->getWidth();
-                  double hei = glu->draw->getHeight();
-                  if (player->x < cX+wid && player->x+player->w > cX && player->y < cY+hei && player->y+player->h > cY){
-                     player->draw(glu, lI->first);
-                  }
+      // Draw to the background first.
+      drawLayer(glu, LAYER_BACK);
+      if (shade->getFastDraw()){
+         // Optimize the drawing by just drawing what's on the screen at this point.
+         screen->draw();
+      } else {
+         // Go through all of the drawing code that would normally be done for one layer.
+         fullDraw(glu, player, drewArcs);
+      }
+      shade->drawOutBox();
+      shade->draw();
+   }
+}
+
+void Level::fullDraw(GLUtil* glu, Instance* player, bool drewArcs){
+   std::map<int, Layer*>::iterator lI = layers.begin();
+   bool drawnPlayer = false;
+   while (lI != layers.end()){
+      if (player != nullptr){
+         // If the player is at this layer or an earlier layer, draw it here.
+         std::vector<int> pLayers = player->getLayers();
+         if (!drawnPlayer && pLayers.size() > 0 && lI->first >= pLayers[0]){
+            drawnPlayer = true;
+            if (player != nullptr){
+               double cX = glu->draw->camX;
+               double cY = glu->draw->camY;
+               double wid = glu->draw->getWidth();
+               double hei = glu->draw->getHeight();
+               if (player->x < cX+wid && player->x+player->w > cX && player->y < cY+hei && player->y+player->h > cY){
+                  player->draw(glu, lI->first);
                }
             }
          }
-         drawObjects(glu, lI->first, 0);
-         lI++;
       }
-      shade->drawOutBox();
-      if (drewArcs){
-         // Do drawing arc code.
-      }
-      shade->draw();
+      // Draw objects at this layer.
+      drawObjects(glu, lI->first, 0);
+      lI++;
+   }
+   if (drewArcs){
+      /// TODO: Do drawing arc code. 
    }
 }
 

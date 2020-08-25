@@ -22,7 +22,7 @@ ShaderBox::ShaderBox(double X, double Y, double W, double H, std::string vertSha
    fullID = "";
    remove = false;
    blend = true;
-   oneToOne = false;
+   fastDraw = false;
    drawBeforeArc = false;
 }
 
@@ -176,4 +176,8 @@ bool ShaderBox::changeShader(std::string vert, std::string frag){
 
 void ShaderBox::setBlend(bool b){
    blend = b;
+}
+
+void ShaderBox::setFastDraw(bool fD){
+   fastDraw = fD;
 }
