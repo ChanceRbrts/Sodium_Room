@@ -22,6 +22,8 @@ ShaderBox::ShaderBox(double X, double Y, double W, double H, std::string vertSha
    fullID = "";
    remove = false;
    blend = true;
+   oneToOne = false;
+   drawBeforeArc = false;
 }
 
 ShaderBox::~ShaderBox(){

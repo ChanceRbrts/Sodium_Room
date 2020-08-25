@@ -39,6 +39,10 @@ class ShaderBox{
       GLUtil* glu;
       /// Whether or not alpha blending will be used when drawing the shaderbox.
       bool blend;
+      /// Whether or not there's a one to one semblance for pixels.
+      bool oneToOne;
+      /// Whether or not the shaderbox needs to be drawn before the arcs are drawn.
+      bool drawBeforeArc;
    public:
       /**
        * Creates a frame buffer that draws within dimensions specified and applies shaders to them.
@@ -125,6 +129,8 @@ class ShaderBox{
        * @param blnd Whether or not blending should be used.
        */
       void setBlend(bool b);
+      /// @return Whether or not to draw this shaderbox before drawing arcs.
+      bool getDrawBeforeArc(){ return drawBeforeArc; };
 };
 
 struct DualSBox{

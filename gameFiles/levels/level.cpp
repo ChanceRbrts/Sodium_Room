@@ -211,7 +211,7 @@ bool Level::drawArcs(GLUtil* glu, ShaderBox* mainBox, DualSBox arcOne, DualSBox 
    return !doNotSwap;
 }
 
-void Level::drawShaderboxes(GLUtil* glu, Instance* player){
+void Level::drawShaderboxes(GLUtil* glu, Instance* player, bool drewArcs){
    // Make sure we're drawing our shaderboxes first.
    if (!createdShaderboxes){
       shades = createShaderBoxes(glu);
@@ -220,7 +220,7 @@ void Level::drawShaderboxes(GLUtil* glu, Instance* player){
    // Draw everything to each of the shader boxes, then draw that shaderbox.
    for (int i = 0; i < shades.size(); i++){
       ShaderBox* shade = shades[i];
-      if (!(shade->canDraw())) continue;
+      if (!(shade->canDraw()) || shade->getDrawBeforeArc() == drewArcs) continue;
       shade->drawOnBox();
       std::map<int, Layer*>::iterator lI = layers.begin();
       bool drawnPlayer = false;
@@ -244,6 +244,9 @@ void Level::drawShaderboxes(GLUtil* glu, Instance* player){
          lI++;
       }
       shade->drawOutBox();
+      if (drewArcs){
+         // Do drawing arc code.
+      }
       shade->draw();
    }
 }

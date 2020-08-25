@@ -77,7 +77,7 @@ class Level{
       std::string filePath;
       /// The level's instances. 
       Instances* insts, lastInsts;
-      /// The level's shaderboxes
+      /// The level's shaderboxes (Drawn after arcs)
       std::vector<ShaderBox*> shades;
       /// The level's arcs
       std::vector<Arc*> arcs;
@@ -112,8 +112,9 @@ class Level{
        * Draw the shaderboxes in the level.
        * @param glu The GLUtil to use for drawing.
        * @param player The player of the game.
+       * @param drewArcs Whether or not arcs have been drawn to the screen yet.
        */
-      void drawShaderboxes(GLUtil* glu, Instance* player);
+      void drawShaderboxes(GLUtil* glu, Instance* player, bool drewArcs);
       /**
        * Checks to see if an instance is out of bounds, and moves it to another level if so.
        * @param lv The list of levels in loaded in the game.

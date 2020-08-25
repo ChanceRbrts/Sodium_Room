@@ -266,12 +266,11 @@ void GameLogic::draw(GLUtil* glu){
    arcBoxOne.second->moveShaderBox(gld->camX, gld->camY);
    arcBoxTwo.first->moveShaderBox(gld->camX, gld->camY);
    arcBoxTwo.second->moveShaderBox(gld->camX, gld->camY);
+   if (loadedLevels == nullptr) return;
    drawBox->drawOnBox();
    // Draw the backgrounds first.
-   if (loadedLevels != nullptr){
-      for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
-         l->lev->drawLayer(glu, LAYER_BACK);
-      }
+   for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+      l->lev->drawLayer(glu, LAYER_BACK);
    }
    // Draw the layers of the objects.
    std::map<int, std::vector<Layer *>>::iterator dI = layers.begin();
@@ -297,6 +296,10 @@ void GameLogic::draw(GLUtil* glu){
    }
    drawBox->drawOutBox();
    drawBox->draw();
+   // Draw the shaderboxes that should be drawn before the arc.
+   for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+      l->lev->drawShaderboxes(glu, player, false);
+   }
    bool drawOne = true;
    // Reset arcOne's alpha values by drawing a black transparent rectangle on it.
    arcBoxOne.second->drawOnBox();
@@ -307,15 +310,13 @@ void GameLogic::draw(GLUtil* glu){
    arcBoxTwo.second->drawOutBox();
    drawBox->changeShader("", "arc");
    // Now, draw the arcs.
-   if (loadedLevels != nullptr){
-      for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
-         DualSBox aOne = drawOne ? arcBoxOne : arcBoxTwo;
-         DualSBox aTwo = drawOne ? arcBoxTwo : arcBoxOne;
-         // Draw the player ability last, so pass in nullptr if this isn't the final level.
-         Instance* possPlay = l->next == nullptr ? player : nullptr;
-         bool dontSwap = l->lev->drawArcs(glu, drawBox, aOne, aTwo, possPlay);
-         drawOne ^= !dontSwap;
-      }
+   for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+      DualSBox aOne = drawOne ? arcBoxOne : arcBoxTwo;
+      DualSBox aTwo = drawOne ? arcBoxTwo : arcBoxOne;
+      // Draw the player ability last, so pass in nullptr if this isn't the final level.
+      Instance* possPlay = l->next == nullptr ? player : nullptr;
+      bool dontSwap = l->lev->drawArcs(glu, drawBox, aOne, aTwo, possPlay);
+      drawOne ^= !dontSwap;
    }
    drawBox->changeShader("");
    drawBox->setBlend(true);
@@ -325,10 +326,8 @@ void GameLogic::draw(GLUtil* glu){
    gld->bindTexture(drawMe.second->getTextureID(), 1);
    drawMe.first->draw();
    // Draw the shaderboxes next.
-   if (loadedLevels != nullptr){
-      for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
-         l->lev->drawShaderboxes(glu, player);
-      }
+   for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+      l->lev->drawShaderboxes(glu, player, true);
    }
    // We want the HUD to be static on the screen.
    gld->pushCameraMem(0, 0, gld->getWidth(), gld->getHeight());
