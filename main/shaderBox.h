@@ -37,6 +37,10 @@ class ShaderBox{
       bool follow;
       /// The GLUtil to use to mess with the Shaderbox
       GLUtil* glu;
+      /// Shaderbox used for drawing the arcs.
+      ShaderBox* arcOne;
+      /// Shaderbox used for drawing the arcs (for multiple arcs).
+      ShaderBox* arcTwo;
       /// Whether or not alpha blending will be used when drawing the shaderbox.
       bool blend;
       /// Whether or not we can draw from the screen if part of the shaderbox is off the screen.
