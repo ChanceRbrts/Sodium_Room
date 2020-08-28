@@ -56,8 +56,9 @@ class Level{
        * @param glu The GLUtil to use for drawing.
        * @param player The player of the game.
        * @param drewArcs Whether or not arcs have been drawn to the screen yet.
+       * @param shade The shaderbox that's currently being drawn to.
        */
-      void fullDraw(GLUtil* glu, Instance* player, bool drawArcs);
+      void fullDraw(GLUtil* glu, Instance* player, bool drawArcs, ShaderBox* shade);
       /// @return A list of the arcs in the room.
       virtual std::vector<Arc*> createArcs();
       /// @return A list of the camera objects in the room.

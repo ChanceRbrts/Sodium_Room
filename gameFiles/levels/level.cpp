@@ -190,7 +190,6 @@ void Level::drawLayer(GLUtil* glu, int layer){
 }
 
 bool Level::drawArcs(GLUtil* glu, ShaderBox* mainBox, DualSBox arcOne, DualSBox arcTwo, Instance* player){
-   /// TODO: Implement this.
    // Update arcs before using them.
    bool doNotSwap = true;
    for (int i = 0; i < arcs.size(); i++){
@@ -229,14 +228,14 @@ void Level::drawShaderboxes(GLUtil* glu, Instance* player, bool drewArcs, Shader
          screen->draw();
       } else {
          // Go through all of the drawing code that would normally be done for one layer.
-         fullDraw(glu, player, drewArcs);
+         fullDraw(glu, player, drewArcs, shade);
       }
       shade->drawOutBox();
       shade->draw();
    }
 }
 
-void Level::fullDraw(GLUtil* glu, Instance* player, bool drewArcs){
+void Level::fullDraw(GLUtil* glu, Instance* player, bool drewArcs, ShaderBox* shade){
    std::map<int, Layer*>::iterator lI = layers.begin();
    bool drawnPlayer = false;
    while (lI != layers.end()){
@@ -261,7 +260,23 @@ void Level::fullDraw(GLUtil* glu, Instance* player, bool drewArcs){
       lI++;
    }
    if (drewArcs){
+      // Note: We're still drawing to shade given how drawOnBox works.
+      shade->drawOutBox();
       /// TODO: Do drawing arc code. 
+      shade->clearArcBoxes();
+      std::string dID = shade->getDrawID();
+      shade->changeShader("", "arc");
+      DualSBox aOne = (DualSBox){shade->getArcOne(), shade->getArcOneA()};
+      DualSBox aTwo = (DualSBox){shade->getArcTwo(), shade->getArcTwoA()};
+      bool drawTwo = drawArcs(glu, shade, aOne, aTwo, player);
+      shade->changeShader(dID);
+      DualSBox drawMe = drawTwo ? aTwo : aOne;
+      // Redraw to shade now that we're done using it.
+      shade->drawOnBox();
+      // Actually draw the arcs to the shaderbox here.
+      drawMe.first->addUniformI("alphaTex", 1);
+      glu->draw->bindTexture(drawMe.second->getTextureID(), 1);
+      drawMe.first->draw();
    }
 }
 

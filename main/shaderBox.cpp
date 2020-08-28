@@ -25,7 +25,9 @@ ShaderBox::ShaderBox(double X, double Y, double W, double H, std::string vertSha
    fastDraw = true;
    drawBeforeArc = false;
    arcOne = nullptr;
+   arcOneAlpha = nullptr;
    arcTwo = nullptr;
+   arcTwoAlpha = nullptr;
 }
 
 ShaderBox::~ShaderBox(){
@@ -118,6 +120,11 @@ void ShaderBox::drawBoundary(){
 void ShaderBox::moveShaderBox(double X, double Y){
    x = X;
    y = Y;
+   if (arcOne == nullptr) return;
+   arcOne->moveShaderBox(X, Y);
+   arcOneAlpha->moveShaderBox(X, Y);
+   arcTwo->moveShaderBox(X, Y);
+   arcTwoAlpha->moveShaderBox(X, Y);
 }
 
 void ShaderBox::setXOffset(double xoffset){
@@ -152,6 +159,15 @@ void ShaderBox::clearBox(){
    glu->draw->texCoords(1, 1);
    glu->draw->vertW(x+w+xOffset, y+yOffset);
    glu->draw->end();
+}
+
+void ShaderBox::clearArcBoxes(){
+   arcOneAlpha->drawOnBox();
+   arcOneAlpha->clearBox();
+   arcOneAlpha->drawOutBox();
+   arcTwoAlpha->drawOnBox();
+   arcTwoAlpha->clearBox();
+   arcTwoAlpha->drawOutBox();
 }
 
 unsigned int ShaderBox::getTextureID(){
@@ -189,6 +205,8 @@ void ShaderBox::setFastDraw(bool fD){
       arcTwo = nullptr;
    } else if (!fastDraw) {
       arcOne = new ShaderBox(x/32, y/32, w/32, h/32, "", "drawArc", glu);
+      arcOneAlpha = new ShaderBox(x/32, y/32, w/32, h/32, "", "", glu);
       arcTwo = new ShaderBox(x/32, y/32, w/32, h/32, "", "drawArc", glu);
+      arcTwoAlpha = new ShaderBox(x/32, y/32, w/32, h/32, "", "", glu);
    }
 }

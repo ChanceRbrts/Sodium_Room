@@ -39,8 +39,12 @@ class ShaderBox{
       GLUtil* glu;
       /// Shaderbox used for drawing the arcs.
       ShaderBox* arcOne;
+      /// Shaderbox corresponding to the opaqueness of the arcs.
+      ShaderBox* arcOneAlpha;
       /// Shaderbox used for drawing the arcs (for multiple arcs).
       ShaderBox* arcTwo;
+      /// Shaderbox corresponding to the opaqueness of the arcs. (For multiple arcs)
+      ShaderBox* arcTwoAlpha;
       /// Whether or not alpha blending will be used when drawing the shaderbox.
       bool blend;
       /// Whether or not we can draw from the screen if part of the shaderbox is off the screen.
@@ -111,6 +115,8 @@ class ShaderBox{
        * Clears the shader box to have every value be 0.
        */
       void clearBox();
+      /// Clears the shaderboxes that correspond to drawing arcs.
+      void clearArcBoxes();
       /// @return The texture ID of the shaderbox
       unsigned int getTextureID();
       /// @return The current ID of the shader.
@@ -150,6 +156,14 @@ class ShaderBox{
        * @param fD Whether or not the screen should draw to the shaderbox.
        */
       void setFastDraw(bool fD);
+      /// @return The shaderbox corresponding to the first box used to draw the arcs.
+      ShaderBox* getArcOne(){ return arcOne; };
+      /// @return The shaderbox corresponding to the transparency of the arcs.
+      ShaderBox* getArcOneA(){ return arcOneAlpha; };
+      /// @return The shaderbox corresponding to the first box used to draw the arcs.
+      ShaderBox* getArcTwo(){ return arcTwo; }; 
+      /// @return The shaderbox corresponding to the transparency of the arcs.
+      ShaderBox* getArcTwoA(){ return arcTwoAlpha; };
 };
 
 struct DualSBox{

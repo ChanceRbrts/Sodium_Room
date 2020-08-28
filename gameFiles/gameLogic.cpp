@@ -319,7 +319,6 @@ void GameLogic::draw(GLUtil* glu){
       drawOne ^= !dontSwap;
    }
    drawBox->changeShader("");
-   drawBox->setBlend(true);
    DualSBox drawMe = drawOne ? arcBoxTwo : arcBoxOne;
    // printf("%d\n", drawMe.second->getTextureID());
    drawMe.first->addUniformI("alphaTex", 1);
