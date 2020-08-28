@@ -11,7 +11,7 @@ GameLogic::GameLogic(){
    drawBox = nullptr;
    arcBoxOne = (DualSBox){nullptr, nullptr};
    arcBoxTwo = (DualSBox){nullptr, nullptr};
-   loadLevel(levels->lev[LEV_TEST_RAIN]);
+   loadLevel(levels->lev[LEV_EXAMPLE]);
 }
 
 GameLogic::~GameLogic(){
@@ -294,8 +294,6 @@ void GameLogic::draw(GLUtil* glu){
          }
       }
    }
-   drawBox->drawOutBox();
-   drawBox->draw();
    // Draw the shaderboxes that should be drawn before the arc.
    for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
       l->lev->drawShaderboxes(glu, player, false, drawBox);
@@ -324,6 +322,8 @@ void GameLogic::draw(GLUtil* glu){
    drawMe.first->addUniformI("alphaTex", 1);
    gld->bindTexture(drawMe.second->getTextureID(), 1);
    drawMe.first->draw();
+   drawBox->drawOutBox();
+   drawBox->draw();
    // Draw the shaderboxes next.
    for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
       l->lev->drawShaderboxes(glu, player, true, drawBox);

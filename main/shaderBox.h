@@ -164,6 +164,10 @@ class ShaderBox{
       ShaderBox* getArcTwo(){ return arcTwo; }; 
       /// @return The shaderbox corresponding to the transparency of the arcs.
       ShaderBox* getArcTwoA(){ return arcTwoAlpha; };
+      /**
+       * Resets uniforms that might need resetting after loading different variables.
+       */
+      virtual void resetUniforms(){};
 };
 
 struct DualSBox{

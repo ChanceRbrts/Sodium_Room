@@ -219,7 +219,7 @@ void Level::drawShaderboxes(GLUtil* glu, Instance* player, bool drewArcs, Shader
    // Draw everything to each of the shader boxes, then draw that shaderbox.
    for (int i = 0; i < shades.size(); i++){
       ShaderBox* shade = shades[i];
-      if (!(shade->canDraw()) || shade->getDrawBeforeArc() == drewArcs) continue;
+      if (!(shade->canDraw()) || screen == nullptr || shade->getDrawBeforeArc() == drewArcs) continue;
       shade->drawOnBox();
       // Draw to the background first.
       drawLayer(glu, LAYER_BACK);
@@ -261,7 +261,6 @@ void Level::fullDraw(GLUtil* glu, Instance* player, bool drewArcs, ShaderBox* sh
    }
    if (drewArcs){
       // Note: We're still drawing to shade given how drawOnBox works.
-      shade->drawOutBox();
       /// TODO: Do drawing arc code. 
       shade->clearArcBoxes();
       std::string dID = shade->getDrawID();
@@ -270,9 +269,10 @@ void Level::fullDraw(GLUtil* glu, Instance* player, bool drewArcs, ShaderBox* sh
       DualSBox aTwo = (DualSBox){shade->getArcTwo(), shade->getArcTwoA()};
       bool drawTwo = drawArcs(glu, shade, aOne, aTwo, player);
       shade->changeShader(dID);
+      // If this is a long shaderbox, this resets the uniform value for x.
+      shade->resetUniforms();
       DualSBox drawMe = drawTwo ? aTwo : aOne;
       // Redraw to shade now that we're done using it.
-      shade->drawOnBox();
       // Actually draw the arcs to the shaderbox here.
       drawMe.first->addUniformI("alphaTex", 1);
       glu->draw->bindTexture(drawMe.second->getTextureID(), 1);

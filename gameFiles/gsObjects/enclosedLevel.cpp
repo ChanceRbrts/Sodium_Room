@@ -118,7 +118,7 @@ void EnclosedLevel::drawEX(GLUtil* glu, int layer){
     for (; layI != levLays.end(); layI++){
         lev->drawLayer(glu, layI->first);
     }
-    lev->drawShaderboxes(glu, nullptr);
+    lev->drawShaderboxes(glu, nullptr, true, nullptr);
     gld->popCameraMem();
     // Now, draw the diamond.
     gld->color(lev->r*0.75, lev->g*0.75, lev->b*0.75, 0.5);

@@ -8,14 +8,27 @@ LongShaderbox::LongShaderbox(double X, double xPoint, double Y, double drawW, do
     xScrollEnd = (x+endW)*32;
     drawX = 0;
     follow = true;
+    uX = x;
     uniforms["endX"] = (xScrollEnd-firstX)/glu->draw->getWidth();
 }
 
 void LongShaderbox::moveShaderBox(double X, double Y){
+    // This can only happen if resetting a position.
+    // This is super hack-y, but it will work for now.
     if (X > xScrollStart && X < xScrollEnd){
         x = X-xScrollStart+firstX;
-    }
+    } 
     uniforms["x"] = (X-firstX)/glu->draw->getWidth();
+    uX = (X-firstX)/glu->draw->getWidth();
+    if (arcOne == nullptr) return;
+    arcOne->moveShaderBox(x, Y);
+    arcOneAlpha->moveShaderBox(x, Y);
+    arcTwo->moveShaderBox(x, Y);
+    arcTwoAlpha->moveShaderBox(x, Y);
+}
+
+void LongShaderbox::resetUniforms(){
+    uniforms["x"] = uX;
 }
 
 GravityWell::GravityWell(double X, double Y, double endPoint, GLUtil* glu)
