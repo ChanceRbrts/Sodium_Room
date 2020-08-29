@@ -51,17 +51,18 @@ void Arc::draw(GLUtil* glu, ShaderBox* mainTex, DualSBox drawTo, int fromTex, in
     mainTex->addUniform("g", gCol);
     mainTex->addUniform("b", bCol);
     mainTex->addUniform("a", alpha);
-    mainTex->addUniform("xScale", 1);
-    mainTex->addUniform("yScale", 1);
-    mainTex->addUniform("camX", glu->draw->camX);
-    mainTex->addUniform("camY", glu->draw->camY);
-    mainTex->addUniform("unitX", 2/glu->draw->getWidth());
-    mainTex->addUniform("unitY", -2/glu->draw->getHeight());
+    // This feels wrong somehow...
+    mainTex->addUniform("xScale", glu->draw->getWidth()/640);
+    mainTex->addUniform("yScale", glu->draw->getHeight()/480);
     mainTex->addUniform("mono", monocolor);
     mainTex->addUniformI("prevTex", 1);
     mainTex->addUniformI("prevAlpha", 2);
     mainTex->addUniform("alphaTex", false);
     mainTex->addUniform("blend", blendArc);
+    mainTex->addUniform("camX", glu->draw->camX);
+    mainTex->addUniform("camY", glu->draw->camY);
+    mainTex->addUniform("unitX", 2/glu->draw->getWidth());
+    mainTex->addUniform("unitY", -2/glu->draw->getHeight());
     // Actually draw the arc onto the drawTo shaderbox.
     glu->draw->color(1, 1, 1, 1);
     drawTo.first->drawOnBox();
@@ -72,6 +73,8 @@ void Arc::draw(GLUtil* glu, ShaderBox* mainTex, DualSBox drawTo, int fromTex, in
     drawTo.first->drawOutBox();
     mainTex->addUniform("alphaTex", true);
     drawTo.second->drawOnBox();
+    // We don't need to reset camX, camY, ... 
+    // since .second should have the same values as .first
     glu->draw->enableTextures();
     glu->draw->bindTexture(fromTex, 1);
     glu->draw->bindTexture(fromAlpha, 2);

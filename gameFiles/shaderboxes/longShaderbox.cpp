@@ -13,18 +13,17 @@ LongShaderbox::LongShaderbox(double X, double xPoint, double Y, double drawW, do
 }
 
 void LongShaderbox::moveShaderBox(double X, double Y){
-    // This can only happen if resetting a position.
-    // This is super hack-y, but it will work for now.
     if (X > xScrollStart && X < xScrollEnd){
         x = X-xScrollStart+firstX;
     } 
     uniforms["x"] = (X-firstX)/glu->draw->getWidth();
     uX = (X-firstX)/glu->draw->getWidth();
+    // Move the arc shaderboxes to the current position.
     if (arcOne == nullptr) return;
-    arcOne->moveShaderBox(x, Y);
-    arcOneAlpha->moveShaderBox(x, Y);
-    arcTwo->moveShaderBox(x, Y);
-    arcTwoAlpha->moveShaderBox(x, Y);
+    arcOne->moveShaderBox(x, y);
+    arcOneAlpha->moveShaderBox(x, y);
+    arcTwo->moveShaderBox(x, y);
+    arcTwoAlpha->moveShaderBox(x, y);
 }
 
 void LongShaderbox::resetUniforms(){

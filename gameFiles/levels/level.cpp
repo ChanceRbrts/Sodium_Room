@@ -269,6 +269,7 @@ void Level::fullDraw(GLUtil* glu, Instance* player, bool drewArcs, ShaderBox* sh
       DualSBox aTwo = (DualSBox){shade->getArcTwo(), shade->getArcTwoA()};
       bool drawTwo = drawArcs(glu, shade, aOne, aTwo, player);
       shade->changeShader(dID);
+      // shade->changeShader("", "");
       // If this is a long shaderbox, this resets the uniform value for x.
       shade->resetUniforms();
       DualSBox drawMe = drawTwo ? aTwo : aOne;
