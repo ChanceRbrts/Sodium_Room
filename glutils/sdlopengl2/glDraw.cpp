@@ -36,6 +36,10 @@ int GLDraw::toMode(std::string type){
    return -1;
 }
 
+void GLDraw::resizeViewport(){
+   glViewport(0, 0, width, height);
+}
+
 void GLDraw::begin(std::string type){
    begin(toMode(type));
 }

@@ -321,6 +321,8 @@ class GLDraw{
       std::vector<float> tempCol;
       std::vector<float> tempTex;
       int toMode(std::string type);
+      /// A helper function to resize the viewport when changing the camera stack.
+      void resizeViewport();
       // Information that is implementation based.
       void* extraInfo;
    public:
