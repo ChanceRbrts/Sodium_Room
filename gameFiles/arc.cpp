@@ -52,8 +52,8 @@ void Arc::draw(GLUtil* glu, ShaderBox* mainTex, DualSBox drawTo, int fromTex, in
     mainTex->addUniform("b", bCol);
     mainTex->addUniform("a", alpha);
     // This feels wrong somehow...
-    mainTex->addUniform("xScale", glu->draw->getWidth()/640);
-    mainTex->addUniform("yScale", glu->draw->getHeight()/480);
+    mainTex->addUniform("xScale", 1);
+    mainTex->addUniform("yScale", 1);
     mainTex->addUniform("mono", monocolor);
     mainTex->addUniformI("prevTex", 1);
     mainTex->addUniformI("prevAlpha", 2);

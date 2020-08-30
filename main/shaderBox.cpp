@@ -14,7 +14,7 @@ ShaderBox::ShaderBox(double X, double Y, double W, double H, std::string vertSha
    frameID = frameBufferParts.x;
    texID = frameBufferParts.y;
    renID = frameBufferParts.z;
-   glu->shade->resizeFrameBuffer(frameID, texID, renID, glu->draw->getWidth(), glu->draw->getHeight());
+   glu->shade->resizeFrameBuffer(frameID, texID, renID, w, h);
    drawID = vertShader+fragShader;
    if (drawID.length() > 0 && !glu->shade->programExists(drawID)){
       glu->shade->createProgram("gameFiles/shaders/"+vertShader, "gameFiles/shaders/"+fragShader, drawID);

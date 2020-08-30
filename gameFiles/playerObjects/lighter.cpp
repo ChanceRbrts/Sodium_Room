@@ -87,7 +87,7 @@ void Lighter::update(double deltaTime, bool* keyPressed, bool* keyHeld){
 void Lighter::fUpdate(double deltaTime){
     double trueR = 16+48*(fluid/maxFluid);
     a->setR(trueR == 0 ? 0.1 : trueR);
-    double trueX = (trueR == 0 || !on) ? x-999 : x;
+    double trueX = (trueR == 0 || !on) ? x-999999 : x;
     a->setPosition(trueX, y);
 }
 
