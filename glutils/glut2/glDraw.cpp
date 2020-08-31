@@ -33,6 +33,10 @@ int GLDraw::toMode(std::string type){
    return -1;
 }
 
+void GLDraw::resizeViewport(){
+   glViewport(0, 0, width, height);
+}
+
 void GLDraw::begin(std::string type){
    begin(toMode(type));
 }
@@ -81,6 +85,12 @@ void GLDraw::color(double r, double g, double b){
 void GLDraw::color(double r, double g, double b, double a){
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glColor4d(r, g, b, a);
+}
+
+void GLDraw::color(double r, double g, double b, double a, bool blend){
+   blend ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
+   if (blend) glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glColor4d(r, g, b, a);
 }
 

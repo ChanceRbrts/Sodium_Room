@@ -14,12 +14,21 @@ ShaderBox::ShaderBox(double X, double Y, double W, double H, std::string vertSha
    frameID = frameBufferParts.x;
    texID = frameBufferParts.y;
    renID = frameBufferParts.z;
-   glu->shade->resizeFrameBuffer(frameID, texID, renID, glu->draw->getWidth(), glu->draw->getHeight());
+   glu->shade->resizeFrameBuffer(frameID, texID, renID, w, h);
    drawID = vertShader+fragShader;
-   if (!glu->shade->programExists(drawID)){
+   if (drawID.length() > 0 && !glu->shade->programExists(drawID)){
       glu->shade->createProgram("gameFiles/shaders/"+vertShader, "gameFiles/shaders/"+fragShader, drawID);
    }
+   fullID = "";
    remove = false;
+   blend = true;
+   fastDraw = true;
+   drawBeforeArc = false;
+   replaceWithArc = false;
+   arcOne = nullptr;
+   arcOneAlpha = nullptr;
+   arcTwo = nullptr;
+   arcTwoAlpha = nullptr;
 }
 
 ShaderBox::~ShaderBox(){
@@ -66,13 +75,16 @@ void ShaderBox::draw(){
             // printf("%s, %f\n", it->first.c_str(), it->second);
             glu->shade->addUniform(program, it->first, it->second);
          }
+         for (std::map<std::string, int>::iterator it = uniformIs.begin(); it != uniformIs.end(); it++){
+            glu->shade->addUniformI(program, it->first, it->second);
+         }
       }
       // else glu->shade->bindShader(0);
       // Draw our frame buffer to the screen!
       glu->draw->enableTextures();
       glu->draw->bindTexture(texID);
       // Actually draw the textures.
-      glu->draw->color(1, 1, 1, 1);
+      glu->draw->color(1, 1, 1, 1, blend);
       glu->draw->begin("QUADS");
       glu->draw->texCoords(0, 1);
       glu->draw->vertW(x+xOffset, y+yOffset);
@@ -109,6 +121,11 @@ void ShaderBox::drawBoundary(){
 void ShaderBox::moveShaderBox(double X, double Y){
    x = X;
    y = Y;
+   if (arcOne == nullptr) return;
+   arcOne->moveShaderBox(X, Y);
+   arcOneAlpha->moveShaderBox(X, Y);
+   arcTwo->moveShaderBox(X, Y);
+   arcTwoAlpha->moveShaderBox(X, Y);
 }
 
 void ShaderBox::setXOffset(double xoffset){
@@ -123,6 +140,87 @@ void ShaderBox::addUniform(std::string name, float value){
    uniforms[name] = value;
 }
 
+void ShaderBox::addUniformI(std::string name, int value){
+   uniformIs[name] = value;
+}
+
 void ShaderBox::removeMe(){
    remove = true;
+}
+
+void ShaderBox::clearBox(){
+   glu->draw->color(0, 0, 0, 1);
+   glu->draw->begin("QUADS");
+   glu->draw->texCoords(0, 1);
+   glu->draw->vertW(x+xOffset, y+yOffset);
+   glu->draw->texCoords(0, 0);
+   glu->draw->vertW(x+xOffset, y+h+yOffset);
+   glu->draw->texCoords(1, 0);
+   glu->draw->vertW(x+w+xOffset, y+h+yOffset);
+   glu->draw->texCoords(1, 1);
+   glu->draw->vertW(x+w+xOffset, y+yOffset);
+   glu->draw->end();
+}
+
+void ShaderBox::clearArcBoxes(){
+   arcOneAlpha->drawOnBox();
+   arcOneAlpha->clearBox();
+   arcOneAlpha->drawOutBox();
+   arcTwoAlpha->drawOnBox();
+   arcTwoAlpha->clearBox();
+   arcTwoAlpha->drawOutBox();
+}
+
+unsigned int ShaderBox::getTextureID(){
+   return texID;
+}
+
+bool ShaderBox::changeShader(std::string dID){
+   if (dID.length() > 0 && !glu->shade->programExists(dID)) return false;
+   drawID = dID;
+   return true;
+}
+
+bool ShaderBox::changeShader(std::string vert, std::string frag){
+   std::string dID = vert+frag;
+   if (dID.length() == 0 || glu->shade->programExists(dID)){
+      drawID = dID;
+      return true;
+   }
+   int val = glu->shade->createProgram("gameFiles/shaders/"+vert, "gameFiles/shaders/"+frag, dID);
+   if (val == 0) return false;
+   drawID = dID;
+   return true;
+}
+
+void ShaderBox::setBlend(bool b){
+   blend = b;
+}
+
+void ShaderBox::setDrawBeforeArc(bool b){
+   drawBeforeArc = b;
+   if (b) replaceWithArc = false;
+   setFastDraw(fastDraw);
+}
+
+void ShaderBox::setReplaceWithArc(bool b){
+   replaceWithArc = b;
+   if (b) drawBeforeArc = false;
+   setFastDraw(fastDraw);
+}
+
+void ShaderBox::setFastDraw(bool fD){
+   fastDraw = fD;
+   bool noShaderboxes = fastDraw || drawBeforeArc || replaceWithArc;
+   if (noShaderboxes && arcOne != nullptr){
+      delete arcOne;
+      arcOne = nullptr;
+      delete arcTwo;
+      arcTwo = nullptr;
+   } else if (!noShaderboxes) {
+      arcOne = new ShaderBox(x/32, y/32, w/32, h/32, "", "drawArc", glu);
+      arcOneAlpha = new ShaderBox(x/32, y/32, w/32, h/32, "", "", glu);
+      arcTwo = new ShaderBox(x/32, y/32, w/32, h/32, "", "drawArc", glu);
+      arcTwoAlpha = new ShaderBox(x/32, y/32, w/32, h/32, "", "", glu);
+   }
 }

@@ -57,6 +57,10 @@ int GLShaders::createProgram(std::string vertName, std::string fragName, std::st
    if (vert) glAttachShader(program, vert);
    int frag = createShader(fragName+".frag", GL_FRAGMENT_SHADER);
    if (frag) glAttachShader(program, frag);
+   if (!vert && !frag){
+      glDeleteProgram(program);
+      return 0;
+   }
    glLinkProgram(program);
    // Thanks to https://www.khronos.org/opengl/wiki/Example_Code
    GLint isLinked = 0;
@@ -106,7 +110,7 @@ void GLShaders::unbindShader(){
    else glUseProgram(curShader->x);
 }
 
-struct pointInt GLShaders::createFrameBuffer(){
+struct upointInt GLShaders::createFrameBuffer(){
    GLuint frameBuf = 0;
    GLuint texBuf = 0;
    GLuint renBuf = 0;
@@ -114,7 +118,7 @@ struct pointInt GLShaders::createFrameBuffer(){
    glGenTextures(1, &texBuf);
    glGenRenderbuffers(1, &renBuf);
    glDrawBuffer(GL_COLOR_ATTACHMENT0);
-   return (pointInt){frameBuf, texBuf, renBuf};
+   return (upointInt){frameBuf, texBuf, renBuf};
 }
 
 void GLShaders::resizeFrameBuffer(int frame, int tex, int ren, double w, double h){

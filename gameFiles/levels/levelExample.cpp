@@ -16,7 +16,9 @@ std::vector<ShaderBox *> LevelExample::createShaderBoxes(GLUtil* glu){
    std::vector<ShaderBox *> shadings;
    // Put in ShaderBox
    shadings.push_back(new ShaderBox(0, 0, 10, 15, "", "testShader", glu));
-   shadings.push_back(new GravityWell(40, 0, 100, glu));
+   ShaderBox* gWell = new GravityWell(40, 0, 100, glu);
+   gWell->setFastDraw(false);
+   shadings.push_back(gWell);
    return shadings;
 }
 

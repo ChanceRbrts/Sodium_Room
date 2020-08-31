@@ -11,6 +11,7 @@
 #include "testLevels/testJungleObjects.h"
 #include "mainLevels/introLevel.h"
 #include "jungleLevels/rainHallway.h"
+#include "testLevels/testMultipleLights.h"
 
 // Do stuff in order
 #define LEV_EXAMPLE 0
@@ -20,6 +21,7 @@
 #define LEV_TEST_JUNGLEOBJECTS 4
 #define LEV_MAIN_INTROLEVEL 5
 #define LEV_JUNG_RAINHALLWAY 6
+#define LEV_TEST_MULTILIGHTS 7
 
 /**
  * A simple list of all the levels.

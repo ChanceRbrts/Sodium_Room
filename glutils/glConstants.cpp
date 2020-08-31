@@ -9,6 +9,7 @@ bool GLDraw::popCameraMem(){
    camY = realCam->y;
    width = realCam->w;
    height = realCam->h;
+   resizeViewport();
    delete realCam;
    return true;
 }
@@ -20,6 +21,7 @@ void GLDraw::pushCameraMem(double x, double y, double w, double h){
    camY = y;
    width = w;
    height = h;
+   resizeViewport();
 }
 
 pointDouble GLDraw::vPoint(double v1, double v2){

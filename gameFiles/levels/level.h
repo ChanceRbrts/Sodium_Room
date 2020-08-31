@@ -50,6 +50,15 @@ class Level{
        * @return A list of shaderboxes that are in the level.
        */
       virtual std::vector<ShaderBox*> createShaderBoxes(GLUtil* glu);
+      /**
+       * Draws all layers and possibly the arcs to the screen at once.
+       * Used only for drawing to a shaderbox.
+       * @param glu The GLUtil to use for drawing.
+       * @param player The player of the game.
+       * @param drewArcs Whether or not arcs have been drawn to the screen yet.
+       * @param shade The shaderbox that's currently being drawn to.
+       */
+      void fullDraw(GLUtil* glu, Instance* player, bool drawArcs, ShaderBox* shade);
       /// @return A list of the arcs in the room.
       virtual std::vector<Arc*> createArcs();
       /// @return A list of the camera objects in the room.
@@ -77,7 +86,7 @@ class Level{
       std::string filePath;
       /// The level's instances. 
       Instances* insts, lastInsts;
-      /// The level's shaderboxes
+      /// The level's shaderboxes (Drawn after arcs)
       std::vector<ShaderBox*> shades;
       /// The level's arcs
       std::vector<Arc*> arcs;
@@ -99,11 +108,23 @@ class Level{
        */
       void drawLayer(GLUtil* glu, int layer);
       /**
+       * Draw the arcs into the scene.
+       * @param glu The GLUtil to use for drawing.
+       * @param mainBox The shaderbox that was drawn to with the drawLayer steps.
+       * @param arcOne The first shaderbox that the arcs draw to.
+       * @param arcTwo The second shaderbox that the arcs draw to.
+       * @param player The player object if it has an arc that needs to be drawn WITH this level.
+       * @return Whether or not arcOne is the final shaderbox that was drawn to.
+       */
+      bool drawArcs(GLUtil* glu, ShaderBox* mainBox, DualSBox arcOne, DualSBox arcTwo, Instance* player);
+      /**
        * Draw the shaderboxes in the level.
        * @param glu The GLUtil to use for drawing.
        * @param player The player of the game.
+       * @param drewArcs The phase of the shaderbox corresponding to the arcs (0=Before, 1=Replace, 2=After)
+       * @param screen The shaderbox that corresponds to the current screen.
        */
-      void drawShaderboxes(GLUtil* glu, Instance* player);
+      void drawShaderboxes(GLUtil* glu, Instance* player, int drewArcs, ShaderBox* screen);
       /**
        * Checks to see if an instance is out of bounds, and moves it to another level if so.
        * @param lv The list of levels in loaded in the game.
