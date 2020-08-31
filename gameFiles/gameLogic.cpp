@@ -11,7 +11,7 @@ GameLogic::GameLogic(){
    drawBox = nullptr;
    arcBoxOne = (DualSBox){nullptr, nullptr};
    arcBoxTwo = (DualSBox){nullptr, nullptr};
-   loadLevel(levels->lev[LEV_EXAMPLE]);
+   loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
 }
 
 GameLogic::~GameLogic(){
@@ -296,7 +296,7 @@ void GameLogic::draw(GLUtil* glu){
    }
    // Draw the shaderboxes that should be drawn before the arc.
    for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
-      l->lev->drawShaderboxes(glu, player, false, drawBox);
+      l->lev->drawShaderboxes(glu, player, 0, drawBox);
    }
    bool drawOne = true;
    // Reset arcOne's alpha values by drawing a black transparent rectangle on it.
@@ -317,6 +317,10 @@ void GameLogic::draw(GLUtil* glu){
       drawOne ^= !dontSwap;
    }
    drawBox->changeShader("");
+   // Before drawing the arcs, there are a few shaderboxes that need to be drawn first.
+   for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+      l->lev->drawShaderboxes(glu, player, 1, drawBox);
+   }
    DualSBox drawMe = drawOne ? arcBoxTwo : arcBoxOne;
    // printf("%d\n", drawMe.second->getTextureID());
    drawMe.first->addUniformI("alphaTex", 1);
@@ -326,7 +330,7 @@ void GameLogic::draw(GLUtil* glu){
    drawBox->draw();
    // Draw the shaderboxes next.
    for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
-      l->lev->drawShaderboxes(glu, player, true, drawBox);
+      l->lev->drawShaderboxes(glu, player, 2, drawBox);
    }
    // We want the HUD to be static on the screen.
    gld->pushCameraMem(0, 0, gld->getWidth(), gld->getHeight());

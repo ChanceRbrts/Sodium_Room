@@ -210,7 +210,9 @@ bool Level::drawArcs(GLUtil* glu, ShaderBox* mainBox, DualSBox arcOne, DualSBox 
    return !doNotSwap;
 }
 
-void Level::drawShaderboxes(GLUtil* glu, Instance* player, bool drewArcs, ShaderBox* screen){
+void Level::drawShaderboxes(GLUtil* glu, Instance* player, int drewArcs, ShaderBox* screen){
+   bool beforeArc = drewArcs == 0;
+   bool replaceArc = drewArcs == 1;
    // Make sure we're drawing our shaderboxes first.
    if (!createdShaderboxes){
       shades = createShaderBoxes(glu);
@@ -219,7 +221,11 @@ void Level::drawShaderboxes(GLUtil* glu, Instance* player, bool drewArcs, Shader
    // Draw everything to each of the shader boxes, then draw that shaderbox.
    for (int i = 0; i < shades.size(); i++){
       ShaderBox* shade = shades[i];
-      if (!(shade->canDraw()) || screen == nullptr || shade->getDrawBeforeArc() == drewArcs) continue;
+      bool drawThisBox1 = beforeArc && shade->getDrawBeforeArc();
+      bool drawThisBox2 = replaceArc && shade->getReplaceWithArc();
+      bool drawThisBox3 = drewArcs > 1 && (!shade->getDrawBeforeArc() && !shade->getReplaceWithArc());
+      bool drawThis = drawThisBox1 || drawThisBox2 || drawThisBox3;
+      if (!(shade->canDraw()) || screen == nullptr || !drawThis) continue;
       shade->drawOnBox();
       // Draw to the background first.
       drawLayer(glu, LAYER_BACK);
@@ -228,7 +234,7 @@ void Level::drawShaderboxes(GLUtil* glu, Instance* player, bool drewArcs, Shader
          screen->draw();
       } else {
          // Go through all of the drawing code that would normally be done for one layer.
-         fullDraw(glu, player, drewArcs, shade);
+         fullDraw(glu, player, drewArcs > 1, shade);
       }
       shade->drawOutBox();
       shade->draw();

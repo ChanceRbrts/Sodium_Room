@@ -121,10 +121,10 @@ class Level{
        * Draw the shaderboxes in the level.
        * @param glu The GLUtil to use for drawing.
        * @param player The player of the game.
-       * @param drewArcs Whether or not arcs have been drawn to the screen yet.
+       * @param drewArcs The phase of the shaderbox corresponding to the arcs (0=Before, 1=Replace, 2=After)
        * @param screen The shaderbox that corresponds to the current screen.
        */
-      void drawShaderboxes(GLUtil* glu, Instance* player, bool drewArcs, ShaderBox* screen);
+      void drawShaderboxes(GLUtil* glu, Instance* player, int drewArcs, ShaderBox* screen);
       /**
        * Checks to see if an instance is out of bounds, and moves it to another level if so.
        * @param lv The list of levels in loaded in the game.

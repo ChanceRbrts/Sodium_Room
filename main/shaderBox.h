@@ -51,6 +51,8 @@ class ShaderBox{
       bool fastDraw;
       /// Whether or not the shaderbox needs to be drawn before the arcs are drawn.
       bool drawBeforeArc;
+      /// Whether or not any arc drawn to this shaderbox should be replaced with.
+      bool replaceWithArc;
    public:
       /**
        * Creates a frame buffer that draws within dimensions specified and applies shaders to them.
@@ -139,8 +141,14 @@ class ShaderBox{
        * @param blnd Whether or not blending should be used.
        */
       void setBlend(bool b);
+      /// @param b Whether or not to draw this shaderbox before drawing arcs.
+      void setDrawBeforeArc(bool b);
       /// @return Whether or not to draw this shaderbox before drawing arcs.
       bool getDrawBeforeArc(){ return drawBeforeArc; };
+      /// @param b Whether or not to have an arc replace parts of the shaderbox.
+      void setReplaceWithArc(bool b);
+      /// @return Whether or not to have an arc replace parts of the shaderbox.
+      bool getReplaceWithArc(){ return replaceWithArc; };
       /// @return Whether or not to use the screen to draw to the shaderbox.
       bool getFastDraw(){ return fastDraw; };
       /**

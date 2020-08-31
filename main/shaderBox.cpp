@@ -24,6 +24,7 @@ ShaderBox::ShaderBox(double X, double Y, double W, double H, std::string vertSha
    blend = true;
    fastDraw = true;
    drawBeforeArc = false;
+   replaceWithArc = false;
    arcOne = nullptr;
    arcOneAlpha = nullptr;
    arcTwo = nullptr;
@@ -196,14 +197,27 @@ void ShaderBox::setBlend(bool b){
    blend = b;
 }
 
+void ShaderBox::setDrawBeforeArc(bool b){
+   drawBeforeArc = b;
+   if (b) replaceWithArc = false;
+   setFastDraw(fastDraw);
+}
+
+void ShaderBox::setReplaceWithArc(bool b){
+   replaceWithArc = b;
+   if (b) drawBeforeArc = false;
+   setFastDraw(fastDraw);
+}
+
 void ShaderBox::setFastDraw(bool fD){
    fastDraw = fD;
-   if (fastDraw && arcOne != nullptr){
+   bool noShaderboxes = fastDraw || drawBeforeArc || replaceWithArc;
+   if (noShaderboxes && arcOne != nullptr){
       delete arcOne;
       arcOne = nullptr;
       delete arcTwo;
       arcTwo = nullptr;
-   } else if (!fastDraw) {
+   } else if (!noShaderboxes) {
       arcOne = new ShaderBox(x/32, y/32, w/32, h/32, "", "drawArc", glu);
       arcOneAlpha = new ShaderBox(x/32, y/32, w/32, h/32, "", "", glu);
       arcTwo = new ShaderBox(x/32, y/32, w/32, h/32, "", "drawArc", glu);

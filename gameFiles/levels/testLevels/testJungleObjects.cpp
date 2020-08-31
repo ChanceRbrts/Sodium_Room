@@ -33,6 +33,7 @@ std::vector<ShaderBox *> TestJungleObjects::createShaderBoxes(GLUtil* glu){
    sBox->addUniform("g", 0.5);
    sBox->addUniform("b", 0.5);
    sBox->addUniform("mono", true);
+   sBox->setReplaceWithArc(true);
    shadings.push_back(sBox);
    return shadings;
 }
