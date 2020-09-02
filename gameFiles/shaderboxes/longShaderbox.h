@@ -9,10 +9,12 @@ class LongShaderbox : public ShaderBox{
         double xScrollStart;
         double xScrollEnd;
         double drawX;
+        double uX;
     public:
         LongShaderbox(double X, double xPoint, double Y, double drawW, double endW, double H, 
             std::string vertShader, std::string fragShader, GLUtil* glu);
         void moveShaderBox(double X, double Y);
+        void resetUniforms();
 };
 
 class GravityWell : public LongShaderbox{

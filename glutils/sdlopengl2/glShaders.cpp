@@ -58,6 +58,10 @@ int GLShaders::createProgram(std::string vertName, std::string fragName, std::st
    if (vert) glAttachShader(program, vert);
    int frag = createShader(fragName+".frag", GL_FRAGMENT_SHADER);
    if (frag) glAttachShader(program, frag);
+   if (!vert && !frag){
+      glDeleteProgram(program);
+      return 0;
+   }
    glLinkProgram(program);
    // Thanks to https://www.khronos.org/opengl/wiki/Example_Code
    GLint isLinked = 0;
@@ -156,6 +160,10 @@ void GLShaders::deleteFrameBuffer(int frame, int tex, int ren){
 
 void GLShaders::addUniform(int program, std::string name, float val){
    glUniform1f(glGetUniformLocation(program, name.c_str()), val);
+}
+
+void GLShaders::addUniformI(int program, std::string name, int val){
+   glUniform1i(glGetUniformLocation(program, name.c_str()), int(val));
 }
 
 int GLShaders::addAttribute(int program, std::string att, float* pointer, int gap){

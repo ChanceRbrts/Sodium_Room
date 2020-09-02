@@ -189,69 +189,101 @@ void Level::drawLayer(GLUtil* glu, int layer){
    drawObjects(glu, layer, 0);
 }
 
-void Level::drawShaderboxes(GLUtil* glu, Instance* player){
-   // Update our arcs here. 
-   // (Doing this before creating the shaderboxes so we don't have a ton of nullptrs.)
+bool Level::drawArcs(GLUtil* glu, ShaderBox* mainBox, DualSBox arcOne, DualSBox arcTwo, Instance* player){
+   // Update arcs before using them.
+   bool doNotSwap = true;
    for (int i = 0; i < arcs.size(); i++){
-      arcs[i]->draw(glu);
+      DualSBox aOne = doNotSwap ? arcOne : arcTwo;
+      DualSBox aTwo = doNotSwap ? arcTwo : arcOne;
+      arcs[i]->draw(glu, mainBox, aOne, aTwo.first->getTextureID(), aTwo.second->getTextureID());
+      doNotSwap = !doNotSwap;
    }
+   // See if the player has an arc that needs to be drawn now.
+   if (player == nullptr) return doNotSwap;
+   PlayerAbility* pA = ((Player *)player)->getAbility();
+   if (pA == nullptr || pA->getArc() == nullptr) return doNotSwap;
+   // Draw it now.
+   DualSBox aOne = doNotSwap ? arcOne : arcTwo;
+   DualSBox aTwo = doNotSwap ? arcTwo : arcOne;
+   pA->getArc()->draw(glu, mainBox, aOne, aTwo.first->getTextureID(), aTwo.second->getTextureID());
+   // Does the swap and the return.
+   return !doNotSwap;
+}
+
+void Level::drawShaderboxes(GLUtil* glu, Instance* player, int drewArcs, ShaderBox* screen){
+   bool beforeArc = drewArcs == 0;
+   bool replaceArc = drewArcs == 1;
    // Make sure we're drawing our shaderboxes first.
    if (!createdShaderboxes){
       shades = createShaderBoxes(glu);
-      for (int i = 0; i < arcs.size(); i++){
-         shades.push_back(arcs[i]->getShaderBox());
-      }
       createdShaderboxes = true;
    }
    // Draw everything to each of the shader boxes, then draw that shaderbox.
    for (int i = 0; i < shades.size(); i++){
       ShaderBox* shade = shades[i];
-      if (!(shade->canDraw())) continue;
+      bool drawThisBox1 = beforeArc && shade->getDrawBeforeArc();
+      bool drawThisBox2 = replaceArc && shade->getReplaceWithArc();
+      bool drawThisBox3 = drewArcs > 1 && (!shade->getDrawBeforeArc() && !shade->getReplaceWithArc());
+      bool drawThis = drawThisBox1 || drawThisBox2 || drawThisBox3;
+      if (!(shade->canDraw()) || screen == nullptr || !drawThis) continue;
       shade->drawOnBox();
-      std::map<int, Layer*>::iterator lI = layers.begin();
-      bool drawnPlayer = false;
-      while (lI != layers.end()){
-         if (player != nullptr){
-            std::vector<int> pLayers = player->getLayers();
-            if (!drawnPlayer && pLayers.size() > 0 && lI->first >= pLayers[0]){
-               drawnPlayer = true;
-               if (player != nullptr){
-                  double cX = glu->draw->camX;
-                  double cY = glu->draw->camY;
-                  double wid = glu->draw->getWidth();
-                  double hei = glu->draw->getHeight();
-                  if (player->x < cX+wid && player->x+player->w > cX && player->y < cY+hei && player->y+player->h > cY){
-                     player->draw(glu, lI->first);
-                  }
-               }
-            }
-         }
-         drawObjects(glu, lI->first, 0);
-         lI++;
+      // Draw to the background first.
+      drawLayer(glu, LAYER_BACK);
+      if (shade->getFastDraw()){
+         // Optimize the drawing by just drawing what's on the screen at this point.
+         screen->draw();
+      } else {
+         // Go through all of the drawing code that would normally be done for one layer.
+         fullDraw(glu, player, drewArcs > 1, shade);
       }
       shade->drawOutBox();
       shade->draw();
    }
-   if (player == nullptr) return;
-   PlayerAbility* pA = ((Player*)player)->getAbility();
-   if (pA == nullptr) return;
-   // If the player is in the bounds of the level, draw the player's ability.
-   if (player->x+player->w >= xOff && player->y+player->h >= yOff && player->x <= xOff+w && player->y <= yOff+h){
-      pA->draw(glu, 0);
-      Arc* a = pA->getArc();
-      if (a == nullptr) return;
-      a->draw(glu);
-      ShaderBox* s = a->getShaderBox();
-      if (s->canDraw()){
-         s->drawOnBox();
-         std::map<int, Layer*>::iterator lI = layers.begin();
-         while (lI != layers.end()){
-            drawObjects(glu, lI->first, 0);
-            lI++;
+}
+
+void Level::fullDraw(GLUtil* glu, Instance* player, bool drewArcs, ShaderBox* shade){
+   std::map<int, Layer*>::iterator lI = layers.begin();
+   bool drawnPlayer = false;
+   while (lI != layers.end()){
+      if (player != nullptr){
+         // If the player is at this layer or an earlier layer, draw it here.
+         std::vector<int> pLayers = player->getLayers();
+         if (!drawnPlayer && pLayers.size() > 0 && lI->first >= pLayers[0]){
+            drawnPlayer = true;
+            if (player != nullptr){
+               double cX = glu->draw->camX;
+               double cY = glu->draw->camY;
+               double wid = glu->draw->getWidth();
+               double hei = glu->draw->getHeight();
+               if (player->x < cX+wid && player->x+player->w > cX && player->y < cY+hei && player->y+player->h > cY){
+                  player->draw(glu, lI->first);
+               }
+            }
          }
-         s->drawOutBox();
-         s->draw();
       }
+      // Draw objects at this layer.
+      drawObjects(glu, lI->first, 0);
+      lI++;
+   }
+   if (drewArcs){
+      // Note: We're still drawing to shade given how drawOnBox works.
+      /// TODO: Do drawing arc code. 
+      shade->clearArcBoxes();
+      std::string dID = shade->getDrawID();
+      shade->changeShader("", "arc");
+      DualSBox aOne = (DualSBox){shade->getArcOne(), shade->getArcOneA()};
+      DualSBox aTwo = (DualSBox){shade->getArcTwo(), shade->getArcTwoA()};
+      bool drawTwo = drawArcs(glu, shade, aOne, aTwo, player);
+      shade->changeShader(dID);
+      // shade->changeShader("", "");
+      // If this is a long shaderbox, this resets the uniform value for x.
+      shade->resetUniforms();
+      DualSBox drawMe = drawTwo ? aTwo : aOne;
+      // Redraw to shade now that we're done using it.
+      // Actually draw the arcs to the shaderbox here.
+      drawMe.first->addUniformI("alphaTex", 1);
+      glu->draw->bindTexture(drawMe.second->getTextureID(), 1);
+      drawMe.first->draw();
    }
 }
 
@@ -293,7 +325,6 @@ bool Level::moveInstance(Instances* move, Level* otherLev){
    // Finally, we need to move the drawn instances over.
    bool changeLayers = removeFromLayers(move);
    changeLayers = otherLev->addToLayers(move) || changeLayers;
-   /// TODO: Make a check to see if layers need to be redrawn.
    return changeLayers;
 }
 

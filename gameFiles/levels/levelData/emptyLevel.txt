@@ -1,0 +1,31 @@
+Textures
+1 placeholder_floor
+2 placeholder_ceiling
+3 placeholder_left
+4 placeholder_right
+5 placeholder_fl_l
+6 placeholder_fl_r
+7 placeholder_ce_l
+8 placeholder_ce_r
+9 placeholder_inner
+A placeholder_cr_cl
+B placeholder_cr_cr
+C placeholder_cr_fl
+D placeholder_cr_fr
+
+Layout
+A222222222222222222B
+3                  4
+3                  4
+3                  4
+3                  4
+3                  4
+3                  4
+3                  4
+3                  4
+3                  4
+3                  4
+3                  4
+3                  4
+3                  4
+C111111111111111111D

@@ -23,8 +23,6 @@ struct ArcInfo{
  */
 class Arc{
     protected:
-        /// The shaderbox that the arc draws to.
-        ShaderBox* shade;
         /// The center of the arc.
         double x, y;
         /// The radius of the arc.
@@ -43,6 +41,8 @@ class Arc{
         bool monocolor;
         /// Whether or not the arc makes everything act with "default behavior." (Usually false)
         bool defBehavior;
+        /// Whether or not this arc blends with other arcs.
+        bool blendArc;
     public:
         /**
          * The constructor of the arc.
@@ -86,8 +86,6 @@ class Arc{
         double getD2(){return d2;};
         /// @return The opaqueness of the arc.
         double getAlpha(){return alpha;}
-        /// @return The shaderbox that the Arc draws to.
-        ShaderBox* getShaderBox(){ return shade; }
         /**
          * Change the angle that the arc is at.
          * @param D1 The new starting angle of the arc in radians.
@@ -97,8 +95,12 @@ class Arc{
         /**
          * This sets up the shaderbox drawing code.
          * @param glu The GLUtil to use for drawing.
+         * @param mainTex The texture that has already been drawn before the arcs.
+         * @param drawTo The shaderbox that the arc is being drawn to.
+         * @param fromTex The textures that contain the information from the previous arcs.
+         * @param fromAlpha The opaqueness texture from the previous arcs.
          */
-        void draw(GLUtil* glu);
+        void draw(GLUtil* glu, ShaderBox* mainTex, DualSBox drawTo, int fromTex, int fromAlpha);
         /**
          * This changes the color of the arc.
          * @param R The new red color of the arc.
@@ -122,6 +124,11 @@ class Arc{
          * @return The data representation of the arc.
          */
         ArcInfo getInfo(int id);
+        /**
+         * Set whether or not the arc blends with other arcs.
+         * @param blend Whether or not the arc will blend with other arcs.
+         */
+        void setBlend(bool blend);
 };
 
 #endif

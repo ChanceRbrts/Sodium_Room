@@ -9,4 +9,5 @@ Levels::Levels(){
    lev.push_back(new TestJungleObjects());
    lev.push_back(new IntroLevel());
    lev.push_back(new RainHallwayLevel());
+   lev.push_back(new TestMultipleLights());
 }

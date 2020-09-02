@@ -8,7 +8,10 @@ GameLogic::GameLogic(){
    player = nullptr;
    camera = new Camera();
    reloadLayers = false;
-   loadLevel(levels->lev[LEV_TEST_RAIN]);
+   drawBox = nullptr;
+   arcBoxOne = (DualSBox){nullptr, nullptr};
+   arcBoxTwo = (DualSBox){nullptr, nullptr};
+   loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
 }
 
 GameLogic::~GameLogic(){
@@ -64,7 +67,6 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    bool* keyHeld = glu->control->getKeyHeld();
    if (keyPressed[BUTTON_END]) exit(0);
    // Update each of the objects.
-   LevelList* lList = loadedLevels;
    // collObjs is used for collision checking.
    std::vector<Instance *> collObjs;
    Arc* pAr = nullptr;
@@ -77,6 +79,17 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
       }
    }
    int levID = 0;
+   LevelList* lList = loadedLevels;
+   // Get a list of all the arcs in the level.
+   std::vector<Arc *> arcs;
+   while (lList != nullptr){
+      Level* l = lList->lev;
+      for (int i = 0; i < l->arcs.size(); i++){
+         arcs.push_back(l->arcs[i]);
+      }
+      lList = lList->next;
+   }
+   lList = loadedLevels;
    while (lList != nullptr){
       Level* l = lList->lev;
       l->updateLevel(deltaTime, player);
@@ -88,10 +101,13 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
       while (in != nullptr){
          in->i->upd(deltaTime, keyPressed, keyHeld, player);
          Instances* next = in->next;
-         // Levels have arcs that may collide with objects in there.
+         // All arcs loaded in need to be tested with the instance.
+         // However, since not many levels will be loaded at once, this should be fine?
+         // It also helps that arc collisions aren't intensive if there's no way 
+         // the arc will ever collide with the instance.
          if (pAr != nullptr) in->i->arcCol(pAr, deltaTime, -1);
-         for (int a = 0; a < l->arcs.size(); a++){
-            in->i->arcCol(l->arcs[a], deltaTime, a+levID);
+         for (int a = 0; a < arcs.size(); a++){
+            in->i->arcCol(arcs[a], deltaTime, a+levID);
          }
          // If an instance can mess with the levels, allow it here.
          if (in->i->canMessWithLevel()){
@@ -101,9 +117,8 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          // If an object is destroyed, destroy it.
          if (in->i->canRemove()){
             Instances* toRemove = in;
-            removeFromList(toRemove, &(l->insts));
             reloadLayers = l->removeFromLayers(toRemove) || reloadLayers;
-            /// TODO: Update the drawing order?
+            removeFromList(toRemove, &(l->insts));
          } else collObjs.push_back(in->i);
          in = next;
       }
@@ -134,7 +149,6 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
             for (int i = 0; i < in->i->toAdd.size(); i++){
                Instances* newInst = addToList(in, in->i->toAdd[i]);
                reloadLayers = l->addToLayers(newInst) || reloadLayers;
-               /// TODO: Update the drawing layers?
             }
             in->i->toAdd.clear();
          }
@@ -148,6 +162,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
       reloadLayers = lList->lev->moveOutOfBounds(loadedLevels) || reloadLayers;
       lList = lList->next;
    }
+   arcs.clear();
    // Update the camera.
    updateCamera(deltaTime, glu);
    // Update the shaderboxes that need updating.
@@ -235,11 +250,27 @@ void GameLogic::draw(GLUtil* glu){
       FontBook::loadFont("Courier New");
       createdFonts = true;
    }
+   GLDraw* gld = glu->draw;
+   // Create our shaderboxes to draw to the screen.
+   if (drawBox == nullptr){
+      drawBox = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "", glu);
+      // The "first" of these pairs represent the colors.
+      // The "second" of these paris represent the opaqueness.
+      arcBoxOne.first = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "drawArc", glu);
+      arcBoxOne.second = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "", glu);
+      arcBoxTwo.first = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "drawArc", glu);
+      arcBoxTwo.second = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "", glu);
+   }
+   drawBox->moveShaderBox(gld->camX, gld->camY);
+   arcBoxOne.first->moveShaderBox(gld->camX, gld->camY);
+   arcBoxOne.second->moveShaderBox(gld->camX, gld->camY);
+   arcBoxTwo.first->moveShaderBox(gld->camX, gld->camY);
+   arcBoxTwo.second->moveShaderBox(gld->camX, gld->camY);
+   if (loadedLevels == nullptr) return;
+   drawBox->drawOnBox();
    // Draw the backgrounds first.
-   if (loadedLevels != nullptr){
-      for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
-         l->lev->drawLayer(glu, LAYER_BACK);
-      }
+   for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+      l->lev->drawLayer(glu, LAYER_BACK);
    }
    // Draw the layers of the objects.
    std::map<int, std::vector<Layer *>>::iterator dI = layers.begin();
@@ -254,6 +285,8 @@ void GameLogic::draw(GLUtil* glu){
                double hei = glu->draw->getHeight();
                if (player->x < cX+wid && player->x+player->w > cX && player->y < cY+hei && player->y+player->h > cY){
                   player->draw(glu, dI->first);
+                  PlayerAbility* pA = ((Player*)player)->getAbility();
+                  if (pA != nullptr) pA->draw(glu, dI->first);
                }
             }
          } else{
@@ -261,14 +294,45 @@ void GameLogic::draw(GLUtil* glu){
          }
       }
    }
+   // Draw the shaderboxes that should be drawn before the arc.
+   for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+      l->lev->drawShaderboxes(glu, player, 0, drawBox);
+   }
+   bool drawOne = true;
+   // Reset arcOne's alpha values by drawing a black transparent rectangle on it.
+   arcBoxOne.second->drawOnBox();
+   arcBoxOne.second->clearBox();
+   arcBoxOne.second->drawOutBox();
+   arcBoxTwo.second->drawOnBox();
+   arcBoxTwo.second->clearBox();
+   arcBoxTwo.second->drawOutBox();
+   drawBox->changeShader("", "arc");
+   // Now, draw the arcs.
+   for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+      DualSBox aOne = drawOne ? arcBoxOne : arcBoxTwo;
+      DualSBox aTwo = drawOne ? arcBoxTwo : arcBoxOne;
+      // Draw the player ability last, so pass in nullptr if this isn't the final level.
+      Instance* possPlay = l->next == nullptr ? player : nullptr;
+      bool dontSwap = l->lev->drawArcs(glu, drawBox, aOne, aTwo, possPlay);
+      drawOne ^= !dontSwap;
+   }
+   drawBox->changeShader("");
+   // Before drawing the arcs, there are a few shaderboxes that need to be drawn first.
+   for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+      l->lev->drawShaderboxes(glu, player, 1, drawBox);
+   }
+   DualSBox drawMe = drawOne ? arcBoxTwo : arcBoxOne;
+   // printf("%d\n", drawMe.second->getTextureID());
+   drawMe.first->addUniformI("alphaTex", 1);
+   gld->bindTexture(drawMe.second->getTextureID(), 1);
+   drawMe.first->draw();
+   drawBox->drawOutBox();
+   drawBox->draw();
    // Draw the shaderboxes next.
-   if (loadedLevels != nullptr){
-      for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
-         l->lev->drawShaderboxes(glu, player);
-      }
+   for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+      l->lev->drawShaderboxes(glu, player, 2, drawBox);
    }
    // We want the HUD to be static on the screen.
-   GLDraw* gld = glu->draw;
    gld->pushCameraMem(0, 0, gld->getWidth(), gld->getHeight());
    if (hud != nullptr && hud->next != nullptr){
       for (Instances* i = hud->next; i != nullptr; i = i->next){
