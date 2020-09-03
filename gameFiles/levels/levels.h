@@ -30,8 +30,11 @@ class Levels{
    public:
       /// The list of levels
       std::vector<Level *> lev;
+      /// A list of adjacent levels.
+      std::map<int, std::vector<AdjLevel *>> adj;
       /// The constructor of the levels.
       Levels();
+
 };
 
 #endif
