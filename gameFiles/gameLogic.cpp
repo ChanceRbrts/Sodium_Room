@@ -61,11 +61,41 @@ void GameLogic::unloadLevel(LevelList* l){
    delete l;
 }
 
+void GameLogic::modifyLevelsLoaded(GLUtil* glu){
+   // For now, let's have a level loaded in if it is within a screen's length away from the screen.
+   double cX = glu->draw->camX;
+   double cY = glu->draw->camY;
+   double w = glu->draw->getWidth();
+   double h = glu->draw->getHeight();
+   double minX = cX-w;
+   double minY = cY-h;
+   double maxX = cX+2*w;
+   double maxY = cY+2*w;
+   // First, deallocate the levels that are out of bounds.
+   LevelList* l = loadedLevels;
+   while (l != nullptr){
+      Level* lev = l->lev;
+      bool remove = false;
+      double lX = lev->getXOff();
+      double lY = lev->getYOff();
+      remove = lX+lev->w < minX || lX > maxX;
+      remove = remove || lY+lev->h < minY || lY > maxY;
+      LevelList* lNext = l->next;
+      if (remove){
+         unloadLevel(l);
+      }
+      l = lNext;
+   }
+   // Now, check for levels that are in bounds and load them in.
+   
+}
+
 void GameLogic::update(double deltaTime, GLUtil* glu){
    // Key our controls.
    bool* keyPressed = glu->control->getKeyPressed();
    bool* keyHeld = glu->control->getKeyHeld();
    if (keyPressed[BUTTON_END]) exit(0);
+   modifyLevelsLoaded(glu);
    // Update each of the objects.
    // collObjs is used for collision checking.
    std::vector<Instance *> collObjs;

@@ -50,6 +50,11 @@ class GameLogic{
        */
       void removeFromList(Instances* i, Instances** start);
       /**
+       * Modify which levels are currently loaded in.
+       * @param glu The GLUtils (Used just to see what's in the camera.)
+       */
+      void modifyLevelsLoaded(GLUtil* glu);
+      /**
        * The drawing layers that each level needs to draw to.
        * The idea is to draw instances in layers that are in numerical order.
        */
