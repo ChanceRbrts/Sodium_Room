@@ -87,7 +87,12 @@ void GameLogic::modifyLevelsLoaded(GLUtil* glu){
       l = lNext;
    }
    // Now, check for levels that are in bounds and load them in.
-   
+   LevelList* l = loadedLevels;
+   while (l != nullptr){
+      Level* lev = l->lev;
+      LevelList* lNext = l->next;
+      
+   }
 }
 
 void GameLogic::update(double deltaTime, GLUtil* glu){
