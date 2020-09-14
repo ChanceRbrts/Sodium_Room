@@ -23,6 +23,11 @@
 #define LEV_JUNG_RAINHALLWAY 6
 #define LEV_TEST_MULTILIGHTS 7
 
+struct LevLoaded{
+   Level* lev;
+   bool loaded;
+};
+
 class Map{
    private:
       double x;
@@ -33,11 +38,11 @@ class Map{
       double h;
       /// TODO: Find a better way to load levels besides iterating through every level.
       std::vector<Level *> levels;
-      std::vector<Level *> getLevelsInArea(double x, double y, double w, double h);
+      std::vector<LevLoaded> getLevelsInArea(double p, double q1, double q2, bool horizontal, std::vector<LevLoaded> prev);
       int superMapID;
    public:
       void addLevel(Level* l, double X, double Y);
-      void updateLoadedLevels(LevelList* l, GLUtil* glu);
+      std::vector<Level *> updateLoadedLevels(LevelList* l, GLUtil* glu);
       Map();
       int getSuperMapID(){ return superMapID; };    
 };
