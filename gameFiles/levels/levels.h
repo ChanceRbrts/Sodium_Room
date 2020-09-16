@@ -44,7 +44,15 @@ class Map{
       void addLevel(Level* l, double X, double Y);
       std::vector<Level *> updateLoadedLevels(LevelList* l, GLUtil* glu);
       Map();
-      int getSuperMapID(){ return superMapID; };    
+      int getSuperMapID(){ return superMapID; };  
+      bool inBounds(double X, double Y, double W, double H);
+};
+
+/// TODO: Find a better home for this.
+template <class T>
+struct pairVector{
+   std::vector<T> a;
+   std::vector<T> b;
 };
 
 /**
@@ -54,11 +62,19 @@ class Levels{
    public:
       /// The list of levels
       std::vector<Level *> lev;
+      std::vector<Map *> maps;
       /// A list of adjacent levels.
       std::map<int, std::vector<AdjLevel *>> adj;
       /// The constructor of the levels.
       Levels();
-
+      /**
+       * @param superMapID The ID of the super map to use.
+       * @param offX The (estimated ?) xOffset of the level to load.
+       * @param offY The (estimated ?) yOffset of the level to load.
+       * @param glu The GLUtils class. Used to get the width and the height of the screen.
+       * @return (The maps in the supermap, the maps that should be loaded given the offset)
+       */
+      pairVector<Map*> getSuperMap(int superMapID, double offX, double offY, GLUtil* glu);
 };
 
 #endif

@@ -25,6 +25,10 @@ void Map::addLevel(Level* l, double X, double Y){
    levels.push_back(l);
 }
 
+bool Map::inBounds(double X, double Y, double W, double H){
+   return x <= X+W && x+w >= X && y <= Y+H && y+h >= Y;
+}
+
 std::vector<Level *> Map::updateLoadedLevels(LevelList* l, GLUtil* glu){
    double newX = glu->draw->camX;
    double newY = glu->draw->camY;
@@ -83,4 +87,21 @@ Levels::Levels(){
    lev.push_back(new IntroLevel());
    lev.push_back(new RainHallwayLevel());
    lev.push_back(new TestMultipleLights());
+}
+
+pairVector<Map*> Levels::getSuperMap(int superMapID, double offX, double offY, GLUtil* glu){
+   double wid = glu->draw->getWidth();
+   double hei = glu->draw->getHeight();
+   std::vector<Map *> superMap;
+   std::vector<Map *> mapsAtOffset;
+   for (int i = 0; i < maps.size(); i++){
+      Map* map = maps[i];
+      if (map->getSuperMapID() == superMapID){
+         superMap.push_back(map);
+      }
+      if (map->inBounds(offX-wid*3/4, offY-hei*3/4, wid*5/2, hei*5/2)){
+         mapsAtOffset.push_back(map);
+      }
+   }
+   return (pairVector<Map*>){superMap, mapsAtOffset};
 }
