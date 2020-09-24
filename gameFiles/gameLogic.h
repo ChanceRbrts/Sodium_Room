@@ -34,6 +34,7 @@ class GameLogic{
       ShaderBox* drawBox;
       DualSBox arcBoxOne;
       DualSBox arcBoxTwo;
+      int curSMapID;
       /// Whether or not the camera's position has been set yet.
       bool loadedCam;
       /**
@@ -72,6 +73,10 @@ class GameLogic{
       GameLogic();
       /// The deconstructor of the GameLogic.
       ~GameLogic();
+      /**
+       * Load a map into the game.
+       */
+      void loadSuperMap(int mapID);
       /**
        * Loads a level into the game
        * @param l The level to load.

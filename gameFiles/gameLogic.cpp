@@ -11,6 +11,7 @@ GameLogic::GameLogic(){
    drawBox = nullptr;
    arcBoxOne = (DualSBox){nullptr, nullptr};
    arcBoxTwo = (DualSBox){nullptr, nullptr};
+   curSMapID = 0;
    loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
 }
 
@@ -19,12 +20,26 @@ GameLogic::~GameLogic(){
    TexBook::destroy();
 }
 
+void GameLogic::loadSuperMap(int mapID){
+   curSMapID = mapID;
+   /// TODO: Width and height hardcoded; Fix that.
+   pairVector<Map*> pV = levels->getSuperMap(0, 0, 0, 640, 480);
+   // Do nothing with the first map for now?
+   pV.a.clear();
+   for (int i = 0; i < pV.b.size(); i++){
+      std::vector<Level *> lev = pV.b[i]->updateLoadedLevels(nullptr, 0, 0, 640, 480);
+      for (int j = 0; j < lev.size(); j++){
+         loadLevel(lev[j]);
+      }
+   }
+}
+
 void GameLogic::loadLevel(Level* l){
    // Get the instance list and turns it into a linked list.
    pointDouble playerLoc = l->createLevel();
    if (player == nullptr){
       player = new Player(playerLoc.x/32, playerLoc.y/32);
-      // TODO: Find a better place for this.
+      /// TODO: Find a better place for this.
       ((Player *)player)->giveAbility(new Lighter());
       // ((Player *)player)->giveAbility(new Flashlight());
    }

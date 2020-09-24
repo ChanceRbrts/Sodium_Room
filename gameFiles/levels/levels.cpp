@@ -34,29 +34,33 @@ std::vector<Level *> Map::updateLoadedLevels(LevelList* l, GLUtil* glu){
    double newY = glu->draw->camY;
    double wid = glu->draw->getWidth();
    double hei = glu->draw->getHeight();
+   return updateLoadedLevels(l, newX, newY, wid, hei);
+}
+
+std::vector<Level *> Map::updateLoadedLevels(LevelList* l, double X, double Y, double W, double H){
    std::vector<Level *> levs;
    // Check to see where we need to load a level.
-   bool checkX = newX;
-   bool checkY = newY;
-   if (int(newX/32) > int(prevCX/32)) checkX = newX+wid*7/4;
-   if (int(newX/32) < int(prevCX/32)) checkX = newX-wid*3/4;
-   if (int(newY/32) > int(prevCY/32)) checkY = newY+hei*7/4;
-   if (int(newY/32) < int(prevCY/32)) checkY = newY-hei*3/4;
+   bool checkX = X;
+   bool checkY = Y;
+   if (int(X/32) > int(prevCX/32)) checkX = X+W*7/4;
+   if (int(X/32) < int(prevCX/32)) checkX = X-W*3/4;
+   if (int(Y/32) > int(prevCY/32)) checkY = Y+H*7/4;
+   if (int(Y/32) < int(prevCY/32)) checkY = Y-H*3/4;
    // Set the new camera posiiton.
-   prevCX = newX;
-   prevCY = newY;
+   prevCX = X;
+   prevCY = Y;
    // If there's no place to check for a new level, just return.
-   if (checkX == newX && checkY == newY) return levs;
+   if (checkX == X && checkY == Y) return levs;
 
    // Get the possible levels to load.
    std::vector<LevLoaded> toLoad;
-   if (checkX != newX && checkX >= x && checkX <= x+w &&
-         newY-hei*3/4 <= y+h && newY+hei*7/4 >= y){
-      toLoad = getLevelsInArea(checkX, newY-hei*3/4, newY+hei*7/4, true, toLoad);
+   if (checkX != X && checkX >= x && checkX <= x+w &&
+         Y-H*3/4 <= y+h && Y+H*7/4 >= y){
+      toLoad = getLevelsInArea(checkX, Y-H*3/4, Y+H*7/4, true, toLoad);
    }
-   if (checkY != newY && checkY >= y && checkY <= y+h &&
-         newX-wid*3/4 <= x+w && newX+wid*7/4 >= x){
-      toLoad = getLevelsInArea(checkY, newX-wid*3/4, newX+wid*7/4, false, toLoad);
+   if (checkY != Y && checkY >= y && checkY <= y+h &&
+         X-W*3/4 <= x+w && X+W*7/4 >= x){
+      toLoad = getLevelsInArea(checkY, X-W*3/4, X+W*7/4, false, toLoad);
    }
    if (toLoad.size() == 0) return levs;
    for (LevelList* lev = l; lev != nullptr; lev = lev->next){
@@ -87,11 +91,12 @@ Levels::Levels(){
    lev.push_back(new IntroLevel());
    lev.push_back(new RainHallwayLevel());
    lev.push_back(new TestMultipleLights());
+   Map* map = new Map();
+   map->addLevel(lev[LEV_EXAMPLE], 0, 0);
+   maps.push_back(map);
 }
 
-pairVector<Map*> Levels::getSuperMap(int superMapID, double offX, double offY, GLUtil* glu){
-   double wid = glu->draw->getWidth();
-   double hei = glu->draw->getHeight();
+pairVector<Map*> Levels::getSuperMap(int superMapID, double offX, double offY, double wid, double hei){
    std::vector<Map *> superMap;
    std::vector<Map *> mapsAtOffset;
    for (int i = 0; i < maps.size(); i++){
@@ -104,4 +109,10 @@ pairVector<Map*> Levels::getSuperMap(int superMapID, double offX, double offY, G
       }
    }
    return (pairVector<Map*>){superMap, mapsAtOffset};
+}
+
+pairVector<Map*> Levels::getSuperMap(int superMapID, double offX, double offY, GLUtil* glu){
+   double wid = glu->draw->getWidth();
+   double hei = glu->draw->getHeight();
+   return getSuperMap(superMapID, offX, offY, wid, hei);
 }

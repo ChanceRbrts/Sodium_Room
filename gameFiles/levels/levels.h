@@ -43,6 +43,7 @@ class Map{
    public:
       void addLevel(Level* l, double X, double Y);
       std::vector<Level *> updateLoadedLevels(LevelList* l, GLUtil* glu);
+      std::vector<Level *> updateLoadedLevels(LevelList* l, double X, double Y, double W, double H);
       Map();
       int getSuperMapID(){ return superMapID; };  
       bool inBounds(double X, double Y, double W, double H);
@@ -67,6 +68,15 @@ class Levels{
       std::map<int, std::vector<AdjLevel *>> adj;
       /// The constructor of the levels.
       Levels();
+      /**
+       * @param superMapID The ID of the super map to use.
+       * @param offX The (estimated ?) xOffset of the level to load.
+       * @param offY The (estimated ?) yOffset of the level to load.
+       * @param wid The width of the screen.
+       * @param hei The height of the screen.
+       * @return (The maps in the supermap, the maps that should be loaded given the offset)
+       */
+      pairVector<Map*> getSuperMap(int superMapID, double offX, double offY, double wid, double hei);
       /**
        * @param superMapID The ID of the super map to use.
        * @param offX The (estimated ?) xOffset of the level to load.
