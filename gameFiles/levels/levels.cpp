@@ -3,9 +3,12 @@
 Map::Map(){
    prevCX = 0;
    prevCY = 0;
+   superMapID = 0;
+   firstLoad = true;
 }
 
 std::vector<LevLoaded> Map::getLevelsInArea(double p, double q1, double q2, bool horizontal, std::vector<LevLoaded> prev){
+   printf("!!\n");
    for (int i = 0; i < levels.size(); i++){
       Level* l = levels[i];
       double lP = horizontal ? l->getXOff() : l->getYOff();
@@ -21,7 +24,7 @@ std::vector<LevLoaded> Map::getLevelsInArea(double p, double q1, double q2, bool
 
 void Map::addLevel(Level* l, double X, double Y){
    l->moveRoom(X*32, Y*32, false);
-   pointInt area = (pointInt){X/100, Y/100, 0};
+   // pointInt area = (pointInt){(int)(X/100), (int)(Y/100), 0};
    levels.push_back(l);
 }
 
@@ -40,28 +43,30 @@ std::vector<Level *> Map::updateLoadedLevels(LevelList* l, GLUtil* glu){
 std::vector<Level *> Map::updateLoadedLevels(LevelList* l, double X, double Y, double W, double H){
    std::vector<Level *> levs;
    // Check to see where we need to load a level.
-   bool checkX = X;
-   bool checkY = Y;
-   if (int(X/32) > int(prevCX/32)) checkX = X+W*7/4;
-   if (int(X/32) < int(prevCX/32)) checkX = X-W*3/4;
-   if (int(Y/32) > int(prevCY/32)) checkY = Y+H*7/4;
-   if (int(Y/32) < int(prevCY/32)) checkY = Y-H*3/4;
+   double checkX = X;
+   double checkY = Y;
+   if (!firstLoad){
+      if (int(X/32) > int(prevCX/32)) checkX = X+W*7/4;
+      if (int(X/32) < int(prevCX/32)) checkX = X-W*3/4;
+      if (int(Y/32) > int(prevCY/32)) checkY = Y+H*7/4;
+      if (int(Y/32) < int(prevCY/32)) checkY = Y-H*3/4;
+   }
    // Set the new camera posiiton.
    prevCX = X;
    prevCY = Y;
    // If there's no place to check for a new level, just return.
-   if (checkX == X && checkY == Y) return levs;
-
+   if (checkX == X && checkY == Y && !firstLoad) return levs;
    // Get the possible levels to load.
    std::vector<LevLoaded> toLoad;
-   if (checkX != X && checkX >= x && checkX <= x+w &&
+   if ((firstLoad || checkX != X) && checkX >= x && checkX <= x+w &&
          Y-H*3/4 <= y+h && Y+H*7/4 >= y){
       toLoad = getLevelsInArea(checkX, Y-H*3/4, Y+H*7/4, true, toLoad);
    }
-   if (checkY != Y && checkY >= y && checkY <= y+h &&
+   if ((firstLoad || checkY != Y) && checkY >= y && checkY <= y+h &&
          X-W*3/4 <= x+w && X+W*7/4 >= x){
       toLoad = getLevelsInArea(checkY, X-W*3/4, X+W*7/4, false, toLoad);
    }
+   firstLoad = false;
    if (toLoad.size() == 0) return levs;
    for (LevelList* lev = l; lev != nullptr; lev = lev->next){
       for (int i = 0; i < toLoad.size(); i++){

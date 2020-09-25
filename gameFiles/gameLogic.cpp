@@ -12,7 +12,8 @@ GameLogic::GameLogic(){
    arcBoxOne = (DualSBox){nullptr, nullptr};
    arcBoxTwo = (DualSBox){nullptr, nullptr};
    curSMapID = 0;
-   loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
+   loadSuperMap(0, 0, 0, 640, 480);
+   // loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
 }
 
 GameLogic::~GameLogic(){
@@ -20,15 +21,16 @@ GameLogic::~GameLogic(){
    TexBook::destroy();
 }
 
-void GameLogic::loadSuperMap(int mapID){
+void GameLogic::loadSuperMap(int mapID, double X, double Y, double W, double H){
    curSMapID = mapID;
    /// TODO: Width and height hardcoded; Fix that.
-   pairVector<Map*> pV = levels->getSuperMap(0, 0, 0, 640, 480);
+   pairVector<Map*> pV = levels->getSuperMap(0, X, Y, W, H);
    // Do nothing with the first map for now?
    pV.a.clear();
    for (int i = 0; i < pV.b.size(); i++){
-      std::vector<Level *> lev = pV.b[i]->updateLoadedLevels(nullptr, 0, 0, 640, 480);
-      for (int j = 0; j < lev.size(); j++){
+      std::vector<Level *> lev = pV.b[i]->updateLoadedLevels(nullptr, X, Y, W, H);
+      printf("%lu\n", lev.size());
+      for (int j = 0; j < lev.size(); j++){;
          loadLevel(lev[j]);
       }
    }
@@ -102,12 +104,7 @@ void GameLogic::modifyLevelsLoaded(GLUtil* glu){
       l = lNext;
    }
    // Now, check for levels that are in bounds and load them in.
-   LevelList* l = loadedLevels;
-   while (l != nullptr){
-      Level* lev = l->lev;
-      LevelList* lNext = l->next;
-      
-   }
+   
 }
 
 void GameLogic::update(double deltaTime, GLUtil* glu){

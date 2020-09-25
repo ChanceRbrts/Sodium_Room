@@ -76,7 +76,7 @@ class GameLogic{
       /**
        * Load a map into the game.
        */
-      void loadSuperMap(int mapID);
+      void loadSuperMap(int mapID, double X, double Y, double W, double H);
       /**
        * Loads a level into the game
        * @param l The level to load.
