@@ -68,6 +68,8 @@ class GameLogic{
       std::map<int, std::vector<Layer *>> generateLayers();
       /// Whether or not the drawn layers need to be reloaded.
       bool reloadLayers;
+      /// The current supermap that's being loaded.
+      std::vector<Map *> superMap;
    public:
       /// The constructor of the GameLogic.
       GameLogic();
