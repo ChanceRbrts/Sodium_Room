@@ -177,6 +177,19 @@ class Level{
 };
 
 /**
+ * This is a simple level.
+ * It contains a filename leading to a solid map and player X and Y coordinates.
+ */
+class BasicLevel : public Level {
+   private:
+      double playerX;
+      double playerY;
+      std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
+   public:
+      BasicLevel(std::string fName, double pX, double pY);
+};
+
+/**
  * A simple doubly linked list for Levels.
  */
 struct LevelList{

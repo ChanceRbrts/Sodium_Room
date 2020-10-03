@@ -25,7 +25,8 @@ class Map{
       void addLevel(Level* l, double X, double Y);
       std::vector<Level *> updateLoadedLevels(LevelList* l, GLUtil* glu);
       std::vector<Level *> updateLoadedLevels(LevelList* l, double X, double Y, double W, double H);
-      Map();
+      Map(int sID);
+      virtual ~Map(){};
       int getSuperMapID(){ return superMapID; };  
       bool inBounds(double X, double Y, double W, double H);
 };

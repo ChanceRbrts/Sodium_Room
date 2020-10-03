@@ -14,15 +14,20 @@
 #include "jungleLevels/rainHallway.h"
 #include "testLevels/testMultipleLights.h"
 
+// Put all of the maps that will be used here.
+#include "testLevels/testMap.h"
+
+// Generate IDs for all of the maps.
+#define MAP_EXAMPLE 0
+#define MAP_TEST 1
+#define MAP_TESTMULTIPLE 2
+#define MAP_INTRO 3
+#define MAP_JUNGLE 4
+
 // Do stuff in order
 #define LEV_EXAMPLE 0
-#define LEV_TEST_RAIN 1
-#define LEV_TEST_FALSEBLOCKS 2
-#define LEV_TEST_HORIZONTALENCLOSED 3
-#define LEV_TEST_JUNGLEOBJECTS 4
 #define LEV_MAIN_INTROLEVEL 5
 #define LEV_JUNG_RAINHALLWAY 6
-#define LEV_TEST_MULTILIGHTS 7
 
 /// TODO: Find a better home for this.
 template <class T>
@@ -36,8 +41,7 @@ struct pairVector{
  */
 class Levels{
    public:
-      /// The list of levels
-      std::vector<Level *> lev;
+      /// A list of all of the maps.
       std::vector<Map *> maps;
       /// A list of adjacent levels.
       std::map<int, std::vector<AdjLevel *>> adj;

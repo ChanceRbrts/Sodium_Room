@@ -92,6 +92,8 @@ pointDouble Level::createLevel(){
          // If it's a player, return their coordinates.
          defaultPoint.x = instances[i]->x;
          defaultPoint.y = instances[i]->y;
+         // Since we're not using the instance anymore, just remove it.
+         delete instances[i];
       } else {
          // Otherwise, put it in the doubly linked list.
          Instances* inst = new Instances();
@@ -484,4 +486,15 @@ bool Level::removeFromLayers(Instances* in){
    }
    in->drawn.clear();
    return removedALayer;
+}
+
+BasicLevel::BasicLevel(std::string fName, double pX, double pY) : Level(){
+   filePath = fName;
+   playerX = pX;
+   playerY = pY;
+}
+
+std::vector<Instance *> BasicLevel::makeLevel(std::vector<Instance*> previous){
+   previous.push_back(new Player(playerX, playerY));
+   return previous;
 }

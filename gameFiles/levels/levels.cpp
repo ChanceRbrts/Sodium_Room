@@ -1,18 +1,13 @@
 #include "levels.h"
 
 Levels::Levels(){
-   // Add Levels Here
-   lev.push_back(new LevelExample());
-   lev.push_back(new TestRain());
-   lev.push_back(new TestFalseBlocks());
-   lev.push_back(new TestHorizontalEnclosed());
-   lev.push_back(new TestJungleObjects());
-   lev.push_back(new IntroLevel());
-   lev.push_back(new RainHallwayLevel());
-   lev.push_back(new TestMultipleLights());
-   Map* map = new Map();
-   map->addLevel(lev[LEV_EXAMPLE], 0, 0);
+   // Make the example map first.
+   Map* map = new Map(MAP_EXAMPLE);
+   map->addLevel(new LevelExample(), 0, 0);
    maps.push_back(map);
+   // Make the other maps now.
+   maps.push_back(new TestMap(MAP_TEST));
+   maps.push_back(new TestMultipleRooms(MAP_TESTMULTIPLE));
 }
 
 pairVector<Map*> Levels::getSuperMap(int superMapID, double offX, double offY, double wid, double hei){

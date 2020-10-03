@@ -1,13 +1,13 @@
 #include "map.h"
 
-Map::Map(){
+Map::Map(int sID){
    x = 0;
    y = 0;
    w = 0;
    h = 0;
    prevCX = 0;
    prevCY = 0;
-   superMapID = 0;
+   superMapID = sID;
    firstLoad = true;
 }
 
