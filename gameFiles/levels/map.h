@@ -3,11 +3,6 @@
 
 #include "level.h"
 
-struct LevLoaded{
-   Level* lev;
-   bool loaded;
-};
-
 class Map{
    private:
       double x;
@@ -19,7 +14,7 @@ class Map{
       bool firstLoad;
       /// TODO: Find a better way to load levels besides iterating through every level.
       std::vector<Level *> levels;
-      std::vector<LevLoaded> getLevelsInArea(double p, double q1, double q2, bool horizontal, std::vector<LevLoaded> prev);
+      std::vector<Level *> getUnloadedLevelsInArea(double X, double Y, double W, double H);
       int superMapID;
    public:
       void addLevel(Level* l, double X, double Y);

@@ -12,6 +12,7 @@ Level::Level(){
    h = 0;
    xOff = 0;
    yOff = 0;
+   loaded = false;
 }
 
 Level::~Level(){
@@ -150,6 +151,7 @@ pointDouble Level::createLevel(){
       }
    }
    instances.clear();
+   loaded = true;
    return defaultPoint;
 }
 
@@ -190,6 +192,7 @@ void Level::destroyLevel(){
    layers.clear();
    // In case we remake this level, we should have it remake our shaderboxes.
    createdShaderboxes = false;
+   loaded = false;
 }
 
 std::vector<Instance*> Level::makeLevel(std::vector<Instance*> previous){
@@ -402,6 +405,8 @@ bool Level::moveOutOfBounds(void* lv){
 float Level::getXOff(){ return xOff; }
 
 float Level::getYOff(){ return yOff; }
+
+bool Level::getLoaded(){ return loaded; }
 
 void Level::moveRoom(float newXOff, float newYOff, bool relative){
    float oldXOff = xOff;

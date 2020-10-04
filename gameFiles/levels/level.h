@@ -73,6 +73,8 @@ class Level{
       float xOff, yOff;
       /// The layers that are being drawn to in the level, and the instances of which to draw the layers on.
       std::map<int, Layer *> layers;
+      /// Whether or not the level has been currently loaded.
+      bool loaded;
    protected:
       /// Read the file path to set the width and height of the level.
       void setWidthHeight();
@@ -177,6 +179,8 @@ class Level{
        * @return If a layer has been removed from the instance. If so, the layers to be drawn may need to be updated.
        */
       bool removeFromLayers(Instances* in);
+      /// @return Whether or not the level has been loaded.
+      bool getLoaded();
 };
 
 /**

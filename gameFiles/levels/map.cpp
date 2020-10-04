@@ -11,23 +11,19 @@ Map::Map(int sID){
    firstLoad = true;
 }
 
-std::vector<LevLoaded> Map::getLevelsInArea(double p, double q1, double q2, bool horizontal, std::vector<LevLoaded> prev){
+std::vector<Level *> Map::getUnloadedLevelsInArea(double X, double Y, double W, double H){
+   std::vector<Level *> levs;
    for (int i = 0; i < levels.size(); i++){
       Level* l = levels[i];
-      double lP = horizontal ? l->getXOff() : l->getYOff();
-      double lQ = horizontal ? l->getYOff() : l->getXOff();
-      double lP2 = lP + (horizontal ? l->w : l->h);
-      double lQ2 = lQ + (horizontal ? l->h : l->w);
-      if (p <= lP2 && p >= lP && q1 <= lQ2 && q2 >= lQ){
-         // Check to make sure this level isn't already in the queue.
-         bool loadIn = true;
-         for (int j = 0; j < prev.size(); j++){
-            if (prev[j].lev == l) loadIn = false;
-         }
-         if (loadIn) prev.push_back((LevLoaded){l, false});
+      double lX = l->getXOff();
+      double lY = l->getYOff();
+      double lW = l->w;
+      double lH = l->h;
+      if (X <= lX+lW && X+W >= lX && Y <= lY+lH && Y+H >= lY){
+         if (!l->getLoaded()) levs.push_back(l);
       }
    }
-   return prev;
+   return levs;  
 }
 
 void Map::addLevel(Level* l, double X, double Y){
@@ -76,45 +72,14 @@ std::vector<Level *> Map::updateLoadedLevels(LevelList* l, GLUtil* glu){
 std::vector<Level *> Map::updateLoadedLevels(LevelList* l, double X, double Y, double W, double H){
    std::vector<Level *> levs;
    // Check to see where we need to load a level.
-   double checkX = X;
-   double checkY = Y;
-   if (!firstLoad){
-      if (int(X/32) > int(prevCX/32)) checkX = X+W*7/4;
-      if (int(X/32) < int(prevCX/32)) checkX = X-W*3/4;
-      if (int(Y/32) > int(prevCY/32)) checkY = Y+H*7/4;
-      if (int(Y/32) < int(prevCY/32)) checkY = Y-H*3/4;
-   }
+   bool stillCamera = int(X/32) == int(prevCX/32);
+   stillCamera = stillCamera && int (Y/32) == int(prevCY/32);
    // Set the new camera posiiton.
    prevCX = X;
    prevCY = Y;
    // If there's no place to check for a new level, just return.
-   if (checkX == X && checkY == Y && !firstLoad) return levs;
-   // Get the possible levels to load.
-   std::vector<LevLoaded> toLoad;
-   if ((firstLoad || checkX != X) && checkX >= x && checkX <= x+w &&
-         Y-H*3/4 <= y+h && Y+H*7/4 >= y){
-      toLoad = getLevelsInArea(checkX, Y-H*3/4, Y+H*7/4, true, toLoad);
-   }
-   if ((firstLoad || checkY != Y) && checkY >= y && checkY <= y+h &&
-         X-W*3/4 <= x+w && X+W*7/4 >= x){
-      toLoad = getLevelsInArea(checkY, X-W*3/4, X+W*7/4, false, toLoad);
-   }
+   if (stillCamera && !firstLoad) return levs;
+   levs = getUnloadedLevelsInArea(X-W*3/4, Y-H*3/4, W*5/2, H*5/2);
    firstLoad = false;
-   if (toLoad.size() == 0) return levs;
-   for (LevelList* lev = l; lev != nullptr; lev = lev->next){
-      for (int i = 0; i < toLoad.size(); i++){
-         // If the level has already been loaded, mark it as already loaded.
-         if (!toLoad[i].loaded && toLoad[i].lev == lev->lev){
-            toLoad[i].loaded = true;
-         }
-      }
-   }
-   // Return the levels that haven't been loaded in yet.
-   for (int i = 0; i < toLoad.size(); i++){
-      if (!toLoad[i].loaded){
-         levs.push_back(toLoad[i].lev);
-      }
-   }
-   toLoad.clear();
    return levs;
 }

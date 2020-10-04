@@ -13,7 +13,7 @@ GameLogic::GameLogic(){
    arcBoxTwo = (DualSBox){nullptr, nullptr};
    curSMapID = 0;
    /// TODO: Width and height hardcoded; Fix that.
-   loadSuperMap(MAP_TESTMULTIPLE, 0, 0, 640, 480);
+   loadSuperMap(MAP_TEST, 0, 0, 640, 480);
    // loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
 }
 
@@ -46,6 +46,8 @@ void GameLogic::loadLevel(Level* l){
    }
    LevelList* lev = new LevelList();
    lev->lev = l;
+   lev->prev = nullptr;
+   lev->next = nullptr;
    if (loadedLevels == nullptr){
       loadedLevels = lev;
    } else {
@@ -72,6 +74,8 @@ void GameLogic::unloadLevel(LevelList* l){
    l->lev->destroyLevel();
    if (l->prev != nullptr) l->prev->next = l->next;
    if (l->next != nullptr) l->next->prev = l->prev;
+   if (loadedLevels == l) loadedLevels = l->next;
+   if (lastLoaded == l) lastLoaded = l->prev;
    reloadLayers = true;
    // We don't want to actually deallocate the level here.
    delete l;
@@ -279,11 +283,13 @@ pointDouble GameLogic::followPlayer(GLUtil* glu){
    // You know what? Let's just have a whole bunch of std::mins and std::maxs here to avoid a ton of conditionals.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+         double xOff = l->lev->getXOff();
+         double yOff = l->lev->getYOff();
          double xVal = l->lev->getXOff()+l->lev->w-glu->draw->getWidth();
          double yVal = l->lev->getYOff()+l->lev->h-glu->draw->getHeight();
-         minX = std::min(minX, (double)(l->lev->getXOff()));
+         minX = std::min(minX, xOff);
          maxX = std::max(maxX, xVal);
-         minY = std::min(minY, (double)(l->lev->getYOff()));
+         minY = std::min(minY, yOff);
          maxY = std::max(maxY, yVal);
       }
    }
