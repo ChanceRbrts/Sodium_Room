@@ -18,6 +18,41 @@ Level::~Level(){
    destroyLevel();
 }
 
+void Level::setWidthHeight(){
+   if (filePath.length() == 0) return;
+   // Looks for the solid map here.
+   FILE* f = fopen((std::string("gameFiles/levels/levelData/")+filePath+".txt").c_str(), "r");
+   if (f == nullptr){
+      fprintf(stderr, "ERROR: %s doesn't exist.\n", (filePath+".txt").c_str());
+      return;
+   } 
+   std::string line = "";
+   int mode = DEFAULT;
+   int yVal = 0;
+   int wid = 0;
+   while (!feof(f)){
+      char c = fgetc(f);
+      if (c == '\n' || feof(f)){
+         if (mode == LAYOUT){
+            // Look for the layout of the build.
+            // We just care about the line length and the number of lines.
+            if (line.length() > wid) wid = line.length();
+            yVal += 1;
+         }
+         if (line.find("Textures") != std::string::npos){
+            mode = TEXTURES;
+         } else if (line.find("Layout") != std::string::npos){
+            mode = LAYOUT;
+         }
+         line = "";
+      } else {
+         line += c;
+      }
+   }
+   w = wid*32;
+   h = yVal*32;
+}
+
 pointDouble Level::createLevel(){
    pointDouble defaultPoint = (pointDouble){-1, -1, -1};
    std::vector<Instance*> instances;
@@ -88,6 +123,9 @@ pointDouble Level::createLevel(){
    Instances* is = nullptr;
    // Let's make sure really quickly that we didn't add a memory leak in inst
    for (int i = 0; i < instances.size(); i++){
+      // Apply offsets here to translate objects directly to a level.
+      instances[i]->x += xOff;
+      instances[i]->y += yOff;
       if (instances[i]->isPlayer()){
          // If it's a player, return their coordinates.
          defaultPoint.x = instances[i]->x;
@@ -465,6 +503,8 @@ bool Level::removeFromLayers(Instances* in){
    bool removedALayer = false;
    for (int i = 0; i < in->drawn.size(); i++){
       DrawnInstance* dI = in->drawn[i];
+      std::map<int, Layer*>::iterator lI = layers.find(dI->layer);
+      if (lI == layers.end()) continue;
       Layer* l = layers.at(dI->layer);
       // Update the layer if we no longer have something at the beginning or the end of the list.
       // Otherwise, keep the linked list connected.
@@ -492,6 +532,9 @@ BasicLevel::BasicLevel(std::string fName, double pX, double pY) : Level(){
    filePath = fName;
    playerX = pX;
    playerY = pY;
+   // The width and height need to be known for level making purposes
+   // So generate the level to get the width/height and then destroy it!
+   setWidthHeight();
 }
 
 std::vector<Instance *> BasicLevel::makeLevel(std::vector<Instance*> previous){

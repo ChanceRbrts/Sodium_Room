@@ -73,6 +73,9 @@ class Level{
       float xOff, yOff;
       /// The layers that are being drawn to in the level, and the instances of which to draw the layers on.
       std::map<int, Layer *> layers;
+   protected:
+      /// Read the file path to set the width and height of the level.
+      void setWidthHeight();
    public:
       /// The width and height of the level.
       float w, h;
