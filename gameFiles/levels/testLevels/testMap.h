@@ -16,6 +16,9 @@
 #define LEV_TEST_JUNGLEOBJECTS 3
 #define LEV_TEST_MULTILIGHTS 4
 
+/**
+ * A map used for testing rooms.
+ */
 class TestMap : public Map {
     private:
         std::vector<Level *> levels;
@@ -24,6 +27,10 @@ class TestMap : public Map {
         ~TestMap();
 };
 
+/**
+ * A map used specifically for testing 
+ * connecting levels together with maps.
+ */
 class TestMultipleRooms : public Map {
     public:
         TestMultipleRooms(int sID);

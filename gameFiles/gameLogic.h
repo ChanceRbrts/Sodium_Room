@@ -32,7 +32,9 @@ class GameLogic{
       Camera* camera;
       /// The shaderbox that the level draws to before the screen.
       ShaderBox* drawBox;
+      /// A shaderbox to draw arcs to, alternating from arcBoxTwo.
       DualSBox arcBoxOne;
+      /// A shaderbox to draw arcs to, alternating from arcBoxOne.
       DualSBox arcBoxTwo;
       int curSMapID;
       /// Whether or not the camera's position has been set yet.

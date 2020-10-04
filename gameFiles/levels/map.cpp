@@ -61,15 +61,15 @@ bool Map::inBounds(double X, double Y, double W, double H){
    return x <= X+W && x+w >= X && y <= Y+H && y+h >= Y;
 }
 
-std::vector<Level *> Map::updateLoadedLevels(LevelList* l, GLUtil* glu){
+std::vector<Level *> Map::updateLoadedLevels(GLUtil* glu){
    double newX = glu->draw->camX;
    double newY = glu->draw->camY;
    double wid = glu->draw->getWidth();
    double hei = glu->draw->getHeight();
-   return updateLoadedLevels(l, newX, newY, wid, hei);
+   return updateLoadedLevels(newX, newY, wid, hei);
 }
 
-std::vector<Level *> Map::updateLoadedLevels(LevelList* l, double X, double Y, double W, double H){
+std::vector<Level *> Map::updateLoadedLevels(double X, double Y, double W, double H){
    std::vector<Level *> levs;
    // Check to see where we need to load a level.
    bool stillCamera = int(X/32) == int(prevCX/32);

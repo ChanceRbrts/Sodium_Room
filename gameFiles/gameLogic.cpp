@@ -28,7 +28,7 @@ void GameLogic::loadSuperMap(int mapID, double X, double Y, double W, double H){
    // Make it so we have our supermap ready to load stuff!
    superMap = pV.a;
    for (int i = 0; i < pV.b.size(); i++){
-      std::vector<Level *> lev = pV.b[i]->updateLoadedLevels(nullptr, X, Y, W, H);
+      std::vector<Level *> lev = pV.b[i]->updateLoadedLevels(X, Y, W, H);
       for (int j = 0; j < lev.size(); j++){
          loadLevel(lev[j]);
       }
@@ -109,7 +109,7 @@ void GameLogic::modifyLevelsLoaded(GLUtil* glu){
    // Now, check for levels that are in bounds and load them in.
    for (int i = 0; i < superMap.size(); i++){
       if (!superMap[i]->inBounds(cX-w*3/4, cY-h*3/4, w*5/2, h*5/2)) continue;
-      std::vector <Level *> levs = superMap[i]->updateLoadedLevels(loadedLevels, glu);
+      std::vector <Level *> levs = superMap[i]->updateLoadedLevels(glu);
       for (int j = 0; j < levs.size(); j++){
          loadLevel(levs[j]);
       }

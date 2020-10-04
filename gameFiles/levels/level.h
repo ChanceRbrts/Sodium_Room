@@ -189,10 +189,18 @@ class Level{
  */
 class BasicLevel : public Level {
    private:
+      /// The x-coordinate of the player.
       double playerX;
+      /// The y-coordinate of the player.
       double playerY;
       std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
    public:
+      /**
+       * Creates a level with just a solid map and a player.
+       * @param fName The filename where the solid map provides.
+       * @param pX The player's X position in world coords.
+       * @param pY The player's Y position in world coords.
+       */
       BasicLevel(std::string fName, double pX, double pY);
 };
 
