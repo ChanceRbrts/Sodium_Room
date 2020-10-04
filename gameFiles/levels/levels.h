@@ -16,18 +16,18 @@
 
 // Put all of the maps that will be used here.
 #include "testLevels/testMap.h"
+#include "jungleLevels/jungleMap.h"
 
 // Generate IDs for all of the maps.
 #define MAP_EXAMPLE 0
 #define MAP_TEST 1
 #define MAP_TESTMULTIPLE 2
 #define MAP_INTRO 3
-#define MAP_JUNGLE 4
+#define MAP_MAIN 4
 
 // Do stuff in order
 #define LEV_EXAMPLE 0
-#define LEV_MAIN_INTROLEVEL 5
-#define LEV_JUNG_RAINHALLWAY 6
+#define LEV_MAIN_INTROLEVEL 0
 
 /// TODO: Find a better home for this.
 template <class T>

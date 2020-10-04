@@ -13,7 +13,7 @@ GameLogic::GameLogic(){
    arcBoxTwo = (DualSBox){nullptr, nullptr};
    curSMapID = 0;
    /// TODO: Width and height hardcoded; Fix that.
-   loadSuperMap(0, 0, 0, 640, 480);
+   loadSuperMap(MAP_TESTMULTIPLE, 0, 0, 640, 480);
    // loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
 }
 

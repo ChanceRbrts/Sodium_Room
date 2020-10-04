@@ -1,5 +1,5 @@
-#ifndef dwr_test_map
-#define dwr_test_map
+#ifndef sdr_test_map
+#define sdr_test_map
 
 #include "../map.h"
 

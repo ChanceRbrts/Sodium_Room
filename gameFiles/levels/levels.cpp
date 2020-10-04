@@ -2,12 +2,17 @@
 
 Levels::Levels(){
    // Make the example map first.
-   Map* map = new Map(MAP_EXAMPLE);
-   map->addLevel(new LevelExample(), 0, 0);
-   maps.push_back(map);
-   // Make the other maps now.
+   Map* example = new Map(MAP_EXAMPLE);
+   example->addLevel(new LevelExample(), 0, 0);
+   maps.push_back(example);
+   // The intro map is just one room, which can just be added here.
+   Map* intro = new Map(MAP_INTRO);
+   intro->addLevel(new IntroLevel(), 0, 0);
+   maps.push_back(intro);
+   // Add the rest of the maps into a list.
    maps.push_back(new TestMap(MAP_TEST));
    maps.push_back(new TestMultipleRooms(MAP_TESTMULTIPLE));
+   maps.push_back(new JungleMap(MAP_MAIN));
 }
 
 pairVector<Map*> Levels::getSuperMap(int superMapID, double offX, double offY, double wid, double hei){
