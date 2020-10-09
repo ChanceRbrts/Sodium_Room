@@ -43,8 +43,6 @@ class Levels{
    public:
       /// A list of all of the maps.
       std::vector<Map *> maps;
-      /// A list of adjacent levels.
-      std::map<int, std::vector<AdjLevel *>> adj;
       /// The constructor of the levels.
       Levels();
       /**

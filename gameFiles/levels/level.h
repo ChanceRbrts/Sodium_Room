@@ -216,15 +216,4 @@ struct LevelList{
    LevelList* next;
 };
 
-struct AdjLevel{
-   /// The level that's adjacent to the current level.
-   Level* adj;
-   /// Where the level is connected to the current level from. 0 = Left, 1 = Down, 2 = Right, 3 = Up
-   int connectionPoint;
-   /// At what position in world coords the level is connected to the adjacent level from.
-   int curConnecCoord;
-   /// At what position in world coords the adjacent level is connected to the current level from.
-   int adjConnecCoord;
-};
-
 #endif

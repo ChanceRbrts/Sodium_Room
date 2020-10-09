@@ -38,6 +38,9 @@ class Map{
       std::vector<Level *> getUnloadedLevelsInArea(double X, double Y, double W, double H);
       /// The ID to the super map that this map belongs to.
       int superMapID;
+      // Using these as a sorted list of doubles.
+      static std::map<double, double> horizontalMapGap;
+      static std::map<double, double> verticalMapGap;
    public:
       /**
        * Constructor for the map.
@@ -79,6 +82,13 @@ class Map{
        * @return Whether or not the map is in the area provided.
        */
       bool inBounds(double X, double Y, double W, double H);
+      /**
+       * Adds (to) a gap in the map.
+       * @param P The point that the gap starts.
+       * @param W The width of the gap
+       * @param horiz Whether or not the gap is on the X direction or the Y direction.
+       */
+      static void addGap(double P, double W, bool horiz);
 };
 
 #endif

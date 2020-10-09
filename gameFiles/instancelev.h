@@ -3,6 +3,7 @@
 
 #include "instance.h"
 #include "levels/level.h"
+#include "levels/map.h"
 
 /**
  * An instance that comes after the level in compilation.
@@ -30,6 +31,7 @@ class InstanceLev : public Instance{
          * @param player The player of the game.
          */
         virtual void messWithLevels(LevelList* levs, Instance* player);
+        virtual void messWithMaps(std::vector<Map *> maps);
 };
 
 #endif
