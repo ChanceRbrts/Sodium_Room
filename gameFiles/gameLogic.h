@@ -85,7 +85,7 @@ class GameLogic{
        * Loads a level into the game
        * @param l The level to load.
        */
-      void loadLevel(Level* l);
+      void loadLevel(Level* l, Map* m);
       /**
        * Removes a level from the game.
        * @param l The level to remove.

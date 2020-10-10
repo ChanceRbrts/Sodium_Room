@@ -5,3 +5,5 @@ InstanceLev::InstanceLev(double X, double Y, double W, double H) : Instance(X, Y
 }
 
 void InstanceLev::messWithLevels(LevelList* levs, Instance* player){}
+
+void InstanceLev::removeMessFromWorld(LevelList* levs, Level* lev, Instance* player){}

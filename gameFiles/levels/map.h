@@ -38,8 +38,16 @@ class Map{
       std::vector<Level *> getUnloadedLevelsInArea(double X, double Y, double W, double H);
       /// The ID to the super map that this map belongs to.
       int superMapID;
-      // Using these as a sorted list of doubles.
+      /**
+       * Translates map coordinates to true coordinates. (Coords with gaps)
+       * @param prevCoord The map coord to translate the gapped coordinates.
+       * @param horizontal Whether or not to use the x-axis vs. the y-axis.
+       * @param reverse If this is true, this goes from true coordinates to map coordinates.
+       */
+      double translateMapCoord(double prevCoord, bool horizontal, bool reverse);
+      /// Using these as a sorted list of doubles.
       static std::map<double, double> horizontalMapGap;
+      /// Using these as a sorted list of doubles.
       static std::map<double, double> verticalMapGap;
    public:
       /**
@@ -84,11 +92,12 @@ class Map{
       bool inBounds(double X, double Y, double W, double H);
       /**
        * Adds (to) a gap in the map.
-       * @param P The point that the gap starts.
-       * @param W The width of the gap
+       * @param P The point that the gap starts in map coords.
+       * @param W The (added) width of the gap
        * @param horiz Whether or not the gap is on the X direction or the Y direction.
+       * @param relative Whether or not W is relative to what's already in the gap.
        */
-      static void addGap(double P, double W, bool horiz);
+      static void addGap(double P, double W, bool horiz, bool relative);
 };
 
 #endif

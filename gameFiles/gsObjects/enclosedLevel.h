@@ -9,6 +9,8 @@
  */
 class EnclosedLevel : public InstanceLev {
     private:
+        /// Whether the true x value has been loaded yet.
+        bool loadedTX;
         /// A check to see if this needs to create shaders
         bool shaderCheck;
         /// Whether or not this is connected to an arc.
@@ -27,10 +29,14 @@ class EnclosedLevel : public InstanceLev {
         double trueW;
         /// The current width/height of the level.
         double lastW;
+        /// The true positions of x and y (The starting positions)
+        double trueX, trueY;
         /// Animation time for the dotted line and the diamonds.
         double time;
         /// The level that is collapsed into this instance.
         Level* lev;
+        /// The map that this belongs to.
+        Map* m;
         /**
          * A check to make sure we actually have created shaders for this.
          * @param gls The GLUtil's shader functions.
@@ -57,6 +63,8 @@ class EnclosedLevel : public InstanceLev {
          * @param l The level to expand and collapse.
          */
         EnclosedLevel(double X, double Y, double W, double H, Level* l);
+        /// Deconstructs the enclosed level
+        ~EnclosedLevel();
         /**
          * Draws the collapsible level.
          * @param glu The GLUtil to use.
@@ -74,9 +82,18 @@ class EnclosedLevel : public InstanceLev {
         /**
          * The code that will expand/collapse the level by bisecting parts of the level.
          * @param levs The list of levels loaded in the game.
+         * @param lev The level that the instance belongs to.
+         * @param map The map that the instance belongs to.
          * @param player The player of the game.
          */
-        void messWithLevels(LevelList* levs, Instance* player);
+        void messWithLevels(LevelList* levs, Level* lev, Map* map, Instance* player);
+        /**
+         * Code that will recollapse the level and everything around it.
+         * @param levs The list of levels loaded in the game.
+         * @param lev The level that the instance belongs to.
+         * @param player The player of the game.
+         */
+        void removeMessFromWorld(LevelList* levs, Level* lev, Instance* player);
         /// This disconnects the enclosed level from an arc.
         void disconnect();
 };

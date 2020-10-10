@@ -12,7 +12,10 @@ Level::Level(){
    h = 0;
    xOff = 0;
    yOff = 0;
+   mXOff = 0;
+   mYOff = 0;
    loaded = false;
+   global = false;
 }
 
 Level::~Level(){
@@ -151,6 +154,21 @@ pointDouble Level::createLevel(){
       }
    }
    instances.clear();
+   // Now, there is the possibility of a bisected level happening, so bisect those here.
+   std::map<double, double>::iterator it = hBisectPoints.begin();
+   double gap = 0;
+   for (; it != hBisectPoints.end(); it++){
+      bisectLevel(true, it->first+gap, it->second, nullptr);
+      gap += it->second;
+   }
+   gap = 0;
+   it = vBisectPoints.begin();
+   for (; it != vBisectPoints.end(); it++){
+      bisectLevel(false, it->first+gap, it->second, nullptr);
+      gap += it->second;
+   }
+   hBisectPoints.clear();
+   vBisectPoints.clear();
    loaded = true;
    return defaultPoint;
 }
@@ -406,7 +424,15 @@ float Level::getXOff(){ return xOff; }
 
 float Level::getYOff(){ return yOff; }
 
+float Level::getMXOff(){ return mXOff; }
+
+float Level::getMYOff(){ return mYOff; }
+
 bool Level::getLoaded(){ return loaded; }
+
+void Level::setGlobal(bool g){ global = g; }
+
+bool Level::getGlobal(){ return global; }
 
 void Level::moveRoom(float newXOff, float newYOff, bool relative){
    float oldXOff = xOff;
@@ -421,7 +447,20 @@ void Level::moveRoom(float newXOff, float newYOff, bool relative){
    }
 }
 
+void Level::moveInMap(float newXOff, float newYOff, bool relative){
+   float oldXOff = mXOff;
+   float oldYOff = mYOff;
+   mXOff = relative ? mXOff+newXOff : newXOff;
+   mYOff = relative ? mYOff+newYOff : newYOff;
+}
+
+void Level::startBisect(bool horizontal, float splitLocation, float offset){
+   (horizontal ? hBisectPoints : vBisectPoints).insert(std::pair(splitLocation, offset));
+}
+
 void Level::bisectLevel(bool horizontal, float splitLocation, float offset, Instance* cause){
+   // If there is no level, put it in a queue.
+   if (!loaded) return startBisect(horizontal, splitLocation, offset);
    if (horizontal){ 
       w += offset;
    } else{

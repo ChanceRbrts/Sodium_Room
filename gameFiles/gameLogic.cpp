@@ -30,12 +30,12 @@ void GameLogic::loadSuperMap(int mapID, double X, double Y, double W, double H){
    for (int i = 0; i < pV.b.size(); i++){
       std::vector<Level *> lev = pV.b[i]->updateLoadedLevels(X, Y, W, H);
       for (int j = 0; j < lev.size(); j++){
-         loadLevel(lev[j]);
+         loadLevel(lev[j], pV.b[i]);
       }
    }
 }
 
-void GameLogic::loadLevel(Level* l){
+void GameLogic::loadLevel(Level* l, Map* m){
    // Get the instance list and turns it into a linked list.
    pointDouble playerLoc = l->createLevel();
    if (player == nullptr){
@@ -46,6 +46,7 @@ void GameLogic::loadLevel(Level* l){
    }
    LevelList* lev = new LevelList();
    lev->lev = l;
+   lev->map = m;
    lev->prev = nullptr;
    lev->next = nullptr;
    if (loadedLevels == nullptr){
@@ -70,6 +71,14 @@ void GameLogic::loadLevel(Level* l){
 }
 
 void GameLogic::unloadLevel(LevelList* l){
+   // Check to see if any instance in the level needs to do some mess cleanup first.
+   for (Instances* in = l->lev->insts; in != nullptr; in = in->next){
+      Instance* i = in->i;
+      if (i->canMessWithLevel()){
+         InstanceLev* iL = (InstanceLev*)i;
+         iL->removeMessFromWorld(loadedLevels, l->lev, player);
+      }
+   }
    // Remove stuff from the level.
    l->lev->destroyLevel();
    if (l->prev != nullptr) l->prev->next = l->next;
@@ -101,7 +110,7 @@ void GameLogic::modifyLevelsLoaded(GLUtil* glu){
       remove = lX+lev->w < minX || lX > maxX;
       remove = remove || lY+lev->h < minY || lY > maxY;
       LevelList* lNext = l->next;
-      if (remove){
+      if (remove && !lev->getGlobal()){
          unloadLevel(l);
       }
       l = lNext;
@@ -111,7 +120,7 @@ void GameLogic::modifyLevelsLoaded(GLUtil* glu){
       if (!superMap[i]->inBounds(cX-w*3/4, cY-h*3/4, w*5/2, h*5/2)) continue;
       std::vector <Level *> levs = superMap[i]->updateLoadedLevels(glu);
       for (int j = 0; j < levs.size(); j++){
-         loadLevel(levs[j]);
+         loadLevel(levs[j], superMap[i]);
       }
       levs.clear();
    }
@@ -169,7 +178,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          // If an instance can mess with the levels, allow it here.
          if (in->i->canMessWithLevel()){
             InstanceLev* iL = (InstanceLev *)(in->i);
-            iL->messWithLevels(loadedLevels, player);
+            iL->messWithLevels(loadedLevels, lList->lev, lList->map, player);
          }
          // If an object is destroyed, destroy it.
          if (in->i->canRemove()){

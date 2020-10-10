@@ -31,6 +31,10 @@ struct Layer{
  */
 class Level{
    private:
+      /// A list of points of horizontal bisects to add.
+      std::map<double, double> hBisectPoints; 
+      /// A list of points of vertical bisects to add.
+      std::map<double, double> vBisectPoints;
       /** 
        * This function returns all of the objects in the room. (Called after createLevel) 
        * @param previous The instances of the level created before makeLevel
@@ -71,10 +75,14 @@ class Level{
       void drawObjects(GLUtil* glu, int layer, int mode);
       /// The offset of where the instances are in the level.
       float xOff, yOff;
+      /// The offset of where the level is in the map.
+      float mXOff, mYOff;
       /// The layers that are being drawn to in the level, and the instances of which to draw the layers on.
       std::map<int, Layer *> layers;
       /// Whether or not the level has been currently loaded.
       bool loaded;
+      /// Whether or not the level doesn't get unloaded by the game logic.
+      bool global;
    protected:
       /// Read the file path to set the width and height of the level.
       void setWidthHeight();
@@ -140,6 +148,10 @@ class Level{
       float getXOff();
       /// @return The current y offset of the level.
       float getYOff();
+      /// @return The x placement on the map this belongs to.
+      float getMXOff();
+      /// @return The y placement on the map this belongs to.
+      float getMYOff();
       /**
        * Runs some update code specific to the level.
        * @param deltaTime The time in between the previous frame and this frame.
@@ -153,6 +165,20 @@ class Level{
        * @param relative Whether or not newXOff and newYOff are relative to the current offsets.
        */
       void moveRoom(float newXOff, float newYOff, bool relative);
+      /**
+       * Code to move the room in regards to a map.
+       * @param newXOff The new x offset.
+       * @param newYOff The new y offset.
+       * @param relative Whether or not newXOff and newYOff are relative to the current offsets.
+       */
+      void moveInMap(float newXOff, float newYOff, bool relative);
+      /**
+       * Code to say "bisect the room when it's created!"
+       * @param horizontal Whether to bisect the room horizontally or vertically.
+       * @param splitLocation The point to split on.
+       * @param offset How far to split the room.
+       */
+      void startBisect(bool horizontal, float splitLocation, float offset);
       /**
        * Code to bisect the room.
        * @param horizontal Whether to bisect the room horizontally or vertically
@@ -181,6 +207,10 @@ class Level{
       bool removeFromLayers(Instances* in);
       /// @return Whether or not the level has been loaded.
       bool getLoaded();
+      /// @param g Whether or not the level can't get unloaded by the game logic.
+      void setGlobal(bool g);
+      /// @return Whether or not the level can't get unloaded by the game logic.
+      bool getGlobal();
 };
 
 /**
@@ -204,12 +234,17 @@ class BasicLevel : public Level {
       BasicLevel(std::string fName, double pX, double pY);
 };
 
+// Defined in map.h
+class Map;
+
 /**
  * A simple doubly linked list for Levels.
  */
 struct LevelList{
    /// The current level
    Level* lev;
+   /// The map that the level came from.
+   Map* map;
    /// The previous node of the linked list.
    LevelList* prev;
    /// The next node of the linked list.

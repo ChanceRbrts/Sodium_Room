@@ -1,21 +1,23 @@
 #include "enclosedLevel.h"
 
 EnclosedLevel::EnclosedLevel(double X, double Y, double W, double H, Level* l) : InstanceLev(X, Y, W, H){
+    trueX = x;
+    trueY = y;
     lev = l;
     shaderCheck = true;
     time = 0;
     levelUp = false;
     prevLevelUp = levelUp;
+    loadedTX = false;
     if (W == 0) openHorizontally = true;
     else if (H == 0) openHorizontally = false;
     else {
         fprintf(stderr, "WARNING for EnclosedLevel: w or h expected to be 0");
         openHorizontally = true;
     }
-    if (l->w == 0 && l->h == 0){
-        l->createLevel();
-        l->moveRoom(x, y, false);
-    }
+    l->createLevel();
+    l->moveRoom(x, y, false);
+    l->setGlobal(true);
     trueW = openHorizontally ? l->w : l->h;
     name = "Enclosed Level";
     messWithLevel = true;
@@ -24,6 +26,11 @@ EnclosedLevel::EnclosedLevel(double X, double Y, double W, double H, Level* l) :
     open = false;
     needExtra = true;
     connected = true;
+    m = nullptr;
+}
+
+EnclosedLevel::~EnclosedLevel(){
+    lev->destroyLevel();
 }
 
 std::vector<int> EnclosedLevel::initLayers(){
@@ -140,7 +147,14 @@ void EnclosedLevel::drawEX(GLUtil* glu, int layer){
     gls->unbindShader();
 }
 
-void EnclosedLevel::messWithLevels(LevelList* levs, Instance* player){
+void EnclosedLevel::messWithLevels(LevelList* levs, Level* lev, Map* map, Instance* player){
+    m = map;
+    if (!loadedTX){
+        // Make trueX and trueY the x and y of that object in map coords.
+        trueX = x-lev->getXOff()+lev->getMXOff();
+        trueY = y-lev->getYOff()+lev->getMYOff();
+        loadedTX = true;
+    }
     // If we have no levels to move, then we should do nothing.
     if (levs == nullptr) return;
     if (levelUp && !prevLevelUp){
@@ -183,10 +197,42 @@ void EnclosedLevel::messWithLevels(LevelList* levs, Instance* player){
             } else if (l->getYOff()+l->h/2 >= y) l->moveRoom(0, h-lastW, true);
         }
     }
+    // Add the gap to the map
+    if (openHorizontally) map->addGap(trueX, w-lastW, true, true);
+    else map->addGap(trueY, h-lastW, false, true);
     // Move the player if applicable.
     if (player != nullptr){
         if (openHorizontally && player->x > x) player->x += w-lastW;
         else if (!openHorizontally && player->y > y) player->y += h-lastW;
+    }
+}
+
+void EnclosedLevel::removeMessFromWorld(LevelList* levs, Level* lev, Instance* player){
+    if (openHorizontally) m->addGap(trueX, 0, true, false);
+    else m->addGap(trueY, 0, false, false);
+    if (levs == nullptr) return;
+    LevelList* ll = levs;
+    while (ll != nullptr){
+        LevelList* next = ll->next;
+        Level* l = ll->lev;
+        if (ll->lev == lev){
+            if (ll->prev != nullptr) ll->prev->next = ll->next;
+            if (ll->next != nullptr) ll->next->prev = ll->prev;
+            delete ll;
+        } else if (openHorizontally){
+            // Undo the bisection or moving of the room horizontally.
+            if (l->getXOff() <= x && l->getXOff()+l->w >= x 
+                && l->getYOff() <= y+h && l->getYOff()+l->h >= y){
+                l->bisectLevel(true, x-l->getXOff(), -w, this);
+            } else if (l->getXOff()+l->w/2 >= x) l->moveRoom(-w, 0, true);
+        } else {
+            // Undo the bisection or moving of the room vertically.
+            if (l->getYOff() <= y && l->getYOff()+l->h >= y
+                && l->getXOff() <= x+w && l->getXOff()+l->w >= x){
+                l->bisectLevel(false, y-l->getYOff(), -h, this);
+            } else if (l->getYOff()+l->h/2 >= y) l->moveRoom(0, -h, true);
+        }
+        ll = next;
     }
 }
 
