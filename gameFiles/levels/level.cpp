@@ -448,14 +448,13 @@ void Level::moveRoom(float newXOff, float newYOff, bool relative){
 }
 
 void Level::moveInMap(float newXOff, float newYOff, bool relative){
-   float oldXOff = mXOff;
-   float oldYOff = mYOff;
    mXOff = relative ? mXOff+newXOff : newXOff;
    mYOff = relative ? mYOff+newYOff : newYOff;
 }
 
 void Level::startBisect(bool horizontal, float splitLocation, float offset){
-   (horizontal ? hBisectPoints : vBisectPoints).insert(std::pair(splitLocation, offset));
+   (horizontal ? hBisectPoints : vBisectPoints)
+      .insert(std::pair<double, double>(splitLocation, offset));
 }
 
 void Level::bisectLevel(bool horizontal, float splitLocation, float offset, Instance* cause){

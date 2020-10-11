@@ -49,6 +49,7 @@ class Map{
       static std::map<double, double> horizontalMapGap;
       /// Using these as a sorted list of doubles.
       static std::map<double, double> verticalMapGap;
+      static std::map<double, double> emptyMap();
    public:
       /**
        * Constructor for the map.

@@ -82,18 +82,21 @@ class EnclosedLevel : public InstanceLev {
         /**
          * The code that will expand/collapse the level by bisecting parts of the level.
          * @param levs The list of levels loaded in the game.
-         * @param lev The level that the instance belongs to.
+         * @param lv The level that the instance belongs to.
          * @param map The map that the instance belongs to.
          * @param player The player of the game.
+         * @return Whether or not layers need to be reloaded.
+         * 
          */
-        void messWithLevels(LevelList* levs, Level* lev, Map* map, Instance* player);
+        bool messWithLevels(LevelList* levs, Level* lv, Map* map, Instance* player);
         /**
          * Code that will recollapse the level and everything around it.
          * @param levs The list of levels loaded in the game.
-         * @param lev The level that the instance belongs to.
+         * @param lv The level that the instance belongs to.
          * @param player The player of the game.
+         * @return Whether or not layers need to be reloaded.
          */
-        void removeMessFromWorld(LevelList* levs, Level* lev, Instance* player);
+        bool removeMessFromWorld(LevelList* levs, Level* lv, Instance* player);
         /// This disconnects the enclosed level from an arc.
         void disconnect();
 };

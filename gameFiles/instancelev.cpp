@@ -4,6 +4,6 @@ InstanceLev::InstanceLev(double X, double Y, double W, double H) : Instance(X, Y
     messWithLevel = false;
 }
 
-void InstanceLev::messWithLevels(LevelList* levs, Instance* player){}
+bool InstanceLev::messWithLevels(LevelList* levs, Level* lev, Map* map, Instance* player){ return false; }
 
-void InstanceLev::removeMessFromWorld(LevelList* levs, Level* lev, Instance* player){}
+bool InstanceLev::removeMessFromWorld(LevelList* levs, Level* lev, Instance* player){ return false; }

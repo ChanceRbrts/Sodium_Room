@@ -15,13 +15,17 @@ bool GLDraw::popCameraMem(){
 }
 
 void GLDraw::pushCameraMem(double x, double y, double w, double h){
+   pushCameraMem(x, y, w, h, true);
+}
+
+void GLDraw::pushCameraMem(double x, double y, double w, double h, bool reset){
    cameraMem* prevCam = new cameraMem((cameraMem){camX, camY, width, height, headCam});
    headCam = prevCam;
    camX = x;
    camY = y;
    width = w;
    height = h;
-   resizeViewport();
+   if (reset) resizeViewport();
 }
 
 pointDouble GLDraw::vPoint(double v1, double v2){

@@ -76,7 +76,7 @@ void GameLogic::unloadLevel(LevelList* l){
       Instance* i = in->i;
       if (i->canMessWithLevel()){
          InstanceLev* iL = (InstanceLev*)i;
-         iL->removeMessFromWorld(loadedLevels, l->lev, player);
+         reloadLayers = reloadLayers || iL->removeMessFromWorld(loadedLevels, l->lev, player);
       }
    }
    // Remove stuff from the level.
@@ -101,6 +101,7 @@ void GameLogic::modifyLevelsLoaded(GLUtil* glu){
    double maxX = cX+2*w;
    double maxY = cY+2*w;
    // First, deallocate the levels that are out of bounds.
+   /// TODO: Enclosed levels still break this when expanded past the breaking point.
    LevelList* l = loadedLevels;
    while (l != nullptr){
       Level* lev = l->lev;
@@ -178,7 +179,8 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          // If an instance can mess with the levels, allow it here.
          if (in->i->canMessWithLevel()){
             InstanceLev* iL = (InstanceLev *)(in->i);
-            iL->messWithLevels(loadedLevels, lList->lev, lList->map, player);
+            reloadLayers = reloadLayers || 
+               iL->messWithLevels(loadedLevels, lList->lev, lList->map, player);
          }
          // If an object is destroyed, destroy it.
          if (in->i->canRemove()){
@@ -282,6 +284,9 @@ void GameLogic::updateCamera(double deltaTime, GLUtil* glu){
 }
 
 pointDouble GameLogic::followPlayer(GLUtil* glu){
+   double camX = camera->getX()+((Player*)player)->getCamJumpX();
+   double camY = camera->getY()+((Player*)player)->getCamJumpY();
+   camera->setPosition(camX, camY);
    // Very simple following the player code; Might be changed later?
    double cX = player->x+player->w/2-glu->draw->getWidth()/2;
    double cY = player->y+player->h/2-glu->draw->getHeight()/2;

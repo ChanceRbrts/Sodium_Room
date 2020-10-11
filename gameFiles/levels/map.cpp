@@ -1,5 +1,8 @@
 #include "map.h"
 
+std::map<double, double> Map::horizontalMapGap = emptyMap();
+std::map<double, double> Map::verticalMapGap = emptyMap();
+
 Map::Map(int sID){
    x = 0;
    y = 0;
@@ -9,6 +12,11 @@ Map::Map(int sID){
    prevCY = 0;
    superMapID = sID;
    firstLoad = true;
+}
+
+std::map<double, double> Map::emptyMap(){
+   std::map<double, double> ret;
+   return ret;
 }
 
 std::vector<Level *> Map::getUnloadedLevelsInArea(double X, double Y, double W, double H){
@@ -173,7 +181,7 @@ void Map::addGap(double P, double W, bool horiz, bool relative){
    for (; gaps != toUse.end(); gaps++){
       double toCompare = gaps->first;
       if (abs(toCompare-P) < 0.001){
-         toUse[toCompare] = W+relative?gaps->second:0;
+         toUse[toCompare] = W+(relative?gaps->second:0);
          // Remove the gap if it's exactly 0.
          if (W == 0 && !relative){
             toUse.erase(toCompare);

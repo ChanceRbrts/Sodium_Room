@@ -540,6 +540,7 @@ class GLDraw{
 
       bool popCameraMem();
       void pushCameraMem(double x, double y, double w, double h);
+      void pushCameraMem(double x, double y, double w, double h, bool reset);
 };
 
 /**
