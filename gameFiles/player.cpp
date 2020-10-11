@@ -14,9 +14,13 @@ Player::Player(double X, double Y) : Instance(X, Y, 1, 1){
    jumpMultiplier = 1;
    curAbility = nullptr;
    facingRight = true;
+   camDX = 0;
+   camDY = 0;
 }
 
 void Player::update(double deltaTime, bool* keyPressed, bool* keyHeld){
+   camDX = 0;
+   camDY = 0;
    // If we're in a cutscene or something like that, then we shouldn't control the Player from here.
    if (locked) return;
    jumpFrame = false;
@@ -111,6 +115,19 @@ void Player::collided(Instance* o, double deltaTime){
 
 void Player::giveAbility(PlayerAbility* plAb){
    curAbility = plAb;
+}
+
+void Player::cameraJump(double X, double Y){
+   camDX += X;
+   camDY += Y;
+}
+
+double Player::getCamJumpX(){
+   return camDX;
+}
+
+double Player::getCamJumpY(){
+   return camDY;
 }
 
 

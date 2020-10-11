@@ -32,8 +32,11 @@ class GameLogic{
       Camera* camera;
       /// The shaderbox that the level draws to before the screen.
       ShaderBox* drawBox;
+      /// A shaderbox to draw arcs to, alternating from arcBoxTwo.
       DualSBox arcBoxOne;
+      /// A shaderbox to draw arcs to, alternating from arcBoxOne.
       DualSBox arcBoxTwo;
+      int curSMapID;
       /// Whether or not the camera's position has been set yet.
       bool loadedCam;
       /**
@@ -50,6 +53,11 @@ class GameLogic{
        */
       void removeFromList(Instances* i, Instances** start);
       /**
+       * Modify which levels are currently loaded in.
+       * @param glu The GLUtils (Used just to see what's in the camera.)
+       */
+      void modifyLevelsLoaded(GLUtil* glu);
+      /**
        * The drawing layers that each level needs to draw to.
        * The idea is to draw instances in layers that are in numerical order.
        */
@@ -62,16 +70,22 @@ class GameLogic{
       std::map<int, std::vector<Layer *>> generateLayers();
       /// Whether or not the drawn layers need to be reloaded.
       bool reloadLayers;
+      /// The current supermap that's being loaded.
+      std::vector<Map *> superMap;
    public:
       /// The constructor of the GameLogic.
       GameLogic();
       /// The deconstructor of the GameLogic.
       ~GameLogic();
       /**
+       * Load a map into the game.
+       */
+      void loadSuperMap(int mapID, double X, double Y, double W, double H);
+      /**
        * Loads a level into the game
        * @param l The level to load.
        */
-      void loadLevel(Level* l);
+      void loadLevel(Level* l, Map* m);
       /**
        * Removes a level from the game.
        * @param l The level to remove.

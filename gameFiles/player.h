@@ -31,6 +31,8 @@ class PlayerAbility : public Instance{
  */
 class Player : public Instance{
    private:
+      /// Change of position of the camera to be accounted for.
+      double camDX, camDY;
       /// Whether or not the player can move by controls.
       bool locked;
       /// If > 0, the player can be considered on ground. (Used for coyote jumps.)
@@ -100,6 +102,16 @@ class Player : public Instance{
        * @param deltaTime The time in between this frame and the previous frame.
        */
       void collided(Instance* o, double deltaTime);
+      /**
+       * This sets some variables that helps with making the camera jump.
+       * @param X The pixels the camera jumps horizontally
+       * @param Y The pixels the camera jumps vertically
+       */
+      void cameraJump(double X, double Y);
+      /// @return The amount of pixels the camera should jump horizontally.
+      double getCamJumpX();
+      /// @return The amount of pixels the camera should jump vertically.
+      double getCamJumpY();
 };
 
 #endif

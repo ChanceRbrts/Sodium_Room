@@ -12,10 +12,49 @@ Level::Level(){
    h = 0;
    xOff = 0;
    yOff = 0;
+   mXOff = 0;
+   mYOff = 0;
+   loaded = false;
+   global = false;
 }
 
 Level::~Level(){
    destroyLevel();
+}
+
+void Level::setWidthHeight(){
+   if (filePath.length() == 0) return;
+   // Looks for the solid map here.
+   FILE* f = fopen((std::string("gameFiles/levels/levelData/")+filePath+".txt").c_str(), "r");
+   if (f == nullptr){
+      fprintf(stderr, "ERROR: %s doesn't exist.\n", (filePath+".txt").c_str());
+      return;
+   } 
+   std::string line = "";
+   int mode = DEFAULT;
+   int yVal = 0;
+   int wid = 0;
+   while (!feof(f)){
+      char c = fgetc(f);
+      if (c == '\n' || feof(f)){
+         if (mode == LAYOUT){
+            // Look for the layout of the build.
+            // We just care about the line length and the number of lines.
+            if (line.length() > wid) wid = line.length();
+            yVal += 1;
+         }
+         if (line.find("Textures") != std::string::npos){
+            mode = TEXTURES;
+         } else if (line.find("Layout") != std::string::npos){
+            mode = LAYOUT;
+         }
+         line = "";
+      } else {
+         line += c;
+      }
+   }
+   w = wid*32;
+   h = yVal*32;
 }
 
 pointDouble Level::createLevel(){
@@ -88,10 +127,15 @@ pointDouble Level::createLevel(){
    Instances* is = nullptr;
    // Let's make sure really quickly that we didn't add a memory leak in inst
    for (int i = 0; i < instances.size(); i++){
+      // Apply offsets here to translate objects directly to a level.
+      instances[i]->x += xOff;
+      instances[i]->y += yOff;
       if (instances[i]->isPlayer()){
          // If it's a player, return their coordinates.
          defaultPoint.x = instances[i]->x;
          defaultPoint.y = instances[i]->y;
+         // Since we're not using the instance anymore, just remove it.
+         delete instances[i];
       } else {
          // Otherwise, put it in the doubly linked list.
          Instances* inst = new Instances();
@@ -110,6 +154,22 @@ pointDouble Level::createLevel(){
       }
    }
    instances.clear();
+   // Now, there is the possibility of a bisected level happening, so bisect those here.
+   std::map<double, double>::iterator it = hBisectPoints.begin();
+   double gap = 0;
+   for (; it != hBisectPoints.end(); it++){
+      bisectLevel(true, it->first+gap, it->second, nullptr);
+      gap += it->second;
+   }
+   gap = 0;
+   it = vBisectPoints.begin();
+   for (; it != vBisectPoints.end(); it++){
+      bisectLevel(false, it->first+gap, it->second, nullptr);
+      gap += it->second;
+   }
+   hBisectPoints.clear();
+   vBisectPoints.clear();
+   loaded = true;
    return defaultPoint;
 }
 
@@ -150,6 +210,7 @@ void Level::destroyLevel(){
    layers.clear();
    // In case we remake this level, we should have it remake our shaderboxes.
    createdShaderboxes = false;
+   loaded = false;
 }
 
 std::vector<Instance*> Level::makeLevel(std::vector<Instance*> previous){
@@ -363,6 +424,16 @@ float Level::getXOff(){ return xOff; }
 
 float Level::getYOff(){ return yOff; }
 
+float Level::getMXOff(){ return mXOff; }
+
+float Level::getMYOff(){ return mYOff; }
+
+bool Level::getLoaded(){ return loaded; }
+
+void Level::setGlobal(bool g){ global = g; }
+
+bool Level::getGlobal(){ return global; }
+
 void Level::moveRoom(float newXOff, float newYOff, bool relative){
    float oldXOff = xOff;
    float oldYOff = yOff;
@@ -376,7 +447,19 @@ void Level::moveRoom(float newXOff, float newYOff, bool relative){
    }
 }
 
+void Level::moveInMap(float newXOff, float newYOff, bool relative){
+   mXOff = relative ? mXOff+newXOff : newXOff;
+   mYOff = relative ? mYOff+newYOff : newYOff;
+}
+
+void Level::startBisect(bool horizontal, float splitLocation, float offset){
+   (horizontal ? hBisectPoints : vBisectPoints)
+      .insert(std::pair<double, double>(splitLocation, offset));
+}
+
 void Level::bisectLevel(bool horizontal, float splitLocation, float offset, Instance* cause){
+   // If there is no level, put it in a queue.
+   if (!loaded) return startBisect(horizontal, splitLocation, offset);
    if (horizontal){ 
       w += offset;
    } else{
@@ -463,6 +546,8 @@ bool Level::removeFromLayers(Instances* in){
    bool removedALayer = false;
    for (int i = 0; i < in->drawn.size(); i++){
       DrawnInstance* dI = in->drawn[i];
+      std::map<int, Layer*>::iterator lI = layers.find(dI->layer);
+      if (lI == layers.end()) continue;
       Layer* l = layers.at(dI->layer);
       // Update the layer if we no longer have something at the beginning or the end of the list.
       // Otherwise, keep the linked list connected.
@@ -484,4 +569,18 @@ bool Level::removeFromLayers(Instances* in){
    }
    in->drawn.clear();
    return removedALayer;
+}
+
+BasicLevel::BasicLevel(std::string fName, double pX, double pY) : Level(){
+   filePath = fName;
+   playerX = pX;
+   playerY = pY;
+   // The width and height need to be known for level making purposes
+   // So generate the level to get the width/height and then destroy it!
+   setWidthHeight();
+}
+
+std::vector<Instance *> BasicLevel::makeLevel(std::vector<Instance*> previous){
+   previous.push_back(new Player(playerX, playerY));
+   return previous;
 }

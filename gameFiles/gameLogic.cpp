@@ -11,7 +11,10 @@ GameLogic::GameLogic(){
    drawBox = nullptr;
    arcBoxOne = (DualSBox){nullptr, nullptr};
    arcBoxTwo = (DualSBox){nullptr, nullptr};
-   loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
+   curSMapID = 0;
+   /// TODO: Width and height hardcoded; Fix that.
+   loadSuperMap(MAP_TEST, 0, 0, 640, 480);
+   // loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
 }
 
 GameLogic::~GameLogic(){
@@ -19,17 +22,33 @@ GameLogic::~GameLogic(){
    TexBook::destroy();
 }
 
-void GameLogic::loadLevel(Level* l){
+void GameLogic::loadSuperMap(int mapID, double X, double Y, double W, double H){
+   curSMapID = mapID;
+   pairVector<Map*> pV = levels->getSuperMap(mapID, X, Y, W, H);
+   // Make it so we have our supermap ready to load stuff!
+   superMap = pV.a;
+   for (int i = 0; i < pV.b.size(); i++){
+      std::vector<Level *> lev = pV.b[i]->updateLoadedLevels(X, Y, W, H);
+      for (int j = 0; j < lev.size(); j++){
+         loadLevel(lev[j], pV.b[i]);
+      }
+   }
+}
+
+void GameLogic::loadLevel(Level* l, Map* m){
    // Get the instance list and turns it into a linked list.
    pointDouble playerLoc = l->createLevel();
    if (player == nullptr){
       player = new Player(playerLoc.x/32, playerLoc.y/32);
-      // TODO: Find a better place for this.
+      /// TODO: Find a better place for this.
       ((Player *)player)->giveAbility(new Lighter());
       // ((Player *)player)->giveAbility(new Flashlight());
    }
    LevelList* lev = new LevelList();
    lev->lev = l;
+   lev->map = m;
+   lev->prev = nullptr;
+   lev->next = nullptr;
    if (loadedLevels == nullptr){
       loadedLevels = lev;
    } else {
@@ -52,13 +71,60 @@ void GameLogic::loadLevel(Level* l){
 }
 
 void GameLogic::unloadLevel(LevelList* l){
+   // Check to see if any instance in the level needs to do some mess cleanup first.
+   for (Instances* in = l->lev->insts; in != nullptr; in = in->next){
+      Instance* i = in->i;
+      if (i->canMessWithLevel()){
+         InstanceLev* iL = (InstanceLev*)i;
+         reloadLayers = reloadLayers || iL->removeMessFromWorld(loadedLevels, l->lev, player);
+      }
+   }
    // Remove stuff from the level.
    l->lev->destroyLevel();
    if (l->prev != nullptr) l->prev->next = l->next;
    if (l->next != nullptr) l->next->prev = l->prev;
+   if (loadedLevels == l) loadedLevels = l->next;
+   if (lastLoaded == l) lastLoaded = l->prev;
    reloadLayers = true;
    // We don't want to actually deallocate the level here.
    delete l;
+}
+
+void GameLogic::modifyLevelsLoaded(GLUtil* glu){
+   // For now, let's have a level loaded in if it is within a screen's length away from the screen.
+   double cX = glu->draw->camX;
+   double cY = glu->draw->camY;
+   double w = glu->draw->getWidth();
+   double h = glu->draw->getHeight();
+   double minX = cX-w;
+   double minY = cY-h;
+   double maxX = cX+2*w;
+   double maxY = cY+2*w;
+   // First, deallocate the levels that are out of bounds.
+   /// TODO: Enclosed levels still break this when expanded past the breaking point.
+   LevelList* l = loadedLevels;
+   while (l != nullptr){
+      Level* lev = l->lev;
+      bool remove = false;
+      double lX = lev->getXOff();
+      double lY = lev->getYOff();
+      remove = lX+lev->w < minX || lX > maxX;
+      remove = remove || lY+lev->h < minY || lY > maxY;
+      LevelList* lNext = l->next;
+      if (remove && !lev->getGlobal()){
+         unloadLevel(l);
+      }
+      l = lNext;
+   }
+   // Now, check for levels that are in bounds and load them in.
+   for (int i = 0; i < superMap.size(); i++){
+      if (!superMap[i]->inBounds(cX-w*3/4, cY-h*3/4, w*5/2, h*5/2)) continue;
+      std::vector <Level *> levs = superMap[i]->updateLoadedLevels(glu);
+      for (int j = 0; j < levs.size(); j++){
+         loadLevel(levs[j], superMap[i]);
+      }
+      levs.clear();
+   }
 }
 
 void GameLogic::update(double deltaTime, GLUtil* glu){
@@ -66,6 +132,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    bool* keyPressed = glu->control->getKeyPressed();
    bool* keyHeld = glu->control->getKeyHeld();
    if (keyPressed[BUTTON_END]) exit(0);
+   modifyLevelsLoaded(glu);
    // Update each of the objects.
    // collObjs is used for collision checking.
    std::vector<Instance *> collObjs;
@@ -112,7 +179,8 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          // If an instance can mess with the levels, allow it here.
          if (in->i->canMessWithLevel()){
             InstanceLev* iL = (InstanceLev *)(in->i);
-            iL->messWithLevels(loadedLevels, player);
+            reloadLayers = reloadLayers || 
+               iL->messWithLevels(loadedLevels, lList->lev, lList->map, player);
          }
          // If an object is destroyed, destroy it.
          if (in->i->canRemove()){
@@ -216,6 +284,9 @@ void GameLogic::updateCamera(double deltaTime, GLUtil* glu){
 }
 
 pointDouble GameLogic::followPlayer(GLUtil* glu){
+   double camX = camera->getX()+((Player*)player)->getCamJumpX();
+   double camY = camera->getY()+((Player*)player)->getCamJumpY();
+   camera->setPosition(camX, camY);
    // Very simple following the player code; Might be changed later?
    double cX = player->x+player->w/2-glu->draw->getWidth()/2;
    double cY = player->y+player->h/2-glu->draw->getHeight()/2;
@@ -226,11 +297,13 @@ pointDouble GameLogic::followPlayer(GLUtil* glu){
    // You know what? Let's just have a whole bunch of std::mins and std::maxs here to avoid a ton of conditionals.
    if (loadedLevels != nullptr){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+         double xOff = l->lev->getXOff();
+         double yOff = l->lev->getYOff();
          double xVal = l->lev->getXOff()+l->lev->w-glu->draw->getWidth();
          double yVal = l->lev->getYOff()+l->lev->h-glu->draw->getHeight();
-         minX = std::min(minX, (double)(l->lev->getXOff()));
+         minX = std::min(minX, xOff);
          maxX = std::max(maxX, xVal);
-         minY = std::min(minY, (double)(l->lev->getYOff()));
+         minY = std::min(minY, yOff);
          maxY = std::max(maxY, yVal);
       }
    }

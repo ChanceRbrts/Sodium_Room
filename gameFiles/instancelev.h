@@ -3,6 +3,7 @@
 
 #include "instance.h"
 #include "levels/level.h"
+#include "levels/map.h"
 
 /**
  * An instance that comes after the level in compilation.
@@ -27,9 +28,22 @@ class InstanceLev : public Instance{
         /**
          * Code that determines how levels are messed with.
          * @param levs The list of levels loaded in the game.
+         * @param lev The level that the instance belongs to.
+         * @param map The map that the instance belongs to.
          * @param player The player of the game.
+         * @param glu The GL functions and state (Just in case the camera needs to be moved.)
+         * @return Whether or not layers need to be reloaded.
          */
-        virtual void messWithLevels(LevelList* levs, Instance* player);
+        virtual bool messWithLevels(LevelList* levs, Level* lev, Map* map, Instance* player);
+        /**
+         * Code that determines how levels are messed with when the object is removed.
+         * @param levs The list of levels loaded in the game.
+         * @param lev The level that the instance belongs to.
+         * @param player The player of the game.
+         * @param glu The GL functions and state (Just in case the camera needs to be moved.)
+         * @return Whether or not layers need to be reloaded.
+         */
+        virtual bool removeMessFromWorld(LevelList* levs, Level* lev, Instance* player);
 };
 
 #endif
