@@ -54,6 +54,7 @@ gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gam
 		gameFiles/textBox.o gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o\
 		gameFiles/gsObjects/area-jungle/honeyPlatform.o gameFiles/gsObjects/area-jungle/pointLight.o\
 		gameFiles/gsObjects/state-objects/button.o gameFiles/gsObjects/state-objects/keyLock.o\
+		gameFiles/gsObjects/area-hub/fireplace.o\
 		gameFiles/playerObjects/lighter.o gameFiles/playerObjects/flashlight.o\
 		gameFiles/cameraObjects/cameraObjects.o
 	ar -rcs $@ $^
@@ -61,8 +62,10 @@ gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gam
 gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/map.o gameFiles/levels/levelExample.o\
 		gameFiles/levels/testLevels/testRain.o gameFiles/levels/testLevels/testJungleObjects.o\
 		gameFiles/levels/testLevels/testMultipleLights.o\
-		gameFiles/levels/mainLevels/introLevel.o gameFiles/levels/jungleLevels/rainHallway.o\
-		gameFiles/levels/testLevels/testMap.o gameFiles/levels/jungleLevels/jungleMap.o
+		gameFiles/levels/mainLevels/introLevel.o gameFiles/levels/mainLevels/hubFirstFloor.o\
+		gameFiles/levels/jungleLevels/rainHallway.o\
+		gameFiles/levels/testLevels/testMap.o gameFiles/levels/mainLevels/hubMap.o\
+		gameFiles/levels/jungleLevels/jungleMap.o
 	ar -rcs $@ $^
 
 gameFiles/instancesext.a:gameFiles/instancelev.o gameFiles/gsObjects/enclosedLevel.o\
@@ -91,6 +94,7 @@ clean:
 	cd gameFiles/playerObjects && rm -f *.o *.a
 	cd gameFiles/gsObjects && rm -f *.o *.a
 	cd gameFiles/gsObjects/area-jungle && rm -f *.o *.a
+	cd gameFiles/gsObjects/area-hub && rm -f *.o *.a
 	cd gameFiles/gsObjects/state-objects && rm -f *.o *.a
 	cd gameFiles/levels && rm -f *.o *.a
 	cd gameFiles/levels/testLevels && rm -f *.o *.a
