@@ -63,6 +63,7 @@ gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/map.o gameFiles/lev
 		gameFiles/levels/testLevels/testRain.o gameFiles/levels/testLevels/testJungleObjects.o\
 		gameFiles/levels/testLevels/testMultipleLights.o\
 		gameFiles/levels/mainLevels/introLevel.o gameFiles/levels/mainLevels/hubFirstFloor.o\
+		gameFiles/levels/mainLevels/hubBasement.o\
 		gameFiles/levels/jungleLevels/rainHallway.o\
 		gameFiles/levels/testLevels/testMap.o gameFiles/levels/mainLevels/hubMap.o\
 		gameFiles/levels/jungleLevels/jungleMap.o

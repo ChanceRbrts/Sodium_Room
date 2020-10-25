@@ -3,6 +3,7 @@
 
 #include "../map.h"
 #include "hubFirstFloor.h"
+#include "hubBasement.h"
 
 class HubMap : public Map {
     public:
