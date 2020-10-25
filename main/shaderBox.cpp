@@ -128,6 +128,10 @@ void ShaderBox::moveShaderBox(double X, double Y){
    arcTwoAlpha->moveShaderBox(X, Y);
 }
 
+double ShaderBox::getX(){ return x; }
+
+double ShaderBox::getY(){ return y; }
+
 void ShaderBox::setXOffset(double xoffset){
    xOffset = xoffset;
 }

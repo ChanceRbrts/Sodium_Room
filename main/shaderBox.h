@@ -84,6 +84,10 @@ class ShaderBox{
       void drawBoundary();
       /// @return Whether or not the shaderbox is on the current screen.
       bool canDraw();
+      /// @return The x position of the shaderbox.
+      double getX();
+      /// @return The y position of the shaderbox.
+      double getY();
       /**
        * Moves the shaderbox to a position.
        * @param X The left side of the shader box (in pixel coords)

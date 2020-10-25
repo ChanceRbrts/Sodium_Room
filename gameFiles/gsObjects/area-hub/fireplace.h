@@ -6,6 +6,7 @@
 class Fireplace : public Instance {
     public:
         Fireplace(double X, double Y);
+        std::vector<int> initLayers();
 };
 
 #endif

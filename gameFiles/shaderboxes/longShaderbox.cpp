@@ -13,9 +13,9 @@ LongShaderbox::LongShaderbox(double X, double xPoint, double Y, double drawW, do
 }
 
 void LongShaderbox::moveShaderBox(double X, double Y){
-    if (X > xScrollStart && X < xScrollEnd){
-        x = X-xScrollStart+firstX;
-    } 
+    if (X <= xScrollStart) X = xScrollStart;
+    else if (X >= xScrollEnd) X = xScrollEnd; 
+    x = X-xScrollStart+firstX;
     uniforms["x"] = (X-firstX)/glu->draw->getWidth();
     uX = (X-firstX)/glu->draw->getWidth();
     // Move the arc shaderboxes to the current position.

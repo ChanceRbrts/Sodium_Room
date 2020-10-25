@@ -12,7 +12,8 @@ Levels::Levels(){
    // Add the rest of the maps into a list.
    maps.push_back(new TestMap(MAP_TEST));
    maps.push_back(new TestMultipleRooms(MAP_TESTMULTIPLE));
-   maps.push_back(new JungleMap(MAP_MAIN));
+   maps.push_back(new HubMap(MAP_MAIN));
+   // maps.push_back(new JungleMap(MAP_MAIN));
 }
 
 pairVector<Map*> Levels::getSuperMap(int superMapID, double offX, double offY, double wid, double hei){

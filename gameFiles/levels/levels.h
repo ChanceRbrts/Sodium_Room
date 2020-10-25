@@ -17,6 +17,7 @@
 // Put all of the maps that will be used here.
 #include "testLevels/testMap.h"
 #include "jungleLevels/jungleMap.h"
+#include "mainLevels/hubMap.h"
 
 // Generate IDs for all of the maps.
 #define MAP_EXAMPLE 0
