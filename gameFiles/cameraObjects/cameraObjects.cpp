@@ -88,9 +88,25 @@ OneWayCameraObject::OneWayCameraObject(double X, double Y, double W, int directi
     y = Y*32;
     w = W*32;
     dir = direction;
+    closeH = 0;
+    openH = 0;
+    snap = true;
+}
+
+OneWayCameraObject::OneWayCameraObject(double X, double Y, double W, double removeH, 
+                                       double addH, int direction, bool snapback) : CameraObject(){
+    x = X*32;
+    y = Y*32;
+    w = W*32;
+    work = true;
+    dir = direction;
+    closeH = removeH;
+    openH = addH;
+    snap = snapback;
 }
 
 void OneWayCameraObject::modifyCamera(Camera* c, double deltaTime, double W, double H){
+    if (!work) return;
     double p = dir%2 == 0 ? c->getY() : c->getX();
     p += dir/2 == 0 ? (dir%2 == 0 ? H : W) : 0;
     double q = dir%2 == 0 ? c->getX() : c->getY();
@@ -100,9 +116,19 @@ void OneWayCameraObject::modifyCamera(Camera* c, double deltaTime, double W, dou
     double* dP = dir%2 == 0 ? &(c->dY) : &(c->dX);
     double lim = dir%2 == 0 ? y : x;
     int sign = dir/2 == 0 ? 1 : -1;
-    if (p*sign <= lim && (p+*dP*deltaTime)*sign > lim){
+    if (p*sign <= lim*sign && (p+*dP*deltaTime)*sign > lim*sign){
         *dP = (lim*sign-p)/deltaTime;
     }
+}
+
+void OneWayCameraObject::interactWithPlayer(Instance* i, double deltaTime){
+    double p = dir%2 == 0 ? i->y : i->x;
+    p += dir/2 == 0 ? -closeH : closeH;
+    double dP = dir%2 == 0 ? i->dY : i->dX;
+    double q = dir%2 == 0 ? i->x : i->y;
+    int sign = dir/2 == 0 ? 1 : -1;
+    double lim = dir%2 == 0 ? y : x;
+    work = (p+dP*deltaTime)*sign <= lim*sign;
 }
 
 void OneWayCameraObject::bisectObject(bool horizontal, float splitLocation, float offset){

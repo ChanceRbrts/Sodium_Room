@@ -260,9 +260,20 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
 void GameLogic::updateCamera(double deltaTime, GLUtil* glu){
    // Start by getting the target of the camera.
    if (player != nullptr){
-      pointDouble pD = followPlayer(glu);
-      if (loadedCam) camera->setTarget(pD.x, pD.y);
-      else camera->setPosition(pD.x, pD.y);
+      pointDouble pD = followPlayer(deltaTime, glu);
+      if (!loadedCam){
+         if (loadedLevels != nullptr){
+            for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+               Level* lev = l->lev;
+               double xO = lev->getXOff();
+               double yO = lev->getYOff();
+               if (pD.x >= xO && pD.x < xO+lev->w && pD.y >= yO && pD.y < yO+lev->h){
+                  camera->setPosition(xO, yO);
+               }
+            }
+         } else camera->setPosition(pD.x, pD.y);
+      }
+      camera->setTarget(pD.x, pD.y);
    }
    camera->startMovement(deltaTime);
    // Then, constrain it to different parts of the levels.
@@ -283,7 +294,7 @@ void GameLogic::updateCamera(double deltaTime, GLUtil* glu){
    glu->draw->camY = camera->getY();
 }
 
-pointDouble GameLogic::followPlayer(GLUtil* glu){
+pointDouble GameLogic::followPlayer(double deltaTime, GLUtil* glu){
    double camX = camera->getX()+((Player*)player)->getCamJumpX();
    double camY = camera->getY()+((Player*)player)->getCamJumpY();
    camera->setPosition(camX, camY);
@@ -305,6 +316,10 @@ pointDouble GameLogic::followPlayer(GLUtil* glu){
          maxX = std::max(maxX, xVal);
          minY = std::min(minY, yOff);
          maxY = std::max(maxY, yVal);
+         // While we're here, let's affect the camera objects.
+         for (int i = 0; i < l->lev->camObjs.size(); i++){
+            l->lev->camObjs[i]->interactWithPlayer(player, deltaTime);
+         }
       }
    }
    cX = std::max(minX, std::min(cX, maxX));

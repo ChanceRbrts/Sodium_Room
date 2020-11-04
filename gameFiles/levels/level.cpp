@@ -445,6 +445,20 @@ void Level::moveRoom(float newXOff, float newYOff, bool relative){
       i->i->x += xOff-oldXOff;
       i->i->y += yOff-oldYOff;
    }
+   // Move all shaders to the level's new offsets.
+   for (int i = 0; i < shades.size(); i++){
+      shades[i]->moveShaderBox(shades[i]->getX()+xOff-oldXOff, shades[i]->getY()+yOff-oldYOff);
+   }
+   // Move all arcs to the level's new offsets.
+   for (int i = 0; i < arcs.size(); i++){
+      arcs[i]->setPosition(arcs[i]->getX()+xOff-oldXOff, arcs[i]->getY()+xOff-oldYOff);
+   }
+   /*
+   // Move all camera objects to the level's new offsets.
+   for (int i = 0; i < camObjs.size(); i++){
+      camObjs[i]->setPosition(xOff-oldXOff, yOff-oldYOff, true);
+   }
+   */
 }
 
 void Level::moveInMap(float newXOff, float newYOff, bool relative){

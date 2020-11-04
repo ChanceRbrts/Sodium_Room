@@ -107,7 +107,7 @@ class GameLogic{
        * Makes the camera follow the player.
        * @param glu The GLUtil class; Used to update camX and camY.
        */
-      pointDouble followPlayer(GLUtil* glu);
+      pointDouble followPlayer(double deltaTime, GLUtil* glu);
       /**
        * The actual draw loop. 
        * This goes through each of the shader boxes and draws stuff.

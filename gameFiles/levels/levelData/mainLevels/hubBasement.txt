@@ -14,7 +14,7 @@ C placeholder_cr_fl
 D placeholder_cr_fr
 
 Layout
-A22222222222228   5D9999
+A2222222222228    5D9999
 3                5D99999
 3               5D999999
 3              5D9999999
