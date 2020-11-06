@@ -118,7 +118,13 @@ pointDouble Level::createLevel(){
    }
    instances = makeLevel(instances);
    arcs = createArcs();
+   for (int i = 0; i < arcs.size(); i++){
+      arcs[i]->setPosition(arcs[i]->getX()+xOff, arcs[i]->getY()+yOff);
+   }
    camObjs = createCameraObjects();
+   for (int i = 0; i < camObjs.size(); i++){
+      camObjs[i]->setPosition(xOff, yOff, true);
+   }
    while (insts != nullptr){
       Instances* del = insts;
       insts = insts->next;
@@ -277,6 +283,9 @@ void Level::drawShaderboxes(GLUtil* glu, Instance* player, int drewArcs, ShaderB
    // Make sure we're drawing our shaderboxes first.
    if (!createdShaderboxes){
       shades = createShaderBoxes(glu);
+      for (int i = 0; i < shades.size(); i++){
+         shades[i]->moveShaderBox(xOff+shades[i]->getX(), yOff+shades[i]->getY(), true);
+      }
       createdShaderboxes = true;
    }
    // Draw everything to each of the shader boxes, then draw that shaderbox.
@@ -447,18 +456,17 @@ void Level::moveRoom(float newXOff, float newYOff, bool relative){
    }
    // Move all shaders to the level's new offsets.
    for (int i = 0; i < shades.size(); i++){
-      shades[i]->moveShaderBox(shades[i]->getX()+xOff-oldXOff, shades[i]->getY()+yOff-oldYOff);
+      shades[i]->moveShaderBox(shades[i]->getX()+xOff-oldXOff, shades[i]->getY()+yOff-oldYOff, true);
    }
    // Move all arcs to the level's new offsets.
    for (int i = 0; i < arcs.size(); i++){
       arcs[i]->setPosition(arcs[i]->getX()+xOff-oldXOff, arcs[i]->getY()+xOff-oldYOff);
    }
-   /*
    // Move all camera objects to the level's new offsets.
    for (int i = 0; i < camObjs.size(); i++){
       camObjs[i]->setPosition(xOff-oldXOff, yOff-oldYOff, true);
    }
-   */
+   
 }
 
 void Level::moveInMap(float newXOff, float newYOff, bool relative){

@@ -54,7 +54,7 @@ std::vector<CameraObject *> HubFirstFloor::createCameraObjects(){
 std::vector<ShaderBox *> HubFirstFloor::createShaderBoxes(GLUtil* glu){
     std::vector<ShaderBox *> shades;
     double wid = glu->draw->getWidth();
-    darkRoom = new LongShaderbox(getXOff(), wid/64, getYOff(), wid/32, w/32-wid/64, h/32, "", "hub/fireplace", glu);
+    darkRoom = new LongShaderbox(0, wid/64, 0, wid/32, w/32-wid/64, h/32, "", "hub/fireplace", glu);
     darkRoom->addUniform("fireX", 384);
     darkRoom->addUniform("fireY", 416);
     darkRoom->addUniform("h", h);

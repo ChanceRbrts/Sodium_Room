@@ -80,7 +80,7 @@ void Arc::draw(GLUtil* glu, ShaderBox* mainTex, DualSBox drawTo, int fromTex, in
     glu->draw->bindTexture(fromAlpha, 2);
     mainTex->draw();
     drawTo.second->drawOutBox();
-    // shade->moveShaderBox(x-maxR*1.1, y-maxR*1.1);
+    // shade->moveShaderBox(x-maxR*1.1, y-maxR*1.1, false);
 }
 
 void Arc::setColor(double R, double G, double B){

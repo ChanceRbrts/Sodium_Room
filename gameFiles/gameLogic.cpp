@@ -238,7 +238,9 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
          for (int i = 0; i < l->lev->shades.size(); i++){
             if (l->lev->shades[i]->followPlayer()){
-               l->lev->shades[i]->moveShaderBox(player->x+player->w/2, player->y+player->h/2);
+               GLDraw* gld = glu->draw;
+               l->lev->shades[i]->moveShaderBox(gld->camX+gld->getWidth()/2, 
+                                                gld->camY+gld->getHeight()/2, false);
             }
          }
       }
@@ -349,11 +351,11 @@ void GameLogic::draw(GLUtil* glu){
       arcBoxTwo.first = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "drawArc", glu);
       arcBoxTwo.second = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "", glu);
    }
-   drawBox->moveShaderBox(gld->camX, gld->camY);
-   arcBoxOne.first->moveShaderBox(gld->camX, gld->camY);
-   arcBoxOne.second->moveShaderBox(gld->camX, gld->camY);
-   arcBoxTwo.first->moveShaderBox(gld->camX, gld->camY);
-   arcBoxTwo.second->moveShaderBox(gld->camX, gld->camY);
+   drawBox->moveShaderBox(gld->camX, gld->camY, false);
+   arcBoxOne.first->moveShaderBox(gld->camX, gld->camY, false);
+   arcBoxOne.second->moveShaderBox(gld->camX, gld->camY, false);
+   arcBoxTwo.first->moveShaderBox(gld->camX, gld->camY, false);
+   arcBoxTwo.second->moveShaderBox(gld->camX, gld->camY, false);
    if (loadedLevels == nullptr) return;
    drawBox->drawOnBox();
    // Draw the backgrounds first.

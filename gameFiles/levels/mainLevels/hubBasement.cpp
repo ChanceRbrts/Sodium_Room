@@ -11,14 +11,14 @@ std::vector<Instance *> HubBasement::makeLevel(std::vector<Instance*> previous){
 
 std::vector<CameraObject *> HubBasement::createCameraObjects(){
     std::vector<CameraObject *> cams;
-    cams.push_back(new OneWayCameraObject(0, 0, 25, 3));
+    cams.push_back(new OneWayCameraObject(0, 0, 10, 3));
     return cams;
 }
 
 std::vector<ShaderBox *> HubBasement::createShaderBoxes(GLUtil* glu){
     std::vector<ShaderBox *> shades;
     double wid = glu->draw->getWidth();
-    darkRoom = new LongShaderbox(getXOff(), wid/64, getYOff(), wid/32, w/32-wid/64, h/32, "", "hub/fireplace", glu);
+    darkRoom = new LongShaderbox(0, wid/64, 0, wid/32, w/32-wid/64, h/32, "", "hub/fireplace", glu);
     darkRoom->addUniform("fireX", 384);
     darkRoom->addUniform("fireY", 416);
     darkRoom->addUniform("h", h);

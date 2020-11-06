@@ -92,8 +92,9 @@ class ShaderBox{
        * Moves the shaderbox to a position.
        * @param X The left side of the shader box (in pixel coords)
        * @param Y The top side of the shader box (in pixel coords)
+       * @param movingLevel Whether or not the level is being moved.
        */
-      virtual void moveShaderBox(double X, double Y);
+      virtual void moveShaderBox(double X, double Y, bool movingLevel);
       /**
        * Offsets where the frame buffer is actually drawn when you draw it.
        * @param xoffset How many pixels right the frame buffer actually draws itself to.

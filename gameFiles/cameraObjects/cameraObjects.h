@@ -28,6 +28,7 @@ class CameraObject {
     public:
         CameraObject();
         virtual ~CameraObject(){};
+        virtual void setPosition(double X, double Y, bool relative){};
         virtual void interactWithPlayer(Instance* p, double deltaTime){};
         virtual void modifyCamera(Camera* c, double deltaTime, double W, double H){};
         virtual void bisectObject(bool horizontal, float splitLocation, float offset){};
@@ -63,6 +64,7 @@ class OneWayCameraObject : public CameraObject {
         void interactWithPlayer(Instance* p, double deltaTime);
         void modifyCamera(Camera* c, double deltaTime, double W, double H);
         void bisectObject(bool horizontal, float splitLocation, float offset);
+        void setPosition(double X, double Y, bool relative);
         void changeX(double X);
         void changeY(double Y);
 };

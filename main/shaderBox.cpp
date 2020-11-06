@@ -118,14 +118,14 @@ void ShaderBox::drawBoundary(){
    }
 }
 
-void ShaderBox::moveShaderBox(double X, double Y){
+void ShaderBox::moveShaderBox(double X, double Y, bool movingLevel){
    x = X;
    y = Y;
    if (arcOne == nullptr) return;
-   arcOne->moveShaderBox(X, Y);
-   arcOneAlpha->moveShaderBox(X, Y);
-   arcTwo->moveShaderBox(X, Y);
-   arcTwoAlpha->moveShaderBox(X, Y);
+   arcOne->moveShaderBox(X, Y, movingLevel);
+   arcOneAlpha->moveShaderBox(X, Y, movingLevel);
+   arcTwo->moveShaderBox(X, Y, movingLevel);
+   arcTwoAlpha->moveShaderBox(X, Y, movingLevel);
 }
 
 double ShaderBox::getX(){ return x; }

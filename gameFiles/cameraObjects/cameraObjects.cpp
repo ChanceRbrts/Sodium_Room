@@ -117,15 +117,15 @@ void OneWayCameraObject::modifyCamera(Camera* c, double deltaTime, double W, dou
     double lim = dir%2 == 0 ? y : x;
     int sign = dir/2 == 0 ? 1 : -1;
     if (p*sign <= lim*sign && (p+*dP*deltaTime)*sign > lim*sign){
-        *dP = (lim*sign-p)/deltaTime;
+        *dP = (lim-p)/deltaTime;
     }
 }
 
 void OneWayCameraObject::interactWithPlayer(Instance* i, double deltaTime){
     double p = dir%2 == 0 ? i->y : i->x;
-    p += dir/2 == 0 ? -closeH : closeH;
+    double offset = work ? closeH : openH;
+    p += dir/2 == 0 ? -offset : offset;
     double dP = dir%2 == 0 ? i->dY : i->dX;
-    double q = dir%2 == 0 ? i->x : i->y;
     int sign = dir/2 == 0 ? 1 : -1;
     double lim = dir%2 == 0 ? y : x;
     work = (p+dP*deltaTime)*sign <= lim*sign;
@@ -143,6 +143,11 @@ void OneWayCameraObject::bisectObject(bool horizontal, float splitLocation, floa
         w += offset;
         if (*p+w < splitLocation) w = splitLocation-*p;
     }
+}
+
+void OneWayCameraObject::setPosition(double X, double Y, bool relative){
+    changeX(X+(relative? x : 0));
+    changeY(Y+(relative? y : 0));
 }
 
 void OneWayCameraObject::changeX(double X){
