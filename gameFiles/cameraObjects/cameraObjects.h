@@ -29,7 +29,9 @@ class CameraObject {
         CameraObject();
         virtual ~CameraObject(){};
         virtual void setPosition(double X, double Y, bool relative){};
-        virtual void interactWithPlayer(Instance* p, double deltaTime){};
+        virtual pointDouble interactWithPlayer(double cX, double cY, double W, double H, Instance* p, double deltaTime){
+            return (pointDouble){cX, cY, 0};
+        };
         virtual void modifyCamera(Camera* c, double deltaTime, double W, double H){};
         virtual void bisectObject(bool horizontal, float splitLocation, float offset){};
 };
@@ -40,7 +42,7 @@ class OneWayCameraObject : public CameraObject {
         double w;
         double openH, closeH;
         int dir;
-        bool snap, work;
+        bool snap, work, prevWork;
     public:
         /**
          * Constructor for a One Way Camera Object
@@ -61,7 +63,7 @@ class OneWayCameraObject : public CameraObject {
          * @param snapback Whether or not the camera object tries to snap back to position once the camera restriction is added back in.
          */
         OneWayCameraObject(double X, double Y, double W, double removeH, double addH, int direction, bool snapback);
-        void interactWithPlayer(Instance* p, double deltaTime);
+        pointDouble interactWithPlayer(double cX, double cY, double W, double H, Instance* p, double deltaTime);
         void modifyCamera(Camera* c, double deltaTime, double W, double H);
         void bisectObject(bool horizontal, float splitLocation, float offset);
         void setPosition(double X, double Y, bool relative);

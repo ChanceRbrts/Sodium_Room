@@ -98,6 +98,7 @@ OneWayCameraObject::OneWayCameraObject(double X, double Y, double W, double remo
     x = X*32;
     y = Y*32;
     w = W*32;
+    prevWork = true;
     work = true;
     dir = direction;
     closeH = removeH;
@@ -116,12 +117,17 @@ void OneWayCameraObject::modifyCamera(Camera* c, double deltaTime, double W, dou
     double* dP = dir%2 == 0 ? &(c->dY) : &(c->dX);
     double lim = dir%2 == 0 ? y : x;
     int sign = dir/2 == 0 ? 1 : -1;
+    // 
+    if (!prevWork && snap){
+        
+    }
     if (p*sign <= lim*sign && (p+*dP*deltaTime)*sign > lim*sign){
         *dP = (lim-p)/deltaTime;
     }
 }
 
-void OneWayCameraObject::interactWithPlayer(Instance* i, double deltaTime){
+pointDouble OneWayCameraObject::interactWithPlayer(double cX, double cY, double W, double H, Instance* i, double deltaTime){
+    prevWork = work;
     double p = dir%2 == 0 ? i->y : i->x;
     double offset = work ? closeH : openH;
     p += dir/2 == 0 ? -offset : offset;
@@ -129,6 +135,21 @@ void OneWayCameraObject::interactWithPlayer(Instance* i, double deltaTime){
     int sign = dir/2 == 0 ? 1 : -1;
     double lim = dir%2 == 0 ? y : x;
     work = (p+dP*deltaTime)*sign <= lim*sign;
+    if (!work || !snap) return (pointDouble){cX, cY, 0};
+    double q = dir%2 == 0 ? cX : cY;
+    double myQ = dir%2 == 0 ? x : y;
+    // If the one way camera object can't possibly be on screen, don't do other checks.
+    if (myQ+w < q || myQ > q+(dir%2 == 0 ? W : H)) return (pointDouble){cX, cY, 0};
+    // If the camera still displays the target and there's snapback, set a target.
+    double cP = dir%2 == 0 ? cY : cX;
+    cP += sign > 0 ? (dir%2 == 0 ? H : W) : 0;
+    // If the camera object is no longer visible, don't do anything.
+    if (cP*sign > lim*sign){
+        double camTargetX = dir%2 == 0 ? cX : lim-(sign > 0 ? H : 0);
+        double camTargetY = dir%2 == 0 ? lim-(sign > 0 ? W : 0) : cY;
+        return {camTargetX, camTargetY, 0};
+    }
+    return (pointDouble){cX, cY, 0};
 }
 
 void OneWayCameraObject::bisectObject(bool horizontal, float splitLocation, float offset){

@@ -309,18 +309,22 @@ pointDouble GameLogic::followPlayer(double deltaTime, GLUtil* glu){
    double maxY = 0;
    // You know what? Let's just have a whole bunch of std::mins and std::maxs here to avoid a ton of conditionals.
    if (loadedLevels != nullptr){
+      double W = glu->draw->getWidth();
+      double H = glu->draw->getHeight();
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
          double xOff = l->lev->getXOff();
          double yOff = l->lev->getYOff();
-         double xVal = l->lev->getXOff()+l->lev->w-glu->draw->getWidth();
-         double yVal = l->lev->getYOff()+l->lev->h-glu->draw->getHeight();
+         double xVal = l->lev->getXOff()+l->lev->w-W;
+         double yVal = l->lev->getYOff()+l->lev->h-H;
          minX = std::min(minX, xOff);
          maxX = std::max(maxX, xVal);
          minY = std::min(minY, yOff);
          maxY = std::max(maxY, yVal);
          // While we're here, let's affect the camera objects.
          for (int i = 0; i < l->lev->camObjs.size(); i++){
-            l->lev->camObjs[i]->interactWithPlayer(player, deltaTime);
+            pointDouble newCs = l->lev->camObjs[i]->interactWithPlayer(cX, cY, W, H, player, deltaTime);
+            cX = newCs.x;
+            cY = newCs.y;
          }
       }
    }

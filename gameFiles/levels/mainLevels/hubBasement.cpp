@@ -11,7 +11,7 @@ std::vector<Instance *> HubBasement::makeLevel(std::vector<Instance*> previous){
 
 std::vector<CameraObject *> HubBasement::createCameraObjects(){
     std::vector<CameraObject *> cams;
-    cams.push_back(new OneWayCameraObject(0, 0, 10, 3));
+    cams.push_back(new OneWayCameraObject(0, 1, 8, 3));
     return cams;
 }
 
