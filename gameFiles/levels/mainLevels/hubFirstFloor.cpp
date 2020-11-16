@@ -64,6 +64,7 @@ std::vector<ShaderBox *> HubFirstFloor::createShaderBoxes(GLUtil* glu){
 }
 
 void HubFirstFloor::updateLevel(double deltaTime, Instance* player){
+    if (!createdShaderboxes) return;
     // GameState::setSaveD("fireplace_transparency", 0.5);
     updateLighting(deltaTime);
     GameState::setSaveD("hubFire_dark", dark);

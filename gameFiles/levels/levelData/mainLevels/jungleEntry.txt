@@ -14,16 +14,16 @@ C placeholder_cr_fl
 D placeholder_cr_fr
 
 Layout
-00000000000
-           
-           
-           
-           
-           
-           
-           
-           
-           
+30000000000
+3           
+3           
+3           
+3           
+3           
+3           
+3           
+3           
+8           
            
            
                                           5111116

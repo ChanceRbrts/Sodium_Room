@@ -12,6 +12,7 @@ std::vector<Instance *> HubBasement::makeLevel(std::vector<Instance*> previous){
 std::vector<CameraObject *> HubBasement::createCameraObjects(){
     std::vector<CameraObject *> cams;
     cams.push_back(new OneWayCameraObject(0, 1, 8, 3));
+    cams.push_back(new OneWayCameraObject(24, 1, 8, 1));
     return cams;
 }
 
@@ -28,6 +29,7 @@ std::vector<ShaderBox *> HubBasement::createShaderBoxes(GLUtil* glu){
 }
 
 void HubBasement::updateLevel(double deltaTime, Instance* player){
+    if (!createdShaderboxes) return;
     // The First Floor is always loaded in when this level is loaded in.
     double alpha = GameState::getSaveD("hubFire_transparency");
     double dark = GameState::getSaveD("hubFire_dark");

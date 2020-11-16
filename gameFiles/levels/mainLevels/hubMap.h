@@ -4,6 +4,7 @@
 #include "../map.h"
 #include "hubFirstFloor.h"
 #include "hubBasement.h"
+#include "jungleEntry.h"
 
 class HubMap : public Map {
     public:
