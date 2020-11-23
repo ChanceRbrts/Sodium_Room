@@ -67,6 +67,8 @@ class Level{
       virtual std::vector<Arc*> createArcs();
       /// @return A list of the camera objects in the room.
       virtual std::vector<CameraObject*> createCameraObjects();
+      /// Do some level-specific de-allocation
+      virtual void demakeLevel(){}
       /**
        * This draws the objects in the room
        * @param glu The GLUtil to use for drawing

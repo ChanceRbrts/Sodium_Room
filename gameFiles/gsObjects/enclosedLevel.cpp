@@ -40,7 +40,7 @@ std::vector<int> EnclosedLevel::initLayers(){
 
 void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
     // Check to see if the level should be opened or closed.
-    if (connected) checkOpen();
+    if (connected) checkOpen(player);
     time = fmod(time+deltaTime, 1);
     prevLevelUp = levelUp;
     lastW = openHorizontally ? w : h;
@@ -259,7 +259,12 @@ bool EnclosedLevel::removeMessFromWorld(LevelList* levs, Level* lv, Instance* pl
     return resetLayers;
 }
 
-void EnclosedLevel::checkOpen(){
+void EnclosedLevel::checkOpen(Instance* player){
+    // Make sure the player's not in the level before it closes.
+    if (open && player->x < x+w && player->x+player->w > x 
+             && player->y < y+h && player->y+player->h > y){
+        return;
+    }
     open = false;
     // The level should open when we an arc is colliding with it.
     for (int i = 0; i < arcList.size(); i++){

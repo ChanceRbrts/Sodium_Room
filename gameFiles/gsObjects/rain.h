@@ -48,6 +48,15 @@ class Rain : public Instance {
          * @param mode The default mode of the rain (0->Default, 1->Instant, 2->Upside-Down) 
          */
         Rain(double X, double Y, double W, int mode);
+        /**
+         * Constructor for the Rain (Static)
+         * @param X The left-most coordinate of the rain (In world coords)
+         * @param Y The y-coord of where the rain starts (In world coords)
+         * @param W The width of the rain object (In world coords)
+         * @param H The height of the rain object (In world coords) If this is set, height is not dynamically set.
+         * @param mode The default mode of the rain (0->Default, 1->Instant, 2->Upside-Down) 
+         */
+        Rain(double X, double Y, double W, double H, int mode);
         /// Deconstructor of the Rain
         ~Rain();
         /**

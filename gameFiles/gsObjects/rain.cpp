@@ -31,6 +31,11 @@ Rain::Rain(double X, double Y, double W, int mode) : Instance(X, Y, W, 0){
     shaderCheck = true;
 }
 
+Rain::Rain(double X, double Y, double W, double H, int mode) : Rain(X, Y, W, mode){
+    gravity = false;
+    h = H*32;
+}
+
 Rain::~Rain(){
     vertices.clear();
     colors.clear();
