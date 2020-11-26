@@ -1,6 +1,6 @@
 #include "flashlight_exit.h"
 
-FlashlightExit::FlashlightExit(){
+FlashlightExit::FlashlightExit() : Level(){
     filePath = "jungleLevels/flashlightexit";
     enclosed = new BasicLevel("jungleLevels/flashlightexit_void", 0, 0);
 }

@@ -23,6 +23,7 @@ Level::~Level(){
 }
 
 void Level::setWidthHeight(){
+   if (w > 0 && h > 0) return;
    if (filePath.length() == 0) return;
    // Looks for the solid map here.
    FILE* f = fopen((std::string("gameFiles/levels/levelData/")+filePath+".txt").c_str(), "r");

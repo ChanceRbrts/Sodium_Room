@@ -67,6 +67,7 @@ std::vector<Level *> Map::getUnloadedLevelsInArea(double X, double Y, double W, 
 void Map::addLevel(Level* l, double X, double Y){
    l->moveInMap(X*32, Y*32, false);
    l->moveRoom(X*32, Y*32, false);
+   l->setWidthHeight();
    // pointInt area = (pointInt){(int)(X/100), (int)(Y/100), 0};
    if (levels.size() == 0){
       x = l->getMXOff();

@@ -174,7 +174,8 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          // the arc will ever collide with the instance.
          if (pAr != nullptr) in->i->arcCol(pAr, deltaTime, -1);
          for (int a = 0; a < arcs.size(); a++){
-            in->i->arcCol(arcs[a], deltaTime, a+levID);
+            // levID has already been accounted for with the full arc values, so it doesn't need to be included.
+            in->i->arcCol(arcs[a], deltaTime, a);
          }
          // If an instance can mess with the levels, allow it here.
          if (in->i->canMessWithLevel()){
