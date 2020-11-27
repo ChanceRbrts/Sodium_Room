@@ -181,6 +181,8 @@ pointDouble Level::createLevel(){
 }
 
 void Level::destroyLevel(){
+   // Do level specific stuff.
+   demakeLevel();
    // Deallocate our arcs here.
    for (int i = 0; i < arcs.size(); i++){
       delete arcs[i];

@@ -69,6 +69,7 @@ class OneWayCameraObject : public CameraObject {
         void setPosition(double X, double Y, bool relative);
         void changeX(double X);
         void changeY(double Y);
+        void setPosValues(OneWayCameraObject* o);
 };
 
 #endif

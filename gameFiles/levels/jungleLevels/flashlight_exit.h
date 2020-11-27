@@ -8,6 +8,7 @@ class FlashlightExit : public Level{
     private:
         Level* enclosed;
         std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
+        std::vector<CameraObject *> createCameraObjects();
     public:
         FlashlightExit();
 };

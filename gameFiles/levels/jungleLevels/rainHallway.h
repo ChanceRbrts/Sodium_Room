@@ -28,8 +28,12 @@ class RainHallwayLevel : public Level{
     protected:
         Arc* a;
         Level* enclosed;
+        OneWayCameraObject* floorOne;
+        OneWayCameraObject* floorTwo;
+        bool pastPoint;
         std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
         void demakeLevel();
+        std::vector<CameraObject *> createCameraObjects();
         double move;
         double maxMove;
     public:

@@ -76,7 +76,7 @@ void GameLogic::unloadLevel(LevelList* l){
       Instance* i = in->i;
       if (i->canMessWithLevel()){
          InstanceLev* iL = (InstanceLev*)i;
-         reloadLayers = reloadLayers || iL->removeMessFromWorld(loadedLevels, l->lev, player);
+         reloadLayers = iL->removeMessFromWorld(loadedLevels, l->lev, player) || reloadLayers;
       }
    }
    // Remove stuff from the level.
@@ -180,8 +180,8 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          // If an instance can mess with the levels, allow it here.
          if (in->i->canMessWithLevel()){
             InstanceLev* iL = (InstanceLev *)(in->i);
-            reloadLayers = reloadLayers || 
-               iL->messWithLevels(loadedLevels, lList->lev, lList->map, player);
+            reloadLayers =  
+               iL->messWithLevels(loadedLevels, lList->lev, lList->map, player) || reloadLayers;
          }
          // If an object is destroyed, destroy it.
          if (in->i->canRemove()){
@@ -192,6 +192,8 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          in = next;
       }
       levID += l->arcs.size();
+      // The last loaded level could change depending on some game objects messing with levels.
+      if (lList->next == nullptr) lastLoaded = lList;
       lList = lList->next;
    }
    // Collision

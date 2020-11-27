@@ -117,10 +117,6 @@ void OneWayCameraObject::modifyCamera(Camera* c, double deltaTime, double W, dou
     double* dP = dir%2 == 0 ? &(c->dY) : &(c->dX);
     double lim = dir%2 == 0 ? y : x;
     int sign = dir/2 == 0 ? 1 : -1;
-    // 
-    if (!prevWork && snap){
-        
-    }
     if (p*sign <= lim*sign && (p+*dP*deltaTime)*sign > lim*sign){
         *dP = (lim-p)/deltaTime;
     }
@@ -145,8 +141,8 @@ pointDouble OneWayCameraObject::interactWithPlayer(double cX, double cY, double 
     cP += sign > 0 ? (dir%2 == 0 ? H : W) : 0;
     // If the camera object is no longer visible, don't do anything.
     if (cP*sign > lim*sign){
-        double camTargetX = dir%2 == 0 ? cX : lim-(sign > 0 ? H : 0);
-        double camTargetY = dir%2 == 0 ? lim-(sign > 0 ? W : 0) : cY;
+        double camTargetX = dir%2 == 0 ? cX : lim-(sign > 0 ? W : 0);
+        double camTargetY = dir%2 == 0 ? lim-(sign > 0 ? H : 0) : cY;
         return {camTargetX, camTargetY, 0};
     }
     return (pointDouble){cX, cY, 0};
@@ -158,7 +154,7 @@ void OneWayCameraObject::bisectObject(bool horizontal, float splitLocation, floa
         *p += offset;
         if (*p < splitLocation) *p = splitLocation;
     }
-    if (horizontal == dir%2 && *p < splitLocation && *p+w > splitLocation){
+    if (horizontal != dir%2 && *p < splitLocation && *p+w > splitLocation){
         // In this case, w needs to change.
         // Either that, or the object will need to bisect as well.
         w += offset;
@@ -177,4 +173,10 @@ void OneWayCameraObject::changeX(double X){
 
 void OneWayCameraObject::changeY(double Y){
     y = Y;
+}
+
+void OneWayCameraObject::setPosValues(OneWayCameraObject* o){
+    x = o->x;
+    y = o->y;
+    w = o->w;
 }

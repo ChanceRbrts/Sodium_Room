@@ -38,7 +38,7 @@ std::vector<Level *> Map::getUnloadedLevelsInArea(double X, double Y, double W, 
             double trueX = translateMapCoord(lX, true, false);
             double trueY = translateMapCoord(lY, false, false);
             l->moveRoom(trueX, trueY, false);
-            // Now, see if a bisection needs to hapen.
+            // Now, see if a bisection needs to happen.
             std::map<double, double>::iterator it = horizontalMapGap.begin();
             // Check for a horizontal bisection.
             for (; it != horizontalMapGap.end(); it++){
@@ -121,13 +121,13 @@ bool Map::inBounds(double X, double Y, double W, double H){
 }
 
 double Map::translateMapCoord(double prevCoord, bool horizontal, bool reverse){
-   std::map<double, double> toUse = horizontal ? horizontalMapGap : verticalMapGap;
-   std::map<double, double>::iterator it = toUse.begin();
+   std::map<double, double>* toUse = horizontal ? &horizontalMapGap : &verticalMapGap;
+   std::map<double, double>::iterator it = toUse->begin();
    double coord = prevCoord;
    if (reverse){
       // Get rid of all of the gaps.
       double gapLength = 0;
-      for (; it != toUse.end(); it++){
+      for (; it != toUse->end(); it++){
          // If the point is before the gap, then break here.
          if (prevCoord-gapLength < it->first){
             coord -= gapLength;
@@ -139,7 +139,7 @@ double Map::translateMapCoord(double prevCoord, bool horizontal, bool reverse){
       }
    } else {
       // Just add to the coordinate! 
-      for (; it != toUse.end(); it++){
+      for (; it != toUse->end(); it++){
          // Check to see if the map coordinate is still after 
          // where the gap would be in map coordinates.
          if (it->first > prevCoord) break;
@@ -176,20 +176,25 @@ std::vector<Level *> Map::updateLoadedLevels(double X, double Y, double W, doubl
 }
 
 void Map::addGap(double P, double W, bool horiz, bool relative){
-   std::map<double, double> toUse = horiz ? horizontalMapGap : verticalMapGap;
-   std::map<double, double>::iterator gaps = toUse.begin();
-   
-   for (; gaps != toUse.end(); gaps++){
+   std::map<double, double>* toUse = horiz ? &horizontalMapGap : &verticalMapGap;
+   std::map<double, double>::iterator gaps = toUse->begin();
+   // This is so broken that no gap gets added. (Whoops) Fix this.
+   bool inMap = false;
+   for (; gaps != toUse->end(); gaps++){
       double toCompare = gaps->first;
       if (abs(toCompare-P) < 0.001){
-         toUse[toCompare] = W+(relative?gaps->second:0);
-         // Remove the gap if it's exactly 0.
-         if (W == 0 && !relative){
-            toUse.erase(toCompare);
-         }
+         inMap = true;
+         (*toUse)[toCompare] = W+(relative?gaps->second:0);
+         // Remove the gap if it's less than or equal to 0.
+         if ((*toUse)[toCompare] < 0.001) toUse->erase(toCompare);
+         break;
       } else if (toCompare > P && W != 0){
-         toUse.insert(std::pair<double, double>(P, W));
+         // Don't search the rest of the map; it's useless.
          break;
       }
+   }
+   if (!inMap){
+      // Insert the gap in the map if it's not there.
+      toUse->insert(std::pair<double, double>(P, W));
    }
 }

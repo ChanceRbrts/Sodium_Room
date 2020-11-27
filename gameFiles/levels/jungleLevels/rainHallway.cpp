@@ -61,6 +61,9 @@ RainHallwayLevel::RainHallwayLevel() : Level(){
     a = nullptr;
     move = 0;
     maxMove = 1;
+    floorOne = nullptr;
+    floorTwo = nullptr;
+    pastPoint = false;
 }
 
 std::vector<Instance *> RainHallwayLevel::makeLevel(std::vector<Instance*> previous){
@@ -80,6 +83,17 @@ std::vector<Arc *> RainHallwayLevel::createArcs(){
     return arcs;
 }
 
+std::vector<CameraObject *> RainHallwayLevel::createCameraObjects(){
+    std::vector<CameraObject *> camObjs;
+    floorOne = new OneWayCameraObject(1, 15, 28, 0);
+    floorTwo = new OneWayCameraObject(1, 15, 28, -128, 0, 0, false);
+    pastPoint = false;
+    camObjs.push_back(floorOne);
+    camObjs.push_back(new OneWayCameraObject(10.01, 1, 13, 0, -64, 3, true));
+    camObjs.push_back(new OneWayCameraObject(30, 0, 15, 1));
+    return camObjs;
+}
+
 void RainHallwayLevel::updateLevel(double deltaTime, Instance* player){
     if (a == nullptr) return;
     if (GameState::getSaveB("rainhall_open") && move < maxMove){
@@ -92,8 +106,24 @@ void RainHallwayLevel::updateLevel(double deltaTime, Instance* player){
     double baseDeg = -M_PI*move/maxMove;
     a->setAngle(baseDeg-M_PI/8, baseDeg+M_PI/8);
     if (player->x > getXOff()+w-18*32) GameState::setSaveI("rainhall_open", 0);
+    // Swap out the floor camera object if the player goes within the right edge of the level.
+    bool prevPastPoint = pastPoint;
+    pastPoint = player->x > getXOff()+w-640;
+    if (prevPastPoint != pastPoint){
+        if (pastPoint){
+            camObjs[0] = floorTwo;
+            floorTwo->setPosValues(floorOne);
+        } else {
+            camObjs[1] = floorOne;
+            floorOne->setPosValues(floorTwo);
+        }
+    }
 }
 
 void RainHallwayLevel::demakeLevel(){
     a = nullptr;
+    // Delete the camera object that isn't being used.
+    if (pastPoint) delete floorOne; else delete floorTwo;
+    floorOne = nullptr;
+    floorTwo = nullptr;
 }
