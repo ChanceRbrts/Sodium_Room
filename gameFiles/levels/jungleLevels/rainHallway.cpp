@@ -122,8 +122,11 @@ void RainHallwayLevel::updateLevel(double deltaTime, Instance* player){
 
 void RainHallwayLevel::demakeLevel(){
     a = nullptr;
-    // Delete the camera object that isn't being used.
-    if (pastPoint) delete floorOne; else delete floorTwo;
+    // The camera object at the beginning of the list is the interchangeable object.
+    camObjs.erase(camObjs.begin());
+    // Delete the interchangeable camera objects.
+    delete floorOne; 
+    delete floorTwo;
     floorOne = nullptr;
     floorTwo = nullptr;
 }

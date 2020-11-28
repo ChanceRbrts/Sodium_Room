@@ -19,4 +19,12 @@ class FlashlightUpperArea : public Level{
         FlashlightUpperArea();
 };
 
+class FlashlightLowerArea : public Level{
+    private:
+        std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
+        std::vector<CameraObject *> createCameraObjects();
+    public:
+        FlashlightLowerArea();
+};
+
 #endif

@@ -57,6 +57,10 @@ void Rain::initShaders(GLShaders* gls){
 }
 
 void Rain::update(double deltaTime, bool* keyPressed, bool* keyHeld){
+    // This is done only when moving the rain around at first.
+    if (startY != y){
+        startY = y;
+    }
     loadedIn = true;
     // So collision is handled with dY... So I have to account for that.
     lastDY = dY;
