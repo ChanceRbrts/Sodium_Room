@@ -52,6 +52,7 @@ utils/util.a:utils/fontBook.o utils/texBook.o utils/gameState.o
 gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gameFiles/player.o\
 		gameFiles/instanceCreator.o main/shaderBox.o gameFiles/shaderboxes/longShaderbox.o\
 		gameFiles/textBox.o gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o\
+		gameFiles/gsObjects/lightbox.o\
 		gameFiles/gsObjects/area-jungle/honeyPlatform.o gameFiles/gsObjects/area-jungle/pointLight.o\
 		gameFiles/gsObjects/state-objects/button.o gameFiles/gsObjects/state-objects/keyLock.o\
 		gameFiles/gsObjects/area-hub/fireplace.o gameFiles/gsObjects/area-jungle/pursuer.o\

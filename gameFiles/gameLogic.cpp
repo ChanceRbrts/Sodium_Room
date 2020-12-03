@@ -128,6 +128,7 @@ void GameLogic::modifyLevelsLoaded(GLUtil* glu){
 }
 
 void GameLogic::update(double deltaTime, GLUtil* glu){
+   // printf("%f\n", 1/deltaTime);
    // Key our controls.
    bool* keyPressed = glu->control->getKeyPressed();
    bool* keyHeld = glu->control->getKeyHeld();

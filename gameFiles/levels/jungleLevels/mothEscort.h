@@ -5,7 +5,9 @@
 
 class MothEscort : public Level {
     private: 
+        LightBox* light;
         std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
+        void demakeLevel();
         std::vector<CameraObject *> createCameraObjects();
     public:
         MothEscort();

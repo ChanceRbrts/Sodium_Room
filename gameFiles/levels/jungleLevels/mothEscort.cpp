@@ -5,7 +5,13 @@ MothEscort::MothEscort(){
 }
 
 std::vector<Instance *> MothEscort::makeLevel(std::vector<Instance*> previous){
+    light = new LightBox(20, 11);
+    previous.push_back(light);
     return previous;
+}
+
+void MothEscort::demakeLevel(){
+    light = nullptr;
 }
 
 std::vector<CameraObject *> MothEscort::createCameraObjects(){
@@ -20,5 +26,6 @@ std::vector<Arc *> MothEscort::createArcs(){
     std::vector<Arc *> arcs;
     arcs.push_back(new Arc(7, 2, 2, -M_PI, M_PI, 1.1, 1.1, 1.1, false));
     arcs.push_back(new Arc(5, 13, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
+    arcs.push_back(light->getArc());
     return arcs;
 }
