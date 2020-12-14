@@ -1,11 +1,12 @@
 #include "lightbox.h"
 
 LightBox::LightBox(double X, double Y) : Instance(X, Y, 2, 2){
-    a = new Arc(X+1, Y+1, 0, -M_PI, M_PI, 1.1, 1.1, 1.1, false);
+    a = new Arc(X+1, Y+1, 3, -M_PI, M_PI, 1.1, 1.1, 1.1, false);
+    a->setR(0);
     lit = false;
     solid = false;
     time = 0;
-    maxTime = 1;
+    maxTime = 0.4;
 }
 
 std::vector<int> LightBox::initLayers(){

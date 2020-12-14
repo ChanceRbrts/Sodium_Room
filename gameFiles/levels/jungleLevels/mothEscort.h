@@ -5,6 +5,7 @@
 
 class MothEscort : public Level {
     private: 
+        double time, maxTime;
         LightBox* light;
         std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
         void demakeLevel();
@@ -12,6 +13,7 @@ class MothEscort : public Level {
     public:
         MothEscort();
         std::vector<Arc *> createArcs(); 
+        void updateLevel(double deltaTime, Instance* player);
 };
 
 #endif

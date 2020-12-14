@@ -2,11 +2,14 @@
 
 MothEscort::MothEscort(){
     filePath = "jungleLevels/moth_escort";
+    time = 0;
+    maxTime = 1.25;
 }
 
 std::vector<Instance *> MothEscort::makeLevel(std::vector<Instance*> previous){
     light = new LightBox(20, 11);
     previous.push_back(light);
+    previous.push_back(new Button(16, 11, 2, "mothescort_lightbox", 2));
     return previous;
 }
 
@@ -28,4 +31,16 @@ std::vector<Arc *> MothEscort::createArcs(){
     arcs.push_back(new Arc(5, 13, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
     arcs.push_back(light->getArc());
     return arcs;
+}
+
+void MothEscort::updateLevel(double deltaTime, Instance* player){
+    bool lightPress = GameState::getSaveB("mothescort_lightbox");
+    if (lightPress && time < maxTime){
+        time += deltaTime;
+        if (time > maxTime) time = maxTime;
+    } else if (!lightPress && time > 0){
+        time -= deltaTime;
+        if (time < 0) time = 0;
+    }
+    light->y = getYOff()+352-288*time/maxTime;
 }

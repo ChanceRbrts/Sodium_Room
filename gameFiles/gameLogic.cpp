@@ -137,10 +137,12 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    // Update each of the objects.
    // collObjs is used for collision checking.
    std::vector<Instance *> collObjs;
+   std::vector<bool> collCheck;
    Arc* pAr = nullptr;
    if (player != nullptr){ 
       player->upd(deltaTime, keyPressed, keyHeld, player);
       collObjs.push_back(player);
+      collCheck.push_back(false);
       if (player->getName().compare("Player") == 0){
          PlayerAbility* pA = ((Player *)player)->getAbility();
          if (pA != nullptr) pAr = pA->getArc();
@@ -189,7 +191,10 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
             Instances* toRemove = in;
             reloadLayers = l->removeFromLayers(toRemove) || reloadLayers;
             removeFromList(toRemove, &(l->insts));
-         } else collObjs.push_back(in->i);
+         } else{
+            collObjs.push_back(in->i);
+            collCheck.push_back(false);
+         }
          in = next;
       }
       levID += l->arcs.size();
@@ -202,12 +207,16 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    for (int cCorners = 0; cCorners < 2; cCorners++){
       for (int i = 0; i < collObjs.size(); i++){
          Instance* in = collObjs[i];
-         for (int j = i+1; j < collObjs.size(); j++){
-            in->collision(collObjs[j], deltaTime, cCorners > 0);
+         // No need to check every collision for something that isn't moving.
+         if (in->dX == 0 && in->dY == 0) continue;
+         for (int j = 0; j < collObjs.size(); j++){
+            if (i != j && !collCheck[j]) in->collision(collObjs[j], deltaTime, cCorners > 0);
          }
+         collCheck[i] = true;
       }
    }
    collObjs.clear();
+   collCheck.clear();
    // Finish the Update Loop (Change position here, basically.)
    lList = loadedLevels;
    if (player != nullptr) player->finishUpdate(deltaTime);
