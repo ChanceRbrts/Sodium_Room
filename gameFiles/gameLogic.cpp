@@ -207,8 +207,8 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    for (int cCorners = 0; cCorners < 2; cCorners++){
       for (int i = 0; i < collObjs.size(); i++){
          Instance* in = collObjs[i];
-         // No need to check every collision for something that isn't moving.
-         if (in->dX == 0 && in->dY == 0) continue;
+         // No need to check every collision for something that can't be moved.
+         if (in->isImmovable()) continue;
          for (int j = 0; j < collObjs.size(); j++){
             if (i != j && !collCheck[j]) in->collision(collObjs[j], deltaTime, cCorners > 0);
          }
@@ -492,6 +492,8 @@ void GameLogic::removeFromList(Instances* i, Instances** start){
    if (next != nullptr) next->prev = prev;
    // Make sure we aren't removing the first thing in the linked list.
    if (*start == i) *start = i->next;
-   delete i->i;
+   if (i->i->canDeleteIfRemoved()){
+      delete i->i;
+   }
    delete i;
 }

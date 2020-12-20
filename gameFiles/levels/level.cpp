@@ -198,12 +198,6 @@ void Level::destroyLevel(){
       delete camObjs[i];
    }
    camObjs.clear();
-   // Deallocate our level here.
-   while (insts != nullptr){
-      Instances* del = insts;
-      insts = insts->next;
-      delete del;
-   }
    // Deallocate our drawn layers here.
    std::map<int, Layer *>::iterator layerIt = layers.begin();
    while (layerIt != layers.end()){
@@ -217,6 +211,14 @@ void Level::destroyLevel(){
       layerIt++;
    }
    layers.clear();
+   // Deallocate our level here.
+   while (insts != nullptr){
+      Instances* del = insts;
+      insts = insts->next;
+      // Don't forget to remove the actual instances here!
+      delete del->i;
+      delete del;
+   }
    // In case we remake this level, we should have it remake our shaderboxes.
    createdShaderboxes = false;
    loaded = false;

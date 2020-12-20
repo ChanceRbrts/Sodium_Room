@@ -2,6 +2,7 @@
 #define sdr_jung_mothesc
 
 #include "../level.h"
+#include "../../instancesExt.h"
 
 class MothEscort : public Level {
     private: 

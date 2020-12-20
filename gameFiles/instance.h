@@ -48,17 +48,22 @@ class Instance{
       bool solid;
       /// Should always be false except for the player.
       bool playerRef;
-      /// Whether or not the instance wants to be deleted.
+      /// Whether or not the instance wants to be deleted/removed from the linked list.
       bool remove;
+      /**
+       * Whether or not to delete the instance after removing it from the linked list.
+       * ONLY MAKE THIS FALSE IF THIS INSTANCE IS CONNECTED AND DELETED WITH ANOTHER INSTANCE.
+       */
+      bool deleteIfRemoved;
       /// Whether or not the instance is visible to the screen.
       bool hidden;
       /// Whether or not the instance has the same hitbox as a wall.
       bool stuckToWall;
       /// The dX and dY that the player had before collision checks.
       double collDX, collDY;
-      // The boolean to say whether or not you need the GLUtil class and not just GLDraw and GLShaders for drawing.
+      /// The boolean to say whether or not you need the GLUtil class and not just GLDraw and GLShaders for drawing.
       bool needExtra;
-      // Whether or not we initialized drawing layers.
+      /// Whether or not we initialized drawing layers.
       bool initedLayers;
       /**
        * Some objects need to do solid collisions with only some objects.
@@ -129,8 +134,12 @@ class Instance{
        * @param untint Whether or not to remove the tint of the instance.
        */
       void changeTexture(int tex, bool untint);
-      /// @return Whether or not the instance wants to be deleted.
+      /// @return Whether or not the instance wants to be deleted/removed from the level.
       bool canRemove(){return remove;};
+      /// @return Whether or not to delete the instance if it's removed from the level.
+      bool canDeleteIfRemoved(){return deleteIfRemoved;};
+      /// @return Whether or not an object is immovable.
+      bool isImmovable(){return immovable;};
       /// @return Whether or not the instance is a player.
       bool isPlayer(){return playerRef;};
       // Check the whitelist/blacklist with the other index. 
