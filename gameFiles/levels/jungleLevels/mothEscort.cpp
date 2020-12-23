@@ -10,7 +10,7 @@ std::vector<Instance *> MothEscort::makeLevel(std::vector<Instance*> previous){
     light = new LightBox(20, 11);
     previous.push_back(light);
     previous.push_back(new Button(16, 11, 2, "mothescort_lightbox", 2));
-    previous.push_back(new MothBlocks(5, 1, "jungleLevels/mothblocks.txt"));
+    previous.push_back(new MothBlocks(5, 1, "jungleLevels/mothblocks"));
     return previous;
 }
 
@@ -28,8 +28,8 @@ std::vector<CameraObject *> MothEscort::createCameraObjects(){
 
 std::vector<Arc *> MothEscort::createArcs(){
     std::vector<Arc *> arcs;
-    arcs.push_back(new Arc(6, 3, 2, -M_PI, M_PI, 1.1, 1.1, 1.1, false));
-    arcs.push_back(new Arc(5, 13, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
+    arcs.push_back(new Arc(6.5, 2.5, 2, -M_PI, M_PI, 1.1, 1.1, 1.1, false));
+    arcs.push_back(new Arc(5.5, 12.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
     arcs.push_back(light->getArc());
     return arcs;
 }

@@ -41,6 +41,9 @@ void LightBox::update(double deltaTime, bool* keyPressed, bool* keyHeld){
     }
     // Adjust the arc of the lighter.
     a->setR(96*time/maxTime);
+    if (a->getR() <= 0){
+        a->setR(0.01);
+    }
     a->setPosition(x+w/2, y+h/2);
 }
 

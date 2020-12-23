@@ -13,7 +13,7 @@ struct ArcInfo{
     /// The center of mass of the arc.
     double cX, cY;
     /// The color of the arc.
-    double r, g, b;
+    double r, g, b, a;
     /// Whether or not the arc makes everything monocolor.
     bool monocolor;
     /// Whether or not the arc makes everything act with "default behavior." (Usually false)

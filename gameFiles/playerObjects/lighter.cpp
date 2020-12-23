@@ -61,6 +61,7 @@ void Lighter::update(double deltaTime, bool* keyPressed, bool* keyHeld){
     }
     // Animation
     if (on) lightFlicker(deltaTime);
+    else a->setAlpha(0);
     // The lighter can't last forever, so let's figure out a cooldown system.
     if (on && cooldown < maxCooldown){
         // Start a timer for when we need to dimish the lighter.

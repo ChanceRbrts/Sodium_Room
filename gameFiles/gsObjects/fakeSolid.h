@@ -9,7 +9,7 @@
  * These particles separate when the player is near if the instance is not solid.
  */
 class FakeSolid : public Instance{
-    private:
+    protected:
         /// The vertices that make up the instance.
         std::vector<float> vertices;
         /// The color array for the vertices.

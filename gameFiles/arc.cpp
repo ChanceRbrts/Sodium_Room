@@ -126,5 +126,5 @@ ArcInfo Arc::getInfo(int id){
         cX = p.x;
         cY = p.y;
     }
-    return (ArcInfo){id, cX, cY, rCol, gCol, bCol, monocolor, defBehavior};
+    return (ArcInfo){id, cX, cY, rCol, gCol, bCol, alpha, monocolor, defBehavior};
 }
