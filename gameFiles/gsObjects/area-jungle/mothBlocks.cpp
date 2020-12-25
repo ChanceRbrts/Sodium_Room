@@ -28,12 +28,12 @@ MothBlocks::MothBlocks(double X, double Y, std::string filename) : InstanceLev(X
     Level* l = new Level();
     l->filePath = filename;
     l->createLevel();
-    double wid = l->w;
-    double hei = l->h;
+    w = l->w;
+    h = l->h;
     // Build the fake solid vector based off the solids.
     if (l->insts != nullptr){
         for (Instances* i = l->insts; i != nullptr; i = i->next){
-            MothBlock* fs = new MothBlock(i->i->x/32, i->i->y/32, x/32, y/32);
+            MothBlock* fs = new MothBlock((i->i->x-w/2)/32, (i->i->y-h/2)/32, (x+w/2)/32, (y+h/2)/32);
             if (i->i->texID() != 0){
                 fs->changeTexture(i->i->texID(), true);
             }
@@ -42,8 +42,6 @@ MothBlocks::MothBlocks(double X, double Y, std::string filename) : InstanceLev(X
     }
     // Remove the level that we made to create the fake solids.
     delete l;
-    w = wid;
-    h = hei;
     blocksPlacedDown = false;
     move = 1;
     maxMove = 1;
@@ -87,28 +85,27 @@ void MothBlocks::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
             maxBright = arcList[i].r+arcList[i].g+arcList[i].b;
         }
     }
-    if (arcToFollow == -1){
-        return;
-    }
-    double centerX = arcList[arcToFollow].cX;
-    double centerY = arcList[arcToFollow].cY;
-    // Move the object towards the center of mass of the arc!
-    double diffX = centerX-(x+w/2);
-    double diffY = centerY-(y+h/2);
-    double angle = atan2(diffY, diffX);
-    if (abs(diffX) < 0.001 && abs(diffY) < 0.001){
-        dX = 0;
-        dY = 0;
-    } else {
-        dX = 500*cos(angle);
-        dY = 500*sin(angle);
-        double diffX2 = centerX-(x+w/2+dX*deltaTime);
-        double diffY2 = centerY-(y+h/2+dY*deltaTime);
-        if (diffX2 > 0 != diffX > 0){
-            dX = (x-centerX)/deltaTime;
-        }
-        if (diffY2 > 0 != diffY > 0){
-            dY = (y-centerY)/deltaTime;
+    if (arcToFollow >= 0){
+        double centerX = arcList[arcToFollow].cX;
+        double centerY = arcList[arcToFollow].cY;
+        // Move the object towards the center of mass of the arc!
+        double diffX = centerX-(x+w/2);
+        double diffY = centerY-(y+h/2);
+        double angle = atan2(diffY, diffX);
+        if (abs(diffX) < 0.001 && abs(diffY) < 0.001){
+            dX = 0;
+            dY = 0;
+        } else {
+            dX = 500*cos(angle);
+            dY = 500*sin(angle);
+            double diffX2 = centerX-(x+w/2+dX*deltaTime);
+            double diffY2 = centerY-(y+h/2+dY*deltaTime);
+            if (diffX2 > 0 != diffX > 0){
+                dX = (centerX-(x+w/2))/deltaTime;
+            }
+            if (diffY2 > 0 != diffY > 0){
+                dY = (centerY-(y+h/2))/deltaTime;
+            }
         }
     }
     bool onLighter = arcToFollow > -1 && arcList[arcToFollow].defBehavior;
@@ -148,7 +145,7 @@ bool MothBlocks::messWithLevels(LevelList* levs, Level* lv, Map* map, Instance* 
     PlayerAbility* pA = ((Player *)player)->getAbility();
     if (pA != nullptr){
         ArcInfo pI = pA->getArc()->getInfo(0);
-        if (pI.a > 0){
+        if (pA->getArc()->getR() >= 1 && pI.a > 0){
             // Go towards the player arc to set up.
             double diffX = x+w/2-pI.cX;
             double diffY = y+h/2-pI.cY;
@@ -160,7 +157,7 @@ bool MothBlocks::messWithLevels(LevelList* levs, Level* lv, Map* map, Instance* 
     // Go to the closest arc in the level.
     for (int i = 0; i < lv->arcs.size(); i++){
         ArcInfo a = lv->arcs[i]->getInfo(0);
-        if (lv->arcs[i]->getR() <= 0 || a.a <= 0) continue;
+        if (lv->arcs[i]->getR() <= 1 || a.a <= 0) continue;
         double diffX = x+w/2-a.cX;
         double diffY = y+h/2-a.cY;
         double diff = sqrt(pow(diffX, 2)+pow(diffY, 2));
@@ -170,7 +167,7 @@ bool MothBlocks::messWithLevels(LevelList* levs, Level* lv, Map* map, Instance* 
             yTo = a.cY-h/2;
         }
     }
-    if (minDiff < 0 || minDiff > 640){
+    if (minDiff < 0 || minDiff > 800){
         dX = 0;
         dY = 0;
         return false;
