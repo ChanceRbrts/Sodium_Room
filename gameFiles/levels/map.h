@@ -4,11 +4,15 @@
 #include "level.h"
 
 /**
- * 
+ * Represents a gap in the level that's caused by an enclosed level opening up.
+ * This makes sure that the player can only go through the gap if it's through the enclosed level.
  */
 struct Gap{
+   /// How long the gap is.
    double length;
+   /// The minimum y/x value of the enclosed level.
    double minP;
+   /// The maximum y/x value of the enclosed level 
    double maxP;
 };
 
@@ -58,6 +62,7 @@ class Map{
       static std::map<double, Gap> horizontalMapGap;
       /// Using these as a sorted list of doubles.
       static std::map<double, Gap> verticalMapGap;
+      /// Creates an empty gap map.
       static std::map<double, Gap> emptyMap();
    public:
       /**

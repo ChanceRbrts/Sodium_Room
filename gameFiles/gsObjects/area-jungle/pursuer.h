@@ -4,6 +4,9 @@
 #include "../../instance.h"
 #include "../../player.h"
 
+/**
+ * Work in progress; Will document when I actually implement this.
+ */
 class Pursuer : public Instance {
     private:
         double radius;
