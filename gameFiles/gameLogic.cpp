@@ -136,13 +136,14 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    modifyLevelsLoaded(glu);
    // Update each of the objects.
    // collObjs is used for collision checking.
+   // immovableColl is for solid objects that won't move.
+   // These need to be checked for collision first.
    std::vector<Instance *> collObjs;
-   std::vector<bool> collCheck;
+   std::vector<Instance *> immovableColl;
    Arc* pAr = nullptr;
    if (player != nullptr){ 
       player->upd(deltaTime, keyPressed, keyHeld, player);
       collObjs.push_back(player);
-      collCheck.push_back(false);
       if (player->getName().compare("Player") == 0){
          PlayerAbility* pA = ((Player *)player)->getAbility();
          if (pA != nullptr) pAr = pA->getArc();
@@ -192,8 +193,8 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
             reloadLayers = l->removeFromLayers(toRemove) || reloadLayers;
             removeFromList(toRemove, &(l->insts));
          } else{
-            collObjs.push_back(in->i);
-            collCheck.push_back(false);
+            if (in->i->isImmovable()) immovableColl.push_back(in->i);
+            else collObjs.push_back(in->i);
          }
          in = next;
       }
@@ -207,21 +208,23 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    for (int cCorners = 0; cCorners < 2; cCorners++){
       for (int i = 0; i < collObjs.size(); i++){
          Instance* in = collObjs[i];
-         // No need to check every collision for something that can't be moved.
-         if (in->isImmovable()) continue;
-         for (int j = 0; j < collObjs.size(); j++){
-            if (i != j && !collCheck[j]) in->collision(collObjs[j], deltaTime, cCorners > 0);
+         // Check the immovable solid objects first.
+         for (int j = 0; j < immovableColl.size(); j++){
+            in->collision(immovableColl[j], deltaTime, cCorners > 0);
+         }
+         // Do a collision check!
+         for (int j = i+1; j < collObjs.size(); j++){
+            in->collision(collObjs[j], deltaTime, cCorners > 0);
          }
          // Only do a collision with the map gaps AFTER colliding with the rest of the instances.
          if (cCorners == 1){
             Map::collideGapWithInstance(in, deltaTime, true);
             Map::collideGapWithInstance(in, deltaTime, false);
          }
-         collCheck[i] = true;
       }
    }
    collObjs.clear();
-   collCheck.clear();
+   immovableColl.clear();
    // Finish the Update Loop (Change position here, basically.)
    lList = loadedLevels;
    if (player != nullptr) player->finishUpdate(deltaTime);

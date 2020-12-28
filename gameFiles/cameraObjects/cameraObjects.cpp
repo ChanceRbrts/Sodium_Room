@@ -130,7 +130,7 @@ pointDouble OneWayCameraObject::interactWithPlayer(double cX, double cY, double 
     double dP = dir%2 == 0 ? i->dY : i->dX;
     int sign = dir/2 == 0 ? 1 : -1;
     double lim = dir%2 == 0 ? y : x;
-    work = (p+dP*deltaTime)*sign <= lim*sign;
+    work = (p+dP*deltaTime)*sign < lim*sign;
     if (!work || !snap) return (pointDouble){cX, cY, 0};
     double q = dir%2 == 0 ? cX : cY;
     double myQ = dir%2 == 0 ? x : y;
