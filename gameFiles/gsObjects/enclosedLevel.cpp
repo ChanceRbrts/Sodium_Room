@@ -202,8 +202,8 @@ bool EnclosedLevel::messWithLevels(LevelList* levs, Level* lv, Map* map, Instanc
         }
     }
     // Add the gap to the map
-    if (openHorizontally) map->addGap(trueX, w-lastW, true, true);
-    else map->addGap(trueY, h-lastW, false, true);
+    if (openHorizontally) map->addGap(trueX, w-lastW, true, y, y+h, true);
+    else map->addGap(trueY, h-lastW, false, x, x+w, true);
     // Move the player if applicable.
     if (player != nullptr){
         if (openHorizontally && player->x > x){
@@ -220,8 +220,8 @@ bool EnclosedLevel::messWithLevels(LevelList* levs, Level* lv, Map* map, Instanc
 
 bool EnclosedLevel::removeMessFromWorld(LevelList* levs, Level* lv, Instance* player){
     bool resetLayers = false;
-    if (openHorizontally) m->addGap(trueX, 0, true, false);
-    else m->addGap(trueY, 0, false, false);
+    if (openHorizontally) m->addGap(trueX, 0, true, x, x+w, false);
+    else m->addGap(trueY, 0, false, y, y+h, false);
     if (levs == nullptr) return false;
     LevelList* ll = levs;
     if (player != nullptr){

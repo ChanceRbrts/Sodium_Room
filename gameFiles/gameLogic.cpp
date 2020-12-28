@@ -212,6 +212,11 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          for (int j = 0; j < collObjs.size(); j++){
             if (i != j && !collCheck[j]) in->collision(collObjs[j], deltaTime, cCorners > 0);
          }
+         // Only do a collision with the map gaps AFTER colliding with the rest of the instances.
+         if (cCorners == 1){
+            Map::collideGapWithInstance(in, deltaTime, true);
+            Map::collideGapWithInstance(in, deltaTime, false);
+         }
          collCheck[i] = true;
       }
    }
@@ -439,6 +444,8 @@ void GameLogic::draw(GLUtil* glu){
    for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
       l->lev->drawShaderboxes(glu, player, 2, drawBox);
    }
+   // Finally, draw the gaps in the map to finish it off!
+   Map::drawGaps(glu);
    // We want the HUD to be static on the screen.
    gld->pushCameraMem(0, 0, gld->getWidth(), gld->getHeight());
    if (hud != nullptr && hud->next != nullptr){

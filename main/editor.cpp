@@ -1,3 +1,4 @@
+/*
 #include "../glutils/glUtil.h"
 #include "../editorFiles/editorLogic.h"
 
@@ -36,3 +37,4 @@ int main(int argv, char** argc){
    glu->start();
    return 0;
 }
+*/
