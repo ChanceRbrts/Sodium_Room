@@ -36,6 +36,7 @@ Instance::Instance(double X, double Y, double W, double H){
    needExtra = false;
    stuckToWall = false;
    initedLayers = false;
+   deleteIfRemoved = true;
    name = "Instance";
 }
 

@@ -13,7 +13,7 @@ class LongShaderbox : public ShaderBox{
     public:
         LongShaderbox(double X, double xPoint, double Y, double drawW, double endW, double H, 
             std::string vertShader, std::string fragShader, GLUtil* glu);
-        void moveShaderBox(double X, double Y);
+        void moveShaderBox(double X, double Y, bool movingLevel);
         void resetUniforms();
 };
 

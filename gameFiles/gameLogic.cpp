@@ -13,7 +13,7 @@ GameLogic::GameLogic(){
    arcBoxTwo = (DualSBox){nullptr, nullptr};
    curSMapID = 0;
    /// TODO: Width and height hardcoded; Fix that.
-   loadSuperMap(MAP_TEST, 0, 0, 640, 480);
+   loadSuperMap(MAP_MAIN, 0, 0, 640, 480);
    // loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
 }
 
@@ -76,7 +76,7 @@ void GameLogic::unloadLevel(LevelList* l){
       Instance* i = in->i;
       if (i->canMessWithLevel()){
          InstanceLev* iL = (InstanceLev*)i;
-         reloadLayers = reloadLayers || iL->removeMessFromWorld(loadedLevels, l->lev, player);
+         reloadLayers = iL->removeMessFromWorld(loadedLevels, l->lev, player) || reloadLayers;
       }
    }
    // Remove stuff from the level.
@@ -128,6 +128,7 @@ void GameLogic::modifyLevelsLoaded(GLUtil* glu){
 }
 
 void GameLogic::update(double deltaTime, GLUtil* glu){
+   // printf("%f\n", 1/deltaTime);
    // Key our controls.
    bool* keyPressed = glu->control->getKeyPressed();
    bool* keyHeld = glu->control->getKeyHeld();
@@ -135,7 +136,10 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    modifyLevelsLoaded(glu);
    // Update each of the objects.
    // collObjs is used for collision checking.
+   // immovableColl is for solid objects that won't move.
+   // These need to be checked for collision first.
    std::vector<Instance *> collObjs;
+   std::vector<Instance *> immovableColl;
    Arc* pAr = nullptr;
    if (player != nullptr){ 
       player->upd(deltaTime, keyPressed, keyHeld, player);
@@ -174,23 +178,29 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          // the arc will ever collide with the instance.
          if (pAr != nullptr) in->i->arcCol(pAr, deltaTime, -1);
          for (int a = 0; a < arcs.size(); a++){
-            in->i->arcCol(arcs[a], deltaTime, a+levID);
+            // levID has already been accounted for with the full arc values, so it doesn't need to be included.
+            in->i->arcCol(arcs[a], deltaTime, a);
          }
          // If an instance can mess with the levels, allow it here.
          if (in->i->canMessWithLevel()){
             InstanceLev* iL = (InstanceLev *)(in->i);
-            reloadLayers = reloadLayers || 
-               iL->messWithLevels(loadedLevels, lList->lev, lList->map, player);
+            reloadLayers =  
+               iL->messWithLevels(loadedLevels, lList->lev, lList->map, player) || reloadLayers;
          }
          // If an object is destroyed, destroy it.
          if (in->i->canRemove()){
             Instances* toRemove = in;
             reloadLayers = l->removeFromLayers(toRemove) || reloadLayers;
             removeFromList(toRemove, &(l->insts));
-         } else collObjs.push_back(in->i);
+         } else{
+            if (in->i->isImmovable()) immovableColl.push_back(in->i);
+            else collObjs.push_back(in->i);
+         }
          in = next;
       }
       levID += l->arcs.size();
+      // The last loaded level could change depending on some game objects messing with levels.
+      if (lList->next == nullptr) lastLoaded = lList;
       lList = lList->next;
    }
    // Collision
@@ -198,12 +208,23 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    for (int cCorners = 0; cCorners < 2; cCorners++){
       for (int i = 0; i < collObjs.size(); i++){
          Instance* in = collObjs[i];
+         // Check the immovable solid objects first.
+         for (int j = 0; j < immovableColl.size(); j++){
+            in->collision(immovableColl[j], deltaTime, cCorners > 0);
+         }
+         // Do a collision check!
          for (int j = i+1; j < collObjs.size(); j++){
             in->collision(collObjs[j], deltaTime, cCorners > 0);
+         }
+         // Only do a collision with the map gaps AFTER colliding with the rest of the instances.
+         if (cCorners == 1){
+            Map::collideGapWithInstance(in, deltaTime, true);
+            Map::collideGapWithInstance(in, deltaTime, false);
          }
       }
    }
    collObjs.clear();
+   immovableColl.clear();
    // Finish the Update Loop (Change position here, basically.)
    lList = loadedLevels;
    if (player != nullptr) player->finishUpdate(deltaTime);
@@ -238,7 +259,9 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
          for (int i = 0; i < l->lev->shades.size(); i++){
             if (l->lev->shades[i]->followPlayer()){
-               l->lev->shades[i]->moveShaderBox(player->x+player->w/2, player->y+player->h/2);
+               GLDraw* gld = glu->draw;
+               l->lev->shades[i]->moveShaderBox(gld->camX+gld->getWidth()/2, 
+                                                gld->camY+gld->getHeight()/2, false);
             }
          }
       }
@@ -260,9 +283,20 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
 void GameLogic::updateCamera(double deltaTime, GLUtil* glu){
    // Start by getting the target of the camera.
    if (player != nullptr){
-      pointDouble pD = followPlayer(glu);
-      if (loadedCam) camera->setTarget(pD.x, pD.y);
-      else camera->setPosition(pD.x, pD.y);
+      pointDouble pD = followPlayer(deltaTime, glu);
+      if (!loadedCam){
+         if (loadedLevels != nullptr){
+            for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
+               Level* lev = l->lev;
+               double xO = lev->getXOff();
+               double yO = lev->getYOff();
+               if (pD.x >= xO && pD.x < xO+lev->w && pD.y >= yO && pD.y < yO+lev->h){
+                  camera->setPosition(xO, yO);
+               }
+            }
+         } else camera->setPosition(pD.x, pD.y);
+      }
+      camera->setTarget(pD.x, pD.y);
    }
    camera->startMovement(deltaTime);
    // Then, constrain it to different parts of the levels.
@@ -283,7 +317,7 @@ void GameLogic::updateCamera(double deltaTime, GLUtil* glu){
    glu->draw->camY = camera->getY();
 }
 
-pointDouble GameLogic::followPlayer(GLUtil* glu){
+pointDouble GameLogic::followPlayer(double deltaTime, GLUtil* glu){
    double camX = camera->getX()+((Player*)player)->getCamJumpX();
    double camY = camera->getY()+((Player*)player)->getCamJumpY();
    camera->setPosition(camX, camY);
@@ -296,15 +330,23 @@ pointDouble GameLogic::followPlayer(GLUtil* glu){
    double maxY = 0;
    // You know what? Let's just have a whole bunch of std::mins and std::maxs here to avoid a ton of conditionals.
    if (loadedLevels != nullptr){
+      double W = glu->draw->getWidth();
+      double H = glu->draw->getHeight();
       for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
          double xOff = l->lev->getXOff();
          double yOff = l->lev->getYOff();
-         double xVal = l->lev->getXOff()+l->lev->w-glu->draw->getWidth();
-         double yVal = l->lev->getYOff()+l->lev->h-glu->draw->getHeight();
+         double xVal = l->lev->getXOff()+l->lev->w-W;
+         double yVal = l->lev->getYOff()+l->lev->h-H;
          minX = std::min(minX, xOff);
          maxX = std::max(maxX, xVal);
          minY = std::min(minY, yOff);
          maxY = std::max(maxY, yVal);
+         // While we're here, let's affect the camera objects.
+         for (int i = 0; i < l->lev->camObjs.size(); i++){
+            pointDouble newCs = l->lev->camObjs[i]->interactWithPlayer(cX, cY, W, H, player, deltaTime);
+            cX = newCs.x;
+            cY = newCs.y;
+         }
       }
    }
    cX = std::max(minX, std::min(cX, maxX));
@@ -334,11 +376,11 @@ void GameLogic::draw(GLUtil* glu){
       arcBoxTwo.first = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "drawArc", glu);
       arcBoxTwo.second = new ShaderBox(0, 0, gld->getWidth()/32, gld->getHeight()/32, "", "", glu);
    }
-   drawBox->moveShaderBox(gld->camX, gld->camY);
-   arcBoxOne.first->moveShaderBox(gld->camX, gld->camY);
-   arcBoxOne.second->moveShaderBox(gld->camX, gld->camY);
-   arcBoxTwo.first->moveShaderBox(gld->camX, gld->camY);
-   arcBoxTwo.second->moveShaderBox(gld->camX, gld->camY);
+   drawBox->moveShaderBox(gld->camX, gld->camY, false);
+   arcBoxOne.first->moveShaderBox(gld->camX, gld->camY, false);
+   arcBoxOne.second->moveShaderBox(gld->camX, gld->camY, false);
+   arcBoxTwo.first->moveShaderBox(gld->camX, gld->camY, false);
+   arcBoxTwo.second->moveShaderBox(gld->camX, gld->camY, false);
    if (loadedLevels == nullptr) return;
    drawBox->drawOnBox();
    // Draw the backgrounds first.
@@ -405,6 +447,8 @@ void GameLogic::draw(GLUtil* glu){
    for (LevelList* l = loadedLevels; l != nullptr; l = l->next){
       l->lev->drawShaderboxes(glu, player, 2, drawBox);
    }
+   // Finally, draw the gaps in the map to finish it off!
+   Map::drawGaps(glu);
    // We want the HUD to be static on the screen.
    gld->pushCameraMem(0, 0, gld->getWidth(), gld->getHeight());
    if (hud != nullptr && hud->next != nullptr){
@@ -458,6 +502,8 @@ void GameLogic::removeFromList(Instances* i, Instances** start){
    if (next != nullptr) next->prev = prev;
    // Make sure we aren't removing the first thing in the linked list.
    if (*start == i) *start = i->next;
-   delete i->i;
+   if (i->i->canDeleteIfRemoved()){
+      delete i->i;
+   }
    delete i;
 }

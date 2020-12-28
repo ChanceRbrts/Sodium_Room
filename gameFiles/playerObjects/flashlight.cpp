@@ -58,6 +58,8 @@ void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
             // Otherwise, act as normal.
             a->setAlpha(1);
         }
+    } else {
+        a->setAlpha(0);
     }
     double newAngle = M_PI*7/8*upVal;
     // Figure out which direction the arc is facing.
@@ -66,7 +68,7 @@ void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
 }
 
 void Flashlight::fUpdate(double deltaTime){
-    double trueX = !on ? x-999 : x;
+    double trueX = !on ? x-999999 : x;
     a->setPosition(trueX, y);
 }
 

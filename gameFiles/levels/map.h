@@ -4,6 +4,19 @@
 #include "level.h"
 
 /**
+ * Represents a gap in the level that's caused by an enclosed level opening up.
+ * This makes sure that the player can only go through the gap if it's through the enclosed level.
+ */
+struct Gap{
+   /// How long the gap is.
+   double length;
+   /// The minimum y/x value of the enclosed level.
+   double minP;
+   /// The maximum y/x value of the enclosed level 
+   double maxP;
+};
+
+/**
  * This represents a collection of levels
  * These levels get loaded in and out based on the location of the camera.
  * This could be a part of a super map, which is a map 
@@ -44,12 +57,13 @@ class Map{
        * @param horizontal Whether or not to use the x-axis vs. the y-axis.
        * @param reverse If this is true, this goes from true coordinates to map coordinates.
        */
-      double translateMapCoord(double prevCoord, bool horizontal, bool reverse);
+      static double translateMapCoord(double prevCoord, bool horizontal, bool reverse);
       /// Using these as a sorted list of doubles.
-      static std::map<double, double> horizontalMapGap;
+      static std::map<double, Gap> horizontalMapGap;
       /// Using these as a sorted list of doubles.
-      static std::map<double, double> verticalMapGap;
-      static std::map<double, double> emptyMap();
+      static std::map<double, Gap> verticalMapGap;
+      /// Creates an empty gap map.
+      static std::map<double, Gap> emptyMap();
    public:
       /**
        * Constructor for the map.
@@ -96,9 +110,23 @@ class Map{
        * @param P The point that the gap starts in map coords.
        * @param W The (added) width of the gap
        * @param horiz Whether or not the gap is on the X direction or the Y direction.
+       * @param minPoint The point in the other direction that the gap begins on.
+       * @param maxPoint The point in the other direction that the gap ends on.
        * @param relative Whether or not W is relative to what's already in the gap.
        */
-      static void addGap(double P, double W, bool horiz, bool relative);
+      static void addGap(double P, double W, bool horiz, double minPoint, double maxPoint, bool relative);
+      /**
+       * Handles collisions with gaps in the map with instances.
+       * @param o The instance that could collide with the different maps.
+       * @param horiz Whether or not the gaps are on the X axis or the Y axis.
+       */
+      static void collideGapWithInstance(Instance* o, double deltaTime, bool horiz);
+      /**
+       * Draws the bits of the gaps in the map. that were missing.
+       * @param glu The GLUtils used to draw the gaps in the map.
+       * @param horiz Whether or not the gaps drawn are on the X axis or the Y axis.
+       */
+      static void drawGaps(GLUtil* glu);
 };
 
 #endif

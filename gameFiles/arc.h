@@ -10,8 +10,10 @@
 struct ArcInfo{
     /// The id of the arc.
     int id;
+    /// The center of mass of the arc.
+    double cX, cY;
     /// The color of the arc.
-    double r, g, b;
+    double r, g, b, a;
     /// Whether or not the arc makes everything monocolor.
     bool monocolor;
     /// Whether or not the arc makes everything act with "default behavior." (Usually false)
@@ -25,6 +27,8 @@ class Arc{
     protected:
         /// The center of the arc.
         double x, y;
+        /// The center of mass of the arc.
+        double cX, cY;
         /// The radius of the arc.
         double r;
         /// The color of the arc.
@@ -43,6 +47,8 @@ class Arc{
         bool defBehavior;
         /// Whether or not this arc blends with other arcs.
         bool blendArc;
+        /// Whether or not this arc needs to calculate its center of mass again.
+        bool changeCenter;
     public:
         /**
          * The constructor of the arc.
@@ -129,6 +135,11 @@ class Arc{
          * @param blend Whether or not the arc will blend with other arcs.
          */
         void setBlend(bool blend);
+        /**
+         * Gets the center of mass of the arc.
+         * @return The center of mass of the arc.
+         */
+        pointDouble getCenterOfMass();
 };
 
 #endif

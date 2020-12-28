@@ -40,7 +40,7 @@ std::vector<int> EnclosedLevel::initLayers(){
 
 void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
     // Check to see if the level should be opened or closed.
-    if (connected) checkOpen();
+    if (connected) checkOpen(player);
     time = fmod(time+deltaTime, 1);
     prevLevelUp = levelUp;
     lastW = openHorizontally ? w : h;
@@ -202,8 +202,8 @@ bool EnclosedLevel::messWithLevels(LevelList* levs, Level* lv, Map* map, Instanc
         }
     }
     // Add the gap to the map
-    if (openHorizontally) map->addGap(trueX, w-lastW, true, true);
-    else map->addGap(trueY, h-lastW, false, true);
+    if (openHorizontally) map->addGap(trueX, w-lastW, true, y, y+h, true);
+    else map->addGap(trueY, h-lastW, false, x, x+w, true);
     // Move the player if applicable.
     if (player != nullptr){
         if (openHorizontally && player->x > x){
@@ -220,8 +220,8 @@ bool EnclosedLevel::messWithLevels(LevelList* levs, Level* lv, Map* map, Instanc
 
 bool EnclosedLevel::removeMessFromWorld(LevelList* levs, Level* lv, Instance* player){
     bool resetLayers = false;
-    if (openHorizontally) m->addGap(trueX, 0, true, false);
-    else m->addGap(trueY, 0, false, false);
+    if (openHorizontally) m->addGap(trueX, 0, true, x, x+w, false);
+    else m->addGap(trueY, 0, false, y, y+h, false);
     if (levs == nullptr) return false;
     LevelList* ll = levs;
     if (player != nullptr){
@@ -259,7 +259,12 @@ bool EnclosedLevel::removeMessFromWorld(LevelList* levs, Level* lv, Instance* pl
     return resetLayers;
 }
 
-void EnclosedLevel::checkOpen(){
+void EnclosedLevel::checkOpen(Instance* player){
+    // Make sure the player's not in the level before it closes.
+    if (open && player->x < x+w && player->x+player->w > x 
+             && player->y < y+h && player->y+player->h > y){
+        return;
+    }
     open = false;
     // The level should open when we an arc is colliding with it.
     for (int i = 0; i < arcList.size(); i++){

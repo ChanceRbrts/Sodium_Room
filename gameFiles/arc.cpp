@@ -15,6 +15,10 @@ Arc::Arc(double X, double Y, double R, double D1, double D2, double RC, double G
     monocolor = mono;
     defBehavior = false;
     blendArc = true;
+    pointDouble center = getCenterOfMass();
+    cX = center.x;
+    cY = center.y;
+    changeCenter = false;
 }
 
 Arc::~Arc(){
@@ -23,15 +27,18 @@ Arc::~Arc(){
 void Arc::setPosition(double X, double Y){
     x = X;
     y = Y;
+    changeCenter = true;
 }
 
 void Arc::setR(double R){
     r = (R > maxR) ? maxR : R;
+    changeCenter = true;
 }
 
 void Arc::setAngle(double D1, double D2){
     d1 = fmod(D1+3*M_PI, M_PI*2)-M_PI;
     d2 = fmod(D2+3*M_PI, M_PI*2)-M_PI;
+    changeCenter = true;
 }
 
 void Arc::draw(GLUtil* glu, ShaderBox* mainTex, DualSBox drawTo, int fromTex, int fromAlpha){
@@ -80,7 +87,7 @@ void Arc::draw(GLUtil* glu, ShaderBox* mainTex, DualSBox drawTo, int fromTex, in
     glu->draw->bindTexture(fromAlpha, 2);
     mainTex->draw();
     drawTo.second->drawOutBox();
-    // shade->moveShaderBox(x-maxR*1.1, y-maxR*1.1);
+    // shade->moveShaderBox(x-maxR*1.1, y-maxR*1.1, false);
 }
 
 void Arc::setColor(double R, double G, double B){
@@ -101,6 +108,23 @@ void Arc::setBlend(bool blend){
     blendArc = blend;
 }
 
+pointDouble Arc::getCenterOfMass(){
+    // Get the radians in between D1 and D2 first
+    double D2 = d2 + (d1 >= d2 ? M_PI*2 : 0);
+    double alpha = (D2-d1)/2;
+    double cnAng = (D2+d1)/2;
+    // From Wikipedia's list of centroids
+    double rad = 2*r*sin(alpha)/(3*alpha);
+    changeCenter = false;
+    // Rotate by the average degree and translate by the arc position!
+    return (pointDouble){x+rad*cos(cnAng), y+rad*sin(cnAng), 0};
+}
+
 ArcInfo Arc::getInfo(int id){
-    return (ArcInfo){id, rCol, gCol, bCol, monocolor, defBehavior};
+    if (changeCenter){
+        pointDouble p = getCenterOfMass();
+        cX = p.x;
+        cY = p.y;
+    }
+    return (ArcInfo){id, cX, cY, rCol, gCol, bCol, alpha, monocolor, defBehavior};
 }

@@ -31,6 +31,11 @@ Rain::Rain(double X, double Y, double W, int mode) : Instance(X, Y, W, 0){
     shaderCheck = true;
 }
 
+Rain::Rain(double X, double Y, double W, double H, int mode) : Rain(X, Y, W, mode){
+    gravity = false;
+    h = H*32;
+}
+
 Rain::~Rain(){
     vertices.clear();
     colors.clear();
@@ -52,6 +57,10 @@ void Rain::initShaders(GLShaders* gls){
 }
 
 void Rain::update(double deltaTime, bool* keyPressed, bool* keyHeld){
+    // This is done only when moving the rain around at first.
+    if (startY != y){
+        startY = y;
+    }
     loadedIn = true;
     // So collision is handled with dY... So I have to account for that.
     lastDY = dY;

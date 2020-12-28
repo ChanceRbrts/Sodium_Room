@@ -12,18 +12,27 @@ LongShaderbox::LongShaderbox(double X, double xPoint, double Y, double drawW, do
     uniforms["endX"] = (xScrollEnd-firstX)/glu->draw->getWidth();
 }
 
-void LongShaderbox::moveShaderBox(double X, double Y){
-    if (X > xScrollStart && X < xScrollEnd){
-        x = X-xScrollStart+firstX;
-    } 
+void LongShaderbox::moveShaderBox(double X, double Y, bool movingLevel){
+    if (movingLevel){
+        firstX += X-x;
+        xScrollStart += X-x;
+        xScrollEnd += X-x;
+        x = X;
+        uX = (X-firstX)/glu->draw->getWidth();
+        y = Y;
+        return;
+    }
+    if (X <= xScrollStart) X = xScrollStart;
+    else if (X >= xScrollEnd) X = xScrollEnd; 
+    x = X-xScrollStart+firstX;
     uniforms["x"] = (X-firstX)/glu->draw->getWidth();
     uX = (X-firstX)/glu->draw->getWidth();
     // Move the arc shaderboxes to the current position.
     if (arcOne == nullptr) return;
-    arcOne->moveShaderBox(x, y);
-    arcOneAlpha->moveShaderBox(x, y);
-    arcTwo->moveShaderBox(x, y);
-    arcTwoAlpha->moveShaderBox(x, y);
+    arcOne->moveShaderBox(x, y, movingLevel);
+    arcOneAlpha->moveShaderBox(x, y, movingLevel);
+    arcTwo->moveShaderBox(x, y, movingLevel);
+    arcTwoAlpha->moveShaderBox(x, y, movingLevel);
 }
 
 void LongShaderbox::resetUniforms(){

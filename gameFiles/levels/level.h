@@ -67,6 +67,8 @@ class Level{
       virtual std::vector<Arc*> createArcs();
       /// @return A list of the camera objects in the room.
       virtual std::vector<CameraObject*> createCameraObjects();
+      /// Do some level-specific de-allocation
+      virtual void demakeLevel(){}
       /**
        * This draws the objects in the room
        * @param glu The GLUtil to use for drawing
@@ -83,9 +85,6 @@ class Level{
       bool loaded;
       /// Whether or not the level doesn't get unloaded by the game logic.
       bool global;
-   protected:
-      /// Read the file path to set the width and height of the level.
-      void setWidthHeight();
    public:
       /// The width and height of the level.
       float w, h;
@@ -211,6 +210,8 @@ class Level{
       void setGlobal(bool g);
       /// @return Whether or not the level can't get unloaded by the game logic.
       bool getGlobal();
+      /// Read the file path to set the width and height of the level.
+      void setWidthHeight();
 };
 
 /**

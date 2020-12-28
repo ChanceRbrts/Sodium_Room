@@ -43,7 +43,7 @@ class EnclosedLevel : public InstanceLev {
          */
         void checkShaders(GLShaders* gls);
         /// This checks the arc list to update whether or not the level is opened or closed.
-        void checkOpen();
+        void checkOpen(Instance* player);
     protected:
         /**
          * Initializes the drawing layers.

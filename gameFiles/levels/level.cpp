@@ -23,6 +23,7 @@ Level::~Level(){
 }
 
 void Level::setWidthHeight(){
+   if (w > 0 && h > 0) return;
    if (filePath.length() == 0) return;
    // Looks for the solid map here.
    FILE* f = fopen((std::string("gameFiles/levels/levelData/")+filePath+".txt").c_str(), "r");
@@ -118,7 +119,13 @@ pointDouble Level::createLevel(){
    }
    instances = makeLevel(instances);
    arcs = createArcs();
+   for (int i = 0; i < arcs.size(); i++){
+      arcs[i]->setPosition(arcs[i]->getX()+xOff, arcs[i]->getY()+yOff);
+   }
    camObjs = createCameraObjects();
+   for (int i = 0; i < camObjs.size(); i++){
+      camObjs[i]->setPosition(xOff, yOff, true);
+   }
    while (insts != nullptr){
       Instances* del = insts;
       insts = insts->next;
@@ -174,6 +181,8 @@ pointDouble Level::createLevel(){
 }
 
 void Level::destroyLevel(){
+   // Do level specific stuff.
+   demakeLevel();
    // Deallocate our arcs here.
    for (int i = 0; i < arcs.size(); i++){
       delete arcs[i];
@@ -189,12 +198,6 @@ void Level::destroyLevel(){
       delete camObjs[i];
    }
    camObjs.clear();
-   // Deallocate our level here.
-   while (insts != nullptr){
-      Instances* del = insts;
-      insts = insts->next;
-      delete del;
-   }
    // Deallocate our drawn layers here.
    std::map<int, Layer *>::iterator layerIt = layers.begin();
    while (layerIt != layers.end()){
@@ -208,6 +211,14 @@ void Level::destroyLevel(){
       layerIt++;
    }
    layers.clear();
+   // Deallocate our level here.
+   while (insts != nullptr){
+      Instances* del = insts;
+      insts = insts->next;
+      // Don't forget to remove the actual instances here!
+      delete del->i;
+      delete del;
+   }
    // In case we remake this level, we should have it remake our shaderboxes.
    createdShaderboxes = false;
    loaded = false;
@@ -277,6 +288,9 @@ void Level::drawShaderboxes(GLUtil* glu, Instance* player, int drewArcs, ShaderB
    // Make sure we're drawing our shaderboxes first.
    if (!createdShaderboxes){
       shades = createShaderBoxes(glu);
+      for (int i = 0; i < shades.size(); i++){
+         shades[i]->moveShaderBox(xOff+shades[i]->getX(), yOff+shades[i]->getY(), true);
+      }
       createdShaderboxes = true;
    }
    // Draw everything to each of the shader boxes, then draw that shaderbox.
@@ -445,6 +459,19 @@ void Level::moveRoom(float newXOff, float newYOff, bool relative){
       i->i->x += xOff-oldXOff;
       i->i->y += yOff-oldYOff;
    }
+   // Move all shaders to the level's new offsets.
+   for (int i = 0; i < shades.size(); i++){
+      shades[i]->moveShaderBox(shades[i]->getX()+xOff-oldXOff, shades[i]->getY()+yOff-oldYOff, true);
+   }
+   // Move all arcs to the level's new offsets.
+   for (int i = 0; i < arcs.size(); i++){
+      arcs[i]->setPosition(arcs[i]->getX()+xOff-oldXOff, arcs[i]->getY()+yOff-oldYOff);
+   }
+   // Move all camera objects to the level's new offsets.
+   for (int i = 0; i < camObjs.size(); i++){
+      camObjs[i]->setPosition(xOff-oldXOff, yOff-oldYOff, true);
+   }
+   
 }
 
 void Level::moveInMap(float newXOff, float newYOff, bool relative){

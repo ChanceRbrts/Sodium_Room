@@ -14,10 +14,13 @@
 // Objects that are added in the game that are not part of the engine go here.
 #include "gsObjects/rain.h"
 #include "gsObjects/grate.h"
-#include "gsObjects/area-jungle/honeyPlatform.h"
-#include "gsObjects/area-jungle/pointLight.h"
+#include "gsObjects/lightbox.h"
 #include "gsObjects/state-objects/button.h"
 #include "gsObjects/state-objects/keyLock.h"
+#include "gsObjects/area-hub/fireplace.h"
+#include "gsObjects/area-jungle/honeyPlatform.h"
+#include "gsObjects/area-jungle/pointLight.h"
+#include "gsObjects/area-jungle/pursuer.h"
 
 #include "playerObjects/lighter.h"
 #include "playerObjects/flashlight.h"
