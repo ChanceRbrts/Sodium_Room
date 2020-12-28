@@ -195,6 +195,8 @@ void Map::addGap(double P, double W, bool horiz, double minPoint, double maxPoin
       }
    }
    if (!inMap){
+      // Don't add the gap if the gap is 0.
+      if (W == 0) return;
       // Insert the gap in the map if it's not there.
       toUse->insert(std::pair<double, Gap>(P, (Gap){W, minPoint, maxPoint}));
    }
@@ -222,7 +224,7 @@ void Map::collideGapWithInstance(Instance* o, double deltaTime, bool horiz){
    std::map<double, Gap>::iterator gaps = toUse->begin(); 
    for (; gaps != toUse->end(); gaps++){
       // Make sure the gaps are real gaps and not just floating point errors.
-      if (gaps->second.length-gaps->first < 1){
+      if (gaps->second.length < 1){
          continue;
       }
       double p = translateMapCoord(gaps->first, horiz, true);

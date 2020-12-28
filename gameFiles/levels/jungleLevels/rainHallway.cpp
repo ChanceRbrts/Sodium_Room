@@ -114,7 +114,7 @@ void RainHallwayLevel::updateLevel(double deltaTime, Instance* player){
             camObjs[0] = floorTwo;
             floorTwo->setPosValues(floorOne);
         } else {
-            camObjs[1] = floorOne;
+            camObjs[0] = floorOne;
             floorOne->setPosValues(floorTwo);
         }
     }
@@ -122,11 +122,9 @@ void RainHallwayLevel::updateLevel(double deltaTime, Instance* player){
 
 void RainHallwayLevel::demakeLevel(){
     a = nullptr;
-    // The camera object at the beginning of the list is the interchangeable object.
-    camObjs.erase(camObjs.begin());
     // Delete the interchangeable camera objects.
-    delete floorOne; 
-    delete floorTwo;
+    if (pastPoint) delete floorOne; 
+    else delete floorTwo;
     floorOne = nullptr;
     floorTwo = nullptr;
 }
