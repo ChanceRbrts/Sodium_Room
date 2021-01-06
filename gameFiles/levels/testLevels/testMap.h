@@ -15,6 +15,7 @@
 #define LEV_TEST_HORIZONTALENCLOSED 2
 #define LEV_TEST_JUNGLEOBJECTS 3
 #define LEV_TEST_MULTILIGHTS 4
+#define LEV_TEST_HORIZONTALENCLOSED2 5
 
 /**
  * A map used for testing rooms.

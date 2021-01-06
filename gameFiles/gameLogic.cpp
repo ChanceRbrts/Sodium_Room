@@ -14,7 +14,6 @@ GameLogic::GameLogic(){
    curSMapID = 0;
    /// TODO: Width and height hardcoded; Fix that.
    loadSuperMap(MAP_MAIN, 0, 0, 640, 480);
-   // loadLevel(levels->lev[LEV_TEST_JUNGLEOBJECTS]);
 }
 
 GameLogic::~GameLogic(){
