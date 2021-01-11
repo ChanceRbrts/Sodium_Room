@@ -7,7 +7,8 @@ Flashlight::Flashlight() : PlayerAbility(0, 0, 1, 1){
     angleVel = 0.5;
     // For now, let's assume that the flashlight has a one-time use battery.
     // TODO: Be able to pick other batteries up.
-    batt = new Battery(1, 1, 1, 15);
+    // batt = new Battery(1.25, 1.25, 1.25, 15);
+    batt = new Battery(0.4, 0.4, 0.4, 15);
     maxAnimTime = 1/15.0;
     animTime = maxAnimTime;
 }
@@ -38,6 +39,7 @@ void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
     }
     // Battery Handling Code
     if (on){
+        batt->changeArcColor(a);
         batt->decreaseBattery(deltaTime);
         double newBatt = batt->getBattery();
         if (newBatt <= 0){
@@ -91,4 +93,8 @@ double Battery::getBattery(){
 
 void Battery::decreaseBattery(double deltaTime){
     battery -= deltaTime;
+}
+
+void Battery::changeArcColor(Arc* a){
+    a->setColor(r, g, b);
 }

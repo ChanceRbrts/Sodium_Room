@@ -29,6 +29,10 @@ class Battery {
          * @param deltaTime The amount of time in between the previous frame and this frame.
          */
         void decreaseBattery(double deltaTime);
+        /**
+         * Changes the arc color depending on the battery color.
+         */
+        void changeArcColor(Arc* a);
 };
 
 /**

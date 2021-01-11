@@ -233,6 +233,16 @@ class BasicLevel : public Level {
        * @param pY The player's Y position in world coords.
        */
       BasicLevel(std::string fName, double pX, double pY);
+      /**
+       * Creates a level with just a solid map and a player.
+       * @param fName The filename where the solid map provides.
+       * @param pX The player's X position in world coords.
+       * @param pY The player's Y position in world coords.
+       * @param R The red color of the background.
+       * @param G The green color of the background.
+       * @param B The blue color of the background.
+       */
+      BasicLevel(std::string fName, double pX, double pY, double R, double G, double B);
 };
 
 // Defined in map.h

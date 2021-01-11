@@ -2,7 +2,7 @@
 
 FlashlightExit::FlashlightExit() : Level(){
     filePath = "jungleLevels/flashlightexit";
-    enclosed = new BasicLevel("jungleLevels/flashlightexit_void", 0, 0);
+    enclosed = new BasicLevel("jungleLevels/flashlightexit_void", 0, 0, 0.4, 0.4, 0.4);
 }
 
 std::vector<Instance *> FlashlightExit::makeLevel(std::vector<Instance*> previous){

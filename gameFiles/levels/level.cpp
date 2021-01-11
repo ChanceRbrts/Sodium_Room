@@ -598,10 +598,16 @@ bool Level::removeFromLayers(Instances* in){
    return removedALayer;
 }
 
-BasicLevel::BasicLevel(std::string fName, double pX, double pY) : Level(){
+BasicLevel::BasicLevel(std::string fName, double pX, double pY) : BasicLevel(fName, pX, pY, 0.5, 0.5, 0.5){}
+
+BasicLevel::BasicLevel(std::string fName, double pX, double pY, double R, double G, double B) : Level(){
    filePath = fName;
    playerX = pX;
    playerY = pY;
+   r = R;
+   g = G;
+   b = B;
+   hasBackground = true;
    // The width and height need to be known for level making purposes
    // So generate the level to get the width/height and then destroy it!
    setWidthHeight();

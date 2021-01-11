@@ -27,6 +27,8 @@ EnclosedLevel::EnclosedLevel(double X, double Y, double W, double H, Level* l) :
     needExtra = true;
     connected = true;
     m = nullptr;
+    prevX = x;
+    prevY = y;
 }
 
 EnclosedLevel::~EnclosedLevel(){
@@ -39,6 +41,9 @@ std::vector<int> EnclosedLevel::initLayers(){
 }
 
 void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
+    if (!levelUp && (prevX != x || prevY != y)) lev->moveRoom(x, y, false);
+    prevX = x;
+    prevY = y;
     // Check to see if the level should be opened or closed.
     if (connected) checkOpen(player);
     time = fmod(time+deltaTime, 1);

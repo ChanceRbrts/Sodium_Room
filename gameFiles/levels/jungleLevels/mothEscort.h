@@ -17,4 +17,14 @@ class MothEscort : public Level {
         void updateLevel(double deltaTime, Instance* player);
 };
 
+/// A variation of Moth Escort to use the flashlight instead of the lighter.
+class MothEscort2 : public Level {
+    private:
+        std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
+        std::vector<CameraObject *> createCameraObjects();
+    public:
+        MothEscort2();
+        std::vector<Arc *> createArcs();
+};
+
 #endif
