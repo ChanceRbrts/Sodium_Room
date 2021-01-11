@@ -279,6 +279,8 @@ void Map::drawGaps(GLUtil* glu){
    // Add uniforms for the camera here.
    gls->addUniform(program, "camX", camX);
    gls->addUniform(program, "camY", camY);
+   gls->addUniform(program, "width", glu->draw->getWidth());
+   gls->addUniform(program, "height", glu->draw->getHeight());
    // This could probably be cut down into a shorter function...
    // Draw horizontal map gaps.
    for (; gaps != horizontalMapGap.end(); gaps++){

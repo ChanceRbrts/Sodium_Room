@@ -3,10 +3,11 @@
 TestMap::TestMap(int sID) : Map(sID){
     levels.push_back(new TestRain());
     levels.push_back(new TestFalseBlocks());
-    levels.push_back(new TestHorizontalEnclosed());
+    levels.push_back(new TestHorizontalEnclosed(1));
     levels.push_back(new TestJungleObjects());
     levels.push_back(new TestMultipleLights());
-    addLevel(levels[LEV_TEST_JUNGLEOBJECTS], 0, 0);
+    levels.push_back(new TestHorizontalEnclosed(2));
+    addLevel(levels[LEV_TEST_HORIZONTALENCLOSED2], 0, 0);
 }
 
 TestMap::~TestMap(){

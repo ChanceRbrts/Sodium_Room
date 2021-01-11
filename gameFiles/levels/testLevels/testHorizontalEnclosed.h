@@ -7,10 +7,11 @@
 class TestHorizontalEnclosed : public Level{
     private:
         double prevX;
+        int ver;
         EnclosedLevel* encLev;
         std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
     public:
-        TestHorizontalEnclosed();
+        TestHorizontalEnclosed(int version);
         std::vector<ShaderBox *> createShaderBoxes(GLUtil* glu);
         void updateLevel(double deltaTime, Instance* player);
 };
@@ -19,7 +20,7 @@ class TestHorizontalInner : public Level{
     private:
         std::vector<Instance *>makeLevel(std::vector<Instance*> previous);
     public:
-        TestHorizontalInner();
+        TestHorizontalInner(int version);
 };
 
 #endif
