@@ -17,6 +17,7 @@ std::vector<Instance *> MothEscort::makeLevel(std::vector<Instance*> previous){
     previous.push_back(new Rain(26, 1, 3, 13, 0));
     previous.push_back(new Rain(29, 1, 1, 11, 0));
     previous.push_back(new Rain(30, 1, 1, 9, 0));
+    previous.push_back(new Key(2, 9, "flashlight_piece_2"));
     return previous;
 }
 

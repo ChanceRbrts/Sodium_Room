@@ -187,9 +187,9 @@ void MothBlocks::collided(Instance* o, double deltaTime){
     // Do a quick collision check to see if the object is obstructing the blocks from appearing.
     for (int i = 0; i < fakeSolids.size(); i++){
         Instance* fS = fakeSolids[i];
-        if (fS->x+fS->w < o->x+o->dX*deltaTime && fS->x > o->x+o->w+o->dX*deltaTime &&
-            fS->y+fS->h < o->y+o->dY*deltaTime && fS->y > o->y+o->h+o->dY*deltaTime){
-            blocksPlacedDown = false;
+        if (fS->x+fS->w > o->x+o->dX*deltaTime && fS->x < o->x+o->w+o->dX*deltaTime &&
+            fS->y+fS->h > o->y+o->dY*deltaTime && fS->y < o->y+o->h+o->dY*deltaTime){
+            canPlaceBlocks = false;
         }
     }
 }

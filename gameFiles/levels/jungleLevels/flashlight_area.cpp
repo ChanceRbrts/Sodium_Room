@@ -5,6 +5,7 @@ FlashlightArea::FlashlightArea() : Level(){
 }
 
 std::vector<Instance *> FlashlightArea::makeLevel(std::vector<Instance*> previous){
+    previous.push_back(new FlashlightPodium(9, 13));
     return previous;
 }
 

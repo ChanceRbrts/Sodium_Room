@@ -54,6 +54,7 @@ gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gam
 		gameFiles/textBox.o gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o\
 		gameFiles/gsObjects/lightbox.o\
 		gameFiles/gsObjects/area-jungle/honeyPlatform.o gameFiles/gsObjects/area-jungle/pointLight.o\
+		gameFiles/gsObjects/area-jungle/flashlightPodium.o\
 		gameFiles/gsObjects/state-objects/button.o gameFiles/gsObjects/state-objects/keyLock.o\
 		gameFiles/gsObjects/area-hub/fireplace.o gameFiles/gsObjects/area-jungle/pursuer.o\
 		gameFiles/playerObjects/lighter.o gameFiles/playerObjects/flashlight.o\

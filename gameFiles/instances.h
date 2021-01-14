@@ -20,6 +20,7 @@
 #include "gsObjects/area-hub/fireplace.h"
 #include "gsObjects/area-jungle/honeyPlatform.h"
 #include "gsObjects/area-jungle/pointLight.h"
+#include "gsObjects/area-jungle/flashlightPodium.h"
 #include "gsObjects/area-jungle/pursuer.h"
 
 #include "playerObjects/lighter.h"

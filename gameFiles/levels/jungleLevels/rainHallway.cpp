@@ -73,6 +73,7 @@ std::vector<Instance *> RainHallwayLevel::makeLevel(std::vector<Instance*> previ
     enclosed = new RainHallwayEnclosed();
     previous.push_back(new EnclosedLevel(10, 0, 0, 15, enclosed));
     previous.push_back(new Button(5, 13, 0, "rainhall_open", 2));
+    previous.push_back(new Key(11.5, 4, "flashlight_piece_1"));
     return previous;
 }
 
