@@ -1,7 +1,8 @@
 #include "pursuer.h"
 
 Pursuer::Pursuer(double X, double Y) : Instance(X, Y, 1, 1){
-    radius = 96;   
+    radius = 96;
+    solid = false;
 }
 
 void Pursuer::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){

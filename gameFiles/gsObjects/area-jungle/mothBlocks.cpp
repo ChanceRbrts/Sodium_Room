@@ -4,6 +4,7 @@ MothBlock::MothBlock(double X, double Y, double cX, double cY) : FakeSolid(cX+X,
     deleteIfRemoved = false;
     startX = X*32;
     startY = Y*32;
+    name = "Moth Block";
 }
 
 void MothBlock::detach(){
@@ -48,6 +49,7 @@ MothBlocks::MothBlocks(double X, double Y, std::string filename) : InstanceLev(X
     solid = false;
     canPlaceBlocks = true;
     messWithLevel = true;
+    name = "Moth Blocks";
 }
 
 MothBlocks::~MothBlocks(){
