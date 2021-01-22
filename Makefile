@@ -54,7 +54,7 @@ gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gam
 		gameFiles/textBox.o gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o\
 		gameFiles/gsObjects/lightbox.o\
 		gameFiles/gsObjects/area-jungle/honeyPlatform.o gameFiles/gsObjects/area-jungle/pointLight.o\
-		gameFiles/gsObjects/area-jungle/flashlightPodium.o\
+		gameFiles/gsObjects/area-jungle/flashlightPodium.o gameFiles/gsObjects/area-jungle/bouncingFruit.o\
 		gameFiles/gsObjects/state-objects/button.o gameFiles/gsObjects/state-objects/keyLock.o\
 		gameFiles/gsObjects/area-hub/fireplace.o gameFiles/gsObjects/area-jungle/pursuer.o\
 		gameFiles/playerObjects/lighter.o gameFiles/playerObjects/flashlight.o\
@@ -67,7 +67,7 @@ gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/map.o gameFiles/lev
 		gameFiles/levels/mainLevels/introLevel.o gameFiles/levels/mainLevels/hubFirstFloor.o\
 		gameFiles/levels/mainLevels/hubBasement.o gameFiles/levels/mainLevels/jungleEntry.o\
 		gameFiles/levels/jungleLevels/rainHallway.o gameFiles/levels/jungleLevels/flashlight_area.o\
-		gameFiles/levels/jungleLevels/flashlight_exit.o\
+		gameFiles/levels/jungleLevels/flashlight_exit.o gameFiles/levels/jungleLevels/growFruit.o\
 		gameFiles/levels/testLevels/testMap.o gameFiles/levels/mainLevels/hubMap.o
 	ar -rcs $@ $^
 

@@ -6,6 +6,7 @@
 #include "flashlight_area.h"
 #include "flashlight_exit.h"
 #include "mothEscort.h"
+#include "growFruit.h"
 
 #define LEV_JUNG_RAINHALLWAY 0
 #define LEV_JUNG_FLASHLIGHTEXIT 1
@@ -13,6 +14,7 @@
 #define LEV_JUNG_FLASHLIGHTUPPER 3
 #define LEV_JUNG_FLASHLIGHTLOWER 4
 #define LEV_JUNG_MOTHESCORT 5
+#define LEV_JUNG_GROWFRUIT 6
 
 /**
  * The map that contains levels corresponding to the jungle/garden area.
