@@ -40,6 +40,13 @@ class FakeSolid : public Instance{
          * @param Y The up-most coordinate of the solid (World coords)
          */
         FakeSolid(float X, float Y);
+        /**
+         * Constructor for the FakeSolid
+         * @param X The left-most coordinate of the solid (World coords)
+         * @param Y The up-most coordinate of the solid (World coords)
+         * @param hide Whether or not the swap feature is enabled.
+         */
+        FakeSolid(float X, float Y, bool hide);
         /// Deconstruction of the FakeSolid
         ~FakeSolid();
         /**
@@ -64,11 +71,14 @@ class FakeSolid : public Instance{
  */
 class FakeSolids : public InstanceLev{
     public:
+        bool hide;
+        std::string texMap;
         /**
          * Constructor for FakeSolids
          * @param textureMap The level filepath of the fakesolid.
+         * @param willHide Whether or not the fake solids are hiding something.
          */
-        FakeSolids(std::string textureMap);
+        FakeSolids(double X, double Y, std::string textureMap, bool willHide);
         /**
          * Just makes it so this object wants to be removed.
          * @param deltaTime The time in between the previous frame and this frame. Here for consistency.

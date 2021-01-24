@@ -4,15 +4,15 @@ BouncingFruit::BouncingFruit(double X, double Y, bool goingRight) : Instance(X, 
     r = 0.92;
     g = 0.63;
     b = 0.2;
-    gravity = false;
-    stopped = true;
+    gravity = true;
+    stopped = false;
     facingRight = goingRight;
     speed = 512;
-    dX = speed*facingRight?1:-1;
+    dX = speed*(facingRight?1:-1);
     speedup = 0.5;
     maxSpeedup = 0.5;
     waitTime = 0;
-    maxWaitTime = 0.25;
+    maxWaitTime = 0.125;
     name = "Bouncing Fruit";
 }
 
@@ -22,10 +22,8 @@ void BouncingFruit::update(double deltaTime, bool* keyPressed, bool* keyHeld){
         facingRight = !facingRight;
         speedup = 0;
     }
-    dX = speed*speedup*(facingRight?1:-1);
     if (onGround){
         waitTime += deltaTime;
-        dX *= 0.25;
         if (waitTime > maxWaitTime){
             waitTime = 0;
             dY = -400;
@@ -35,6 +33,7 @@ void BouncingFruit::update(double deltaTime, bool* keyPressed, bool* keyHeld){
         speedup += deltaTime;
         if (speedup > maxSpeedup) speedup = maxSpeedup;
     }
+    dX = speed*speedup*(facingRight?1:-1)*(onGround?0.45:1);
 }
 
 void BouncingFruit::collided(Instance* o, double deltaTime){

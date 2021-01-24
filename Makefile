@@ -67,7 +67,7 @@ gameFiles/levels.a:gameFiles/levels/level.o gameFiles/levels/map.o gameFiles/lev
 		gameFiles/levels/mainLevels/introLevel.o gameFiles/levels/mainLevels/hubFirstFloor.o\
 		gameFiles/levels/mainLevels/hubBasement.o gameFiles/levels/mainLevels/jungleEntry.o\
 		gameFiles/levels/jungleLevels/rainHallway.o gameFiles/levels/jungleLevels/flashlight_area.o\
-		gameFiles/levels/jungleLevels/flashlight_exit.o gameFiles/levels/jungleLevels/growFruit.o\
+		gameFiles/levels/jungleLevels/flashlight_exit.o\
 		gameFiles/levels/testLevels/testMap.o gameFiles/levels/mainLevels/hubMap.o
 	ar -rcs $@ $^
 
@@ -78,6 +78,7 @@ gameFiles/instancesext.a:gameFiles/instancelev.o gameFiles/gsObjects/enclosedLev
 # If a level includes instancesExt.h, it belongs here.
 gameFiles/levelsext.a:gameFiles/levels/levels.o gameFiles/levels/testLevels/testHorizontalEnclosed.o\
 		gameFiles/levels/testLevels/testFalseBlocks.o gameFiles/levels/jungleLevels/mothEscort.o\
+		gameFiles/levels/jungleLevels/growFruit.o\
 		gameFiles/levels/jungleLevels/jungleMap.o
 	ar -rcs $@ $^
 

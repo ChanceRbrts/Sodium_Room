@@ -91,7 +91,7 @@ std::vector<CameraObject *> RainHallwayLevel::createCameraObjects(){
     pastPoint = false;
     camObjs.push_back(floorOne);
     camObjs.push_back(new OneWayCameraObject(10.01, 1, 13, 0, -64, 3, true));
-    camObjs.push_back(new OneWayCameraObject(30, 0, 15, 1));
+    camObjs.push_back(new OneWayCameraObject(30, 0, 12, 1));
     return camObjs;
 }
 

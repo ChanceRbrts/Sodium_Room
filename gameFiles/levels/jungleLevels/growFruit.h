@@ -2,6 +2,7 @@
 #define sdr_jung_growfruit
 
 #include "../level.h"
+#include "../../instancesExt.h"
 
 class GrowFruit : public Level {
     private:

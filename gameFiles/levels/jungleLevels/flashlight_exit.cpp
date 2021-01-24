@@ -12,7 +12,6 @@ std::vector<Instance *> FlashlightExit::makeLevel(std::vector<Instance*> previou
 
 std::vector<CameraObject *> FlashlightExit::createCameraObjects(){
     std::vector<CameraObject *> camObjs;
-    camObjs.push_back(new OneWayCameraObject(1, 15, w/32-2, 0));
-    camObjs.push_back(new OneWayCameraObject(w/32, 1, h/32-2, 1));
+    camObjs.push_back(new OneWayCameraObject(1, 15, w/32-8, 0));
     return camObjs;
 }

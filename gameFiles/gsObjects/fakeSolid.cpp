@@ -1,9 +1,11 @@
 #include "fakeSolid.h"
 #include <math.h>
 
-FakeSolid::FakeSolid(float X, float Y) : Instance(X, Y, 1, 1){
+FakeSolid::FakeSolid(float X, float Y) : FakeSolid(X, Y, false){}
+
+FakeSolid::FakeSolid(float X, float Y, bool hide) : Instance(X, Y, 1, 1){
     immovable = true;
-    solid = true;
+    solid = !hide;
     swap = false;
     loadedShader = false;
     name = "FakeSolid";
@@ -102,15 +104,22 @@ void FakeSolid::draw(GLDraw* gld, GLShaders* gls, int layer){
    }
 }
 
-FakeSolids::FakeSolids(std::string textureMap) : InstanceLev(0, 0, 0, 0){
+FakeSolids::FakeSolids(double X, double Y, std::string textureMap, bool willHide) : InstanceLev(X, Y, 0, 0){
+    hidden = true;
+    hide = willHide;
+    texMap = textureMap;
+}
+
+void FakeSolids::fUpdate(double deltaTime){
+    if (remove) return;
     // Initialize our level.
     Level* l = new Level();
-    l->filePath = textureMap;
+    l->filePath = texMap;
     l->createLevel();
     // Now, replace our solid map with Fake Solids!
     if (l->insts != nullptr){
         for (Instances* i = l->insts; i != nullptr; i = i->next){
-            FakeSolid* fs = new FakeSolid(i->i->x/32, i->i->y/32);
+            FakeSolid* fs = new FakeSolid((x+i->i->x)/32, (y+i->i->y)/32, hide);
             if (i->i->texID() != 0){
                 fs->changeTexture(i->i->texID(), true);
             }
@@ -119,8 +128,5 @@ FakeSolids::FakeSolids(std::string textureMap) : InstanceLev(0, 0, 0, 0){
     }
     // Finally, delete the old level, and this instance has served its purpose.
     delete l;
-}
-
-void FakeSolids::fUpdate(double deltaTime){
     remove = true;
 }
