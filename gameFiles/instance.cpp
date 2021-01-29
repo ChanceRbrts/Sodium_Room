@@ -38,6 +38,7 @@ Instance::Instance(double X, double Y, double W, double H){
    initedLayers = false;
    deleteIfRemoved = true;
    name = "Instance";
+   semiColl = new bool[4]{true, true, true, true};
 }
 
 std::vector<int> Instance::initLayers(){
@@ -52,6 +53,11 @@ std::vector<int> Instance::getLayers(){
       initedLayers = true;
    }
    return layers;
+}
+
+bool Instance::getSemiColl(int edge){
+   if (edge < 0 || edge > 3) return false;
+   return semiColl[edge];
 }
 
 void Instance::doGravity(double deltaTime){
@@ -182,7 +188,8 @@ void Instance::collision(Instance* o, double deltaTime, bool cornerCheck){
    // Make sure everything's solid before continuing.
    if (o->isSolid(name) && isSolid(o->name)){
       // Check If Colliding with Bottom of Other Instance
-      if (y+dY*deltaTime < o->y+o->dY*deltaTime+o->h && y >= o->y+o->h 
+      if (semiColl[COLL_TOP] && o->getSemiColl(COLL_BOTTOM) &&
+            y+dY*deltaTime < o->y+o->dY*deltaTime+o->h && y >= o->y+o->h 
             && x+w+dX*deltaTime*cornerCheck > o->x+o->dX*deltaTime*cornerCheck 
             && x+dX*deltaTime*cornerCheck < o->x+o->w+o->dX*deltaTime*cornerCheck){
          dY = o->immovable?o->dY:0;
@@ -193,7 +200,8 @@ void Instance::collision(Instance* o, double deltaTime, bool cornerCheck){
          o->collided(this, deltaTime);
          o->onGround = true;
       } // Check If Colliding with Top of Other Instance
-      else if (y+h+dY*deltaTime > o->y+o->dY*deltaTime && y+h <= o->y 
+      else if (semiColl[COLL_BOTTOM] && o->getSemiColl(COLL_TOP) &&
+            y+h+dY*deltaTime > o->y+o->dY*deltaTime && y+h <= o->y 
             && x+w+dX*deltaTime*cornerCheck > o->x+o->dX*deltaTime*cornerCheck 
             && x+dX*deltaTime*cornerCheck < o->x+o->w+o->dX*deltaTime*cornerCheck){
          dY = o->immovable?o->dY:0;
@@ -205,7 +213,8 @@ void Instance::collision(Instance* o, double deltaTime, bool cornerCheck){
          onGround = true;
       } 
       // Check If Colliding with Left of Other Instance
-      if (x+dX*deltaTime < o->x+o->dX*deltaTime+o->w && x >= o->x+o->w 
+      if (semiColl[COLL_LEFT] && o->getSemiColl(COLL_RIGHT) &&
+            x+dX*deltaTime < o->x+o->dX*deltaTime+o->w && x >= o->x+o->w 
             && y+h+dY*deltaTime*cornerCheck > o->y+o->dY*deltaTime*cornerCheck 
             && y+dY*deltaTime*cornerCheck < o->y+o->h+o->dY*deltaTime*cornerCheck){
          dX = o->immovable?o->dX:0;
@@ -215,7 +224,8 @@ void Instance::collision(Instance* o, double deltaTime, bool cornerCheck){
          collided(o, deltaTime);
          o->collided(this, deltaTime);
       } // Check If Colliding with Right of Other Instance
-      else if (x+w+dX*deltaTime > o->x+o->dX*deltaTime && x+w <= o->x 
+      else if (semiColl[COLL_RIGHT] && o->getSemiColl(COLL_LEFT) &&
+            x+w+dX*deltaTime > o->x+o->dX*deltaTime && x+w <= o->x 
             && y+h+dY*deltaTime*cornerCheck > o->y+o->dY*deltaTime*cornerCheck 
             && y+dY*deltaTime*cornerCheck < o->y+o->h+o->dY*deltaTime*cornerCheck){
          dX = o->immovable?o->dX:0;

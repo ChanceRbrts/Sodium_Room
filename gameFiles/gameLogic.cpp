@@ -484,9 +484,14 @@ Instances* GameLogic::addToList(Instances* prev, Instance* i){
    Instances* in = new Instances();
    in->i = i;
    in->prev = prev;
+   in->next = nullptr;
    if (prev != nullptr){
-      in->next = prev->next;
+      Instances* next = prev->next;
+      in->next = next;
       prev->next = in;
+      if (next != nullptr){
+         next->prev = in;
+      }
    }
    return in;
 }

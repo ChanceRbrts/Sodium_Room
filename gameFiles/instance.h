@@ -10,6 +10,10 @@
 #define LAYER_NORMAL 0
 #define LAYER_BACK -2147483648
 #define LAYER_FRONT 2147483647
+#define COLL_TOP 0
+#define COLL_BOTTOM 1
+#define COLL_LEFT 2
+#define COLL_RIGHT 3
 
 /**
  * The Object Class; these are the instances that we are updating!
@@ -76,6 +80,7 @@ class Instance{
       std::string name;
       /// The drawing layers that the instance draws to.
       std::vector<int> layers; 
+      bool* semiColl;
       /**
        * Initializes the layers vector to determine what layers to draw to.
        * @return The layers to draw to.
@@ -253,6 +258,12 @@ class Instance{
        * @return The list of layers to draw to.
        */
       std::vector<int> getLayers();
+      /**
+       * (NOTE: Only gets used in cases of solid collision)
+       * @param edge The edge to check on.
+       * @return Whether or not the current edge is actually solid.
+       */
+      bool getSemiColl(int edge);
 };
 
 /// A doubly linked list for Instances, but used in the case of drawing order.
