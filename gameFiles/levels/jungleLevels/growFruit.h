@@ -10,6 +10,7 @@ class GrowFruit : public Level {
         std::vector<CameraObject *> createCameraObjects();
     public:
         GrowFruit();
+        std::vector<Arc *> createArcs();
 };
 
 #endif

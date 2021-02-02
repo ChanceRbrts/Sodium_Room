@@ -1,13 +1,18 @@
 #include "honeyPlatform.h"
 
-HoneyPlatform::HoneyPlatform(double X, double Y, double W, bool horizontal) : Instance(X, Y, 1, 1){
+HoneyPlatform::HoneyPlatform(double X, double Y, double W, bool horizontal) : HoneyPlatform(X, Y, W, 240/255.0, 190/255.0, 30/255.0, horizontal){}
+
+HoneyPlatform::HoneyPlatform(double X, double Y, double W, double R, double G, double B, bool horizontal) : Instance(X, Y, 1, 1){
     w = horizontal ? W*32 : 32;
     h = horizontal ? 32 : W*32;
     // I'll use f0be1e for a honey color.
     // Sticky when walking, not so sticky when climbing, affects jumping quite a bit.
-    r = 240/255.0;
-    g = 190/255.0;
-    b = 30/255.0;
+    r = R;
+    g = G;
+    b = B;
+    startColR = r;
+    startColG = g;
+    startColB = b;
     colorSwapTime = 1.0;
     solid = false;
     stuckToWall = true;
@@ -43,9 +48,9 @@ void HoneyPlatform::update(double deltaTime, bool* keyPressed, bool* keyHeld){
         goalColorG += arcList[i].g;
         goalColorB += arcList[i].b;
         if (arcList[i].defBehavior){
-            goalColorR = 240/255.0*arcList.size();
-            goalColorG = 190/255.0*arcList.size();
-            goalColorB = 30/255.0*arcList.size();
+            goalColorR = startColR*arcList.size();
+            goalColorG = startColG*arcList.size();
+            goalColorB = startColB*arcList.size();
             break;
         }
     }
@@ -70,6 +75,7 @@ void HoneyPlatform::update(double deltaTime, bool* keyPressed, bool* keyHeld){
             toRemove.push_back(insts->first);
             removed = true;
         }
+        double jumpMul = 0.25+1.5*(1.0-g);
         // See if our player is jumping.
         if (insts->first->getName().compare("Player") == 0){
             Player* p = (Player *)(insts->first);
@@ -80,10 +86,18 @@ void HoneyPlatform::update(double deltaTime, bool* keyPressed, bool* keyHeld){
                     toRemove.push_back(insts->first);
                     removed = true;
                 }
-                double jumpMul = 0.25+1.5*(1.0-g);
                 p->changeJumpMultiplier(jumpMul);
                 p->dY = -340*jumpMul;
             }
+        } else if (insts->first->dY < 0){
+            // Testing other objects; 
+            if (!removed){
+                insts->first->changeDVModifier(true, 1, 0, true);
+                insts->first->changeDVModifier(false, 1, 0, true);
+                toRemove.push_back(insts->first);
+                removed = true;
+            }
+            insts->first->dY *= jumpMul;
         }
         collidedInstances[insts->first] = false;
     }

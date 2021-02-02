@@ -7,6 +7,7 @@ class BouncingFruit : public Instance {
     private:
         bool facingRight;
         bool stopped;
+        bool prevFaceBack;
         double speed;
         double speedup, maxSpeedup;
         double waitTime, maxWaitTime;

@@ -6,6 +6,7 @@ BouncingFruit::BouncingFruit(double X, double Y, bool goingRight) : Instance(X, 
     b = 0.2;
     gravity = true;
     stopped = false;
+    prevFaceBack = false;
     facingRight = goingRight;
     speed = 512;
     dX = speed*(facingRight?1:-1);
@@ -17,6 +18,26 @@ BouncingFruit::BouncingFruit(double X, double Y, bool goingRight) : Instance(X, 
 }
 
 void BouncingFruit::update(double deltaTime, bool* keyPressed, bool* keyHeld){
+    double arcR = 0;
+    double arcG = 0;
+    double arcB = 0;
+    bool hasArc = arcList.size() > 0;
+    bool defBehavior = false;
+    for (int i = 0; i < arcList.size(); i++){
+        arcR += arcList[i].r;
+        arcG += arcList[i].g;
+        arcB += arcList[i].b;
+        if (arcList[i].defBehavior){
+            defBehavior = true;
+            continue;
+        }
+    }
+    if (!defBehavior && hasArc){
+        arcR /= arcList.size();
+        arcG /= arcList.size();
+        arcB /= arcList.size();
+    }
+    bool faceBack = !defBehavior && arcR < 0.5 && arcG > 0.5 && arcB < 0.5;
     /// TODO: How do arcs affect the Bouncing Fruit?
     if (dX == 0){
         facingRight = !facingRight;
@@ -29,11 +50,18 @@ void BouncingFruit::update(double deltaTime, bool* keyPressed, bool* keyHeld){
             dY = -400;
         }
     }
-    if (waitTime <= 0 && speedup < maxSpeedup){
+    if (waitTime <= 0 && !faceBack && speedup < maxSpeedup){
         speedup += deltaTime;
         if (speedup > maxSpeedup) speedup = maxSpeedup;
+    } else if (waitTime <= 0 && faceBack && speedup > -maxSpeedup){
+        speedup -= deltaTime*6;
+        if (speedup < -maxSpeedup) speedup = -maxSpeedup;
+    } else if (prevFaceBack && !faceBack && speedup < maxSpeedup){
+        speedup = -speedup;
+        facingRight = !facingRight;
     }
     dX = speed*speedup*(facingRight?1:-1)*(onGround?0.45:1);
+    prevFaceBack = faceBack;
 }
 
 void BouncingFruit::collided(Instance* o, double deltaTime){
@@ -102,8 +130,8 @@ void Leaf::update(double deltaTime, bool* keyPressed, bool* keyHeld){
         dTime -= (leafGrow-maxLeafGrow);
         leafGrow = maxLeafGrow;
     }
-    w += 64*dTime/maxLeafGrow;
-    if (!gRight) x -= 64*dTime/maxLeafGrow;
+    w += 96*dTime/maxLeafGrow;
+    if (!gRight) x -= 96*dTime/maxLeafGrow;
 }
 
 Soil::Soil(double X, double Y, double W) : Instance(X, Y, W, 1){

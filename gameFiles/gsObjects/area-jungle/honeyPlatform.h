@@ -14,6 +14,8 @@ class HoneyPlatform : public Instance {
     private:
         /// The amount of time it takes for the color of the object to go from 0 to 1
         double colorSwapTime;
+        /// The starting color of the honey from 0 to 1
+        double startColR, startColG, startColB;
         /**
          * Slowly move a color over to another value.
          * @param vMove The color to move to.
@@ -34,6 +36,17 @@ class HoneyPlatform : public Instance {
          * @param horizontal Whether or not W affects the width or height of the platform.
          */
         HoneyPlatform(double X, double Y, double W, bool horizontal);
+        /**
+         * Constructor for the honey platform.
+         * @param X The left-most position of the honey platform. (In world coords)
+         * @param Y The up-most position of the honey platform. (In world coords)
+         * @param W The width/height of the honey platform. (In world coords) (The other is 1 world coord.)
+         * @param R The default red color of the honey from 0 to 1.
+         * @param G The default green color of the honey from 0 to 1.
+         * @param B The default blue color of the honey from 0 to 1.
+         * @param horizontal Whether or not W affects the width or height of the platform.
+         */
+        HoneyPlatform(double X, double Y, double W, double R, double G, double B, bool horizontal);
         // void draw(GLDraw* gld, GLShaders* gls, int layer);
         /**
          * The update function for the honey platform.
