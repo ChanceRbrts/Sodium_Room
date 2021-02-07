@@ -40,7 +40,7 @@ endif
 .c.o:
 	gcc -o $@ -c $(CFLG) $<
 .cpp.o:
-	g++ -std=c++11 -o $@ -c $(CFLG) $<
+	g++ -std=c++17 -o $@ -c $(CFLG) $<
 
 glutils/glutil.a:glutils/glConstants.o glutils/$(GLB)/glControls.o glutils/$(GLB)/glTextureGen.o\
 		glutils/$(GLB)/glDraw.o glutils/$(GLB)/glShaders.o glutils/$(GLB)/glUtil.o
@@ -78,7 +78,7 @@ gameFiles/instancesext.a:gameFiles/instancelev.o gameFiles/gsObjects/enclosedLev
 # If a level includes instancesExt.h, it belongs here.
 gameFiles/levelsext.a:gameFiles/levels/levels.o gameFiles/levels/testLevels/testHorizontalEnclosed.o\
 		gameFiles/levels/testLevels/testFalseBlocks.o gameFiles/levels/jungleLevels/mothEscort.o\
-		gameFiles/levels/jungleLevels/growFruit.o\
+		gameFiles/levels/jungleLevels/mothEscortHoney.o gameFiles/levels/jungleLevels/growFruit.o\
 		gameFiles/levels/jungleLevels/jungleMap.o
 	ar -rcs $@ $^
 

@@ -8,4 +8,5 @@ JungleMap::JungleMap(int sID) : Map(sID){
     addLevel(new FlashlightLowerArea(), -27, 30);
     addLevel(new MothEscort(), -60, 30);
     addLevel(new GrowFruit(), 25, 15);
+    addLevel(new MothEscortHoney(), -33, 45);
 }

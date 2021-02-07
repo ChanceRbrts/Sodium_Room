@@ -8,7 +8,8 @@
 
 #define DEFAULT 0
 #define TEXTURES 1
-#define LAYOUT 2
+#define COLLMAP 2
+#define LAYOUT 3
 
 class Level;
 

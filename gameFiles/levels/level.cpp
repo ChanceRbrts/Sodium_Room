@@ -44,9 +44,7 @@ void Level::setWidthHeight(){
             if (line.length() > wid) wid = line.length();
             yVal += 1;
          }
-         if (line.find("Textures") != std::string::npos){
-            mode = TEXTURES;
-         } else if (line.find("Layout") != std::string::npos){
+         if (line.find("Layout") != std::string::npos){
             mode = LAYOUT;
          }
          line = "";
@@ -74,25 +72,37 @@ pointDouble Level::createLevel(){
       int yVal = 0;
       int wid = 0;
       std::map<char, int> textureMap;
+      std::map<char, int> collisionMap;
       // Parse through our solid map.
       while (!feof(f)){
          char c = fgetc(f);
          if (c == '\n' || feof(f)){
-            if (mode == TEXTURES){
-               // Parsed as C Picture
-               if (line.length() > 2 && line[1] == ' '){
-                  char rep = line[0];
-                  // Get the integer corresponding to the texture (Adding it in if necessary.)
-                  std::string texPath = "resources/solids/"+line.substr(2)+".png";
-                  int pTex = TexBook::loadTexture(texPath);
-                  int tex = pTex > -1 ? pTex : TexBook::loadTexture(texPath);
-                  if (tex > -1) textureMap.insert({rep, tex});
+            if (mode == TEXTURES && line.length() > 2 && line[1] == ' '){
+               char rep = line[0];
+               // Get the integer corresponding to the texture (Adding it in if necessary.)
+               std::string texPath = "resources/solids/"+line.substr(2)+".png";
+               int pTex = TexBook::loadTexture(texPath);
+               int tex = pTex > -1 ? pTex : TexBook::loadTexture(texPath);
+               if (tex > -1) textureMap.insert({rep, tex});
+            } else if (mode == COLLMAP && line.length() > 2 && line[1] == ' '){
+               // Set up so it has X for collision points.
+               char rep = line[0];
+               int collData = 0;
+               for (int i = 2; i < line.length(); i++){
+                  if (line[i] == 'X'){
+                     collData += 1<<(i-2);
+                  }
                }
+               collisionMap.insert({rep, collData});
             } else if (mode == LAYOUT){
                // Look for the layout of the build.
                for (int i = 0; i < line.length(); i++){
                   if (line[i] != ' '){
-                     Solid* s = new Solid(i, yVal);
+                     int collTex = 15;
+                     if (collisionMap.find(line[i]) != collisionMap.end()){
+                        collTex = collisionMap.at(line[i]);
+                     }
+                     Solid* s = new Solid(i, yVal, collTex);
                      // Add textures to this solid object. (If they exist.)
                      if (textureMap.find(line[i]) != textureMap.end()){
                         s->changeTexture(textureMap.at(line[i]), true);
@@ -103,9 +113,11 @@ pointDouble Level::createLevel(){
                if (line.length() > wid) wid = line.length();
                yVal += 1;
             }
-            if (line.find("Textures") != std::string::npos){
+            if (mode < TEXTURES && line.find("Textures") != std::string::npos){
                mode = TEXTURES;
-            } else if (line.find("Layout") != std::string::npos){
+            } else if (mode < COLLMAP && line.find("Collision Map (C UDLR)") != std::string::npos){
+               mode = COLLMAP;
+            } else if (mode < LAYOUT && line.find("Layout") != std::string::npos){
                mode = LAYOUT;
             }
             line = "";
@@ -526,10 +538,10 @@ void Level::bisectLevel(bool horizontal, float splitLocation, float offset, Inst
 
 }
 
-std::map<int, std::vector<Layer *>> Level::getLayers(std::map<int, std::vector<Layer *>> prevLayers){
+std::map<int, std::vector<Layer *> > Level::getLayers(std::map<int, std::vector<Layer *>> prevLayers){
    std::map<int, Layer *>::iterator layerIt = layers.begin();
    for (; layerIt != layers.end(); layerIt++){
-      std::map<int, std::vector<Layer *>>::iterator it = prevLayers.find(layerIt->first);
+      std::map<int, std::vector<Layer *> >::iterator it = prevLayers.find(layerIt->first);
       if (it == prevLayers.end()){
          std::vector<Layer *> l;
          l.push_back(layerIt->second);

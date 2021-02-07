@@ -6,6 +6,7 @@ GrowFruit::GrowFruit() : Level(){
 
 std::vector<Instance *> GrowFruit::makeLevel(std::vector<Instance*> previous){
     previous.push_back(new Soil(5, 18, 4));
+    previous.push_back(new Key(15, 4, "flashlight_piece_3"));
     previous.push_back(new FakeSolids(24, 0, "jungleLevels/growFruit_hidden", true));
     previous.push_back(new BouncingFruit(24, 16, false));
     previous.push_back(new HoneyPlatform(10, 18, 4, 1, 0, 0, true));
