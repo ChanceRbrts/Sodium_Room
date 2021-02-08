@@ -10,7 +10,7 @@ std::vector<Instance *> MothEscort::makeLevel(std::vector<Instance*> previous){
     light = new LightBox(20, 11);
     previous.push_back(light);
     previous.push_back(new Button(16, 11, 2, "mothescort_lightbox", 2));
-    previous.push_back(new MothBlocks(5, 1, "jungleLevels/mothblocks"));
+    previous.push_back(new MothBlocks(5, 1, "jungleLevels/mothblocks_leftstair"));
     for (int i = 0; i < 4; i++){
         previous.push_back(new Rain(22+i, 1, 1, 4+i, 0));
     }
