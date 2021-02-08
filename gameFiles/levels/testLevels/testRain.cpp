@@ -7,7 +7,7 @@
 TestRain::TestRain(){
    w = 20*32;
    h = 15*32;
-   filePath = "testRain";
+   filePath = "testLevels/testRain";
    time = 0;
    maxTime = 4;
 }

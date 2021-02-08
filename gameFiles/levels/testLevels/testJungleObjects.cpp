@@ -1,7 +1,7 @@
 #include "testJungleObjects.h"
 
 TestJungleObjects::TestJungleObjects(){
-    filePath = "testJungleObjects";
+    filePath = "testLevels/testJungleObjects";
     sineWaveCounter = 0;
     colorPicker = 0;
     a1 = nullptr;

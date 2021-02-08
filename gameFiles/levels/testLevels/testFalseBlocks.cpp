@@ -7,7 +7,7 @@
 TestFalseBlocks::TestFalseBlocks(){
    w = 20;
    h = 15;
-   filePath = "testFalseBlocks";
+   filePath = "testLevels/testFalseBlocks";
 }
 
 std::vector<ShaderBox *> TestFalseBlocks::createShaderBoxes(GLUtil* glu){
@@ -17,7 +17,7 @@ std::vector<ShaderBox *> TestFalseBlocks::createShaderBoxes(GLUtil* glu){
 
 std::vector<Instance *> TestFalseBlocks::makeLevel(std::vector<Instance*> previous){
    previous.push_back(new Player(10, 13));
-   previous.push_back(new FakeSolids(0, 0, "testFalseBlocks2", false));
+   previous.push_back(new FakeSolids(0, 0, "testLevels/testFalseBlocks2", false));
    /*for (int i = 9; i < 19; i++){
       for (int j = 7; j < 9; j++){
          previous.push_back(new FakeSolid(i, j));
