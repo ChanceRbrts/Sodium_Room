@@ -1,8 +1,8 @@
 #ifndef dos_obj_textbox
 #define dos_obj_textbox
 
-#include "instance.h"
-#include "../utils/fontBook.h"
+#include "../instance.h"
+#include "../../utils/fontBook.h"
 
 /**
  * Draws a character of text.

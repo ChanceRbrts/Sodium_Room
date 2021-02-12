@@ -9,7 +9,7 @@
 #include "player.h"
 #include "instanceCreator.h"
 // HUD
-#include "textBox.h"
+#include "hudObjects/textBox.h"
 
 // Objects that are added in the game that are not part of the engine go here.
 #include "gsObjects/rain.h"

@@ -38,7 +38,6 @@ void BouncingFruit::update(double deltaTime, bool* keyPressed, bool* keyHeld){
         arcB /= arcList.size();
     }
     bool faceBack = !defBehavior && arcR < 0.5 && arcG > 0.5 && arcB < 0.5;
-    /// TODO: How do arcs affect the Bouncing Fruit?
     if (dX == 0){
         facingRight = !facingRight;
         speedup = 0;
@@ -66,7 +65,7 @@ void BouncingFruit::update(double deltaTime, bool* keyPressed, bool* keyHeld){
 
 void BouncingFruit::collided(Instance* o, double deltaTime){
     if (o->getName().compare("Soil") != 0 || remove) return;
-    /// TODO: Plant the fruit, create a flower of some sort with a semi-transparent platform or something.
+    /// Plant the fruit, creating a flower.
     if (x >= o->x && x+w <= o->x+o->w && y < o->y){
         toAdd.push_back(new GiantFlower(x/32-0.5, (o->y/32)-14));
         remove = true;

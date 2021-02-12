@@ -51,7 +51,7 @@ utils/util.a:utils/fontBook.o utils/texBook.o utils/gameState.o
 
 gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gameFiles/player.o\
 		gameFiles/instanceCreator.o main/shaderBox.o gameFiles/shaderboxes/longShaderbox.o\
-		gameFiles/textBox.o gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o\
+		gameFiles/hudObjects/textBox.o gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o\
 		gameFiles/gsObjects/lightbox.o\
 		gameFiles/gsObjects/area-jungle/honeyPlatform.o gameFiles/gsObjects/area-jungle/pointLight.o\
 		gameFiles/gsObjects/area-jungle/flashlightPodium.o gameFiles/gsObjects/area-jungle/bouncingFruit.o\
@@ -97,6 +97,7 @@ clean:
 	cd glutils/$(GLB) && rm -f *.o *.a
 	cd gameFiles && rm -f *.o *.a
 	cd gameFiles/playerObjects && rm -f *.o *.a
+	cd gameFiles/hudObjects && rm -f *.o *.a
 	cd gameFiles/gsObjects && rm -f *.o *.a
 	cd gameFiles/gsObjects/area-jungle && rm -f *.o *.a
 	cd gameFiles/gsObjects/area-hub && rm -f *.o *.a

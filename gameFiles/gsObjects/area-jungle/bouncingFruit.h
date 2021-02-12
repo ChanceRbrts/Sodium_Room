@@ -18,7 +18,6 @@ class BouncingFruit : public Instance {
 };
 
 class GiantFlower : public Instance {
-    /// TODO: All of this, honestly.
     private:
         float makeLeaf;
         std::vector<int> initLayers();
