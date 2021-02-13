@@ -39,9 +39,6 @@ void GameLogic::loadLevel(Level* l, Map* m){
    pointDouble playerLoc = l->createLevel();
    if (player == nullptr){
       player = new Player(playerLoc.x/32, playerLoc.y/32);
-      /// TODO: Find a better place for this.
-      ((Player *)player)->giveAbility(new Lighter());
-      // ((Player *)player)->giveAbility(new Flashlight());
    }
    LevelList* lev = new LevelList();
    lev->lev = l;
@@ -55,9 +52,16 @@ void GameLogic::loadLevel(Level* l, Map* m){
       lev->prev = lastLoaded;
    }
    lastLoaded = lev;
-   hud = new Instances();
-   lastHud = hud;
-   reloadLayers = true;
+   if (hud == nullptr){
+      hud = new Instances();
+      AbilityHandler* aHandler = new AbilityHandler();
+      /// TODO: Find a better home for this.
+      aHandler->addAbility(new Lighter());
+      aHandler->addAbility(new Flashlight());
+      lastHud = hud;
+      lastHud = addToList(lastHud, aHandler);
+      reloadLayers = true;
+   }
    /*
    // Start of Removal.
    // This is just a test for a text box.
@@ -268,7 +272,7 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
    // Update the HUD
    if (hud != nullptr && hud->next != nullptr){
       for (Instances* i = hud->next; i != nullptr; i = i->next){
-         i->i->update(deltaTime, keyPressed, keyHeld);
+         i->i->update(deltaTime, keyPressed, keyHeld, player);
          if (i->i->canRemove()){
             i = i->prev;
             removeFromList(i->next, &hud);

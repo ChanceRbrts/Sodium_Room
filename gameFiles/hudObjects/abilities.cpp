@@ -1,19 +1,42 @@
 #include "abilities.h"
 
-HUDAbilities::HUDAbilities() : Instance(0, 0, 0, 0){
+AbilityHandler::AbilityHandler() : Instance(0, 0, 0, 0){
     head = nullptr;
     tail = nullptr;
     selected = nullptr;
+    added = false;
 }
 
-void HUDAbilities::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
+void AbilityHandler::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
+    bool changedSelected = false;
+    if (added){
+        selected = tail;
+        changedSelected = true;
+        added = false;
+    }
     if (keyPressed[BUTTON_SELECT] && selected != nullptr){
         selected = selected->next;
         if (selected == nullptr) selected = head;
-        else ((Player *)player)->giveAbility((PlayerAbility*)(selected->i));
+        changedSelected = true;
+    }
+    if (selected != nullptr && changedSelected){
+        ((Player *)player)->giveAbility((PlayerAbility*)(selected->i));
     }
 }
 
-void HUDAbilities::addAbility(PlayerAbility* ability){
-    /// TODO: All of this.
+void AbilityHandler::draw(GLDraw* gld, GLShaders* gls, int layer){}
+
+void AbilityHandler::addAbility(PlayerAbility* ability){
+    /// Adds the new ability to the end of the list.
+    Instances* newAbility = new Instances();
+    newAbility->i = ability;
+    newAbility->prev = tail;
+    if (head != nullptr){
+        tail->next = newAbility;
+    } else{
+        head = newAbility;
+        tail = newAbility;
+    }
+    tail = newAbility;
+    added = true;
 }

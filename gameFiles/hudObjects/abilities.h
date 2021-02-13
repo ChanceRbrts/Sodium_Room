@@ -4,13 +4,14 @@
 #include "../instance.h"
 #include "../player.h"
 
-class HUDAbilities : public Instance {
+class AbilityHandler : public Instance {
     private:
         Instances* head;
         Instances* tail;
         Instances* selected;
+        bool added;
     public:
-        HUDAbilities();
+        AbilityHandler();
         void update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player);
         void draw(GLDraw* gld, GLShaders* gls, int layer);
         void addAbility(PlayerAbility* ability);

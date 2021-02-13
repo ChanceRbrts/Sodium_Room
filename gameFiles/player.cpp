@@ -110,6 +110,7 @@ void Player::changeJumpMultiplier(double j){
 }
 
 void Player::collided(Instance* o, double deltaTime){
+   if (curAbility == nullptr) return;
    curAbility->collided(o, deltaTime);
 }
 

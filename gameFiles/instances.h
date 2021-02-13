@@ -10,6 +10,7 @@
 #include "instanceCreator.h"
 // HUD
 #include "hudObjects/textBox.h"
+#include "hudObjects/abilities.h"
 
 // Objects that are added in the game that are not part of the engine go here.
 #include "gsObjects/rain.h"
