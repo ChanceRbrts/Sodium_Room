@@ -24,7 +24,10 @@ void AbilityHandler::update(double deltaTime, bool* keyPressed, bool* keyHeld, I
     }
 }
 
-void AbilityHandler::draw(GLDraw* gld, GLShaders* gls, int layer){}
+void AbilityHandler::draw(GLDraw* gld, GLShaders* gls, int layer){
+    // Do regular HUD drawing...
+    ((PlayerAbility*)(selected->i))->drawHUD(gld, gls);
+}
 
 void AbilityHandler::addAbility(PlayerAbility* ability){
     /// Adds the new ability to the end of the list.

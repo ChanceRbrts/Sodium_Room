@@ -133,7 +133,6 @@ double Player::getCamJumpY(){
 
 
 PlayerAbility* Player::getAbility(){
-
    return curAbility;
 }
 

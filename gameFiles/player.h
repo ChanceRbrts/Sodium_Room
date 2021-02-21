@@ -24,6 +24,7 @@ class PlayerAbility : public Instance{
        * @return An arc that's associated with the current ability.
        */
       Arc* getArc(){ return a; };
+      virtual void drawHUD(GLDraw* gld, GLShaders* gls){};
 };
 
 /**

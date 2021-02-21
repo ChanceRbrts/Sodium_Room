@@ -54,14 +54,17 @@ void GameLogic::loadLevel(Level* l, Map* m){
    lastLoaded = lev;
    if (hud == nullptr){
       hud = new Instances();
+      hud->next = nullptr;
+      hud->prev = nullptr;
+      hud->i = nullptr;
       AbilityHandler* aHandler = new AbilityHandler();
       /// TODO: Find a better home for this.
       aHandler->addAbility(new Lighter());
       aHandler->addAbility(new Flashlight());
       lastHud = hud;
       lastHud = addToList(lastHud, aHandler);
-      reloadLayers = true;
    }
+   reloadLayers = true;
    /*
    // Start of Removal.
    // This is just a test for a text box.

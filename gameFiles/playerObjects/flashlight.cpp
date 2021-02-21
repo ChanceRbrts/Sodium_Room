@@ -11,6 +11,7 @@ Flashlight::Flashlight() : PlayerAbility(0, 0, 1, 1){
     batt = new Battery(0.4, 0.4, 0.4, 15);
     maxAnimTime = 1/15.0;
     animTime = maxAnimTime;
+    facingRight = true;
 }
 
 Flashlight::~Flashlight(){
@@ -64,8 +65,13 @@ void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
         a->setAlpha(0);
     }
     double newAngle = M_PI*7/8*upVal;
+    if (facingRight && keyHeld[BUTTON_LEFT] && !keyHeld[BUTTON_RIGHT]){
+        facingRight = false;
+    } else if (!facingRight && !keyHeld[BUTTON_LEFT] && keyHeld[BUTTON_RIGHT]){
+        facingRight = true;
+    }
     // Figure out which direction the arc is facing.
-    newAngle = ((Player *)player)->isFacingRight() ? newAngle : M_PI-newAngle;
+    newAngle = facingRight ? newAngle : M_PI-newAngle;
     a->setAngle(newAngle-M_PI/8, newAngle+M_PI/8);
 }
 

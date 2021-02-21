@@ -54,6 +54,8 @@ class Flashlight : public PlayerAbility {
         double animTime, maxAnimTime;
         /// The current opaqueness of the flashlight.
         double curAlpha;
+        /// Whether or not the flashlight should be facing right.
+        bool facingRight;
         /**
          * Code to move the flashlight up and down.
          * @param deltaTime The amount of time in between the previous frame and this frame.
