@@ -49,7 +49,9 @@ class Flashlight : public PlayerAbility {
         /// The velocity of the angle of the flashlight when moving it.
         float angleVel;
         /// The battery that the flashlight currently has.
-        Battery* batt;
+        std::vector<Battery*> batts;
+        /// The current battery.
+        int currentBattery;
         /// When to change the opaqueness of the flashlight. (When it's running low on batteries.)
         double animTime, maxAnimTime;
         /// The current opaqueness of the flashlight.

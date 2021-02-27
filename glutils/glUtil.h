@@ -12,11 +12,13 @@
 #define BUTTON_DOWN 3
 #define BUTTON_A 4
 #define BUTTON_B 5
-#define BUTTON_START 6
-#define BUTTON_SELECT 7
-#define BUTTON_END 8
+#define BUTTON_X 6
+#define BUTTON_Y 7
+#define BUTTON_START 8
+#define BUTTON_SELECT 9
+#define BUTTON_END 10
 // The length of the control array.
-#define CON_LEN 10
+#define CON_LEN 11
 
 // A struct of three ints. Useful in a few circumstances.
 struct pointInt{

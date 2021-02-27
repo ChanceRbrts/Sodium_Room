@@ -16,12 +16,14 @@ int GLControls::mCenter = SDL_BUTTON_MIDDLE;
 int GLControls::mRight = SDL_BUTTON_RIGHT;
 
 GLControls::GLControls(void* eInfo){
-   keys[BUTTON_LEFT] = 'A';
-   keys[BUTTON_RIGHT] = 'D';
-   keys[BUTTON_UP] = 'W';
-   keys[BUTTON_DOWN] = 'S';
+   // keys[BUTTON_LEFT] = 'A';
+   // keys[BUTTON_RIGHT] = 'D';
+   // keys[BUTTON_UP] = 'W';
+   // keys[BUTTON_DOWN] = 'S';
    keys[BUTTON_A] = 'X';
    keys[BUTTON_B] = 'Z';
+   keys[BUTTON_X] = 'S';
+   keys[BUTTON_Y] = 'A';
    keysS[BUTTON_END] = SDLK_ESCAPE;
    keysS[BUTTON_LEFT] = SDLK_LEFT;
    keysS[BUTTON_RIGHT] = SDLK_RIGHT;

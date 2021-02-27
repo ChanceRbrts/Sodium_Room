@@ -8,7 +8,8 @@ Flashlight::Flashlight() : PlayerAbility(0, 0, 1, 1){
     // For now, let's assume that the flashlight has a one-time use battery.
     // TODO: Be able to pick other batteries up.
     // batt = new Battery(1.25, 1.25, 1.25, 15);
-    batt = new Battery(0.4, 0.4, 0.4, 15);
+    batts.push_back(new Battery(0.4, 0.4, 0.4, 15));
+    currentBattery = 0;
     maxAnimTime = 1/15.0;
     animTime = maxAnimTime;
     facingRight = true;
@@ -16,8 +17,10 @@ Flashlight::Flashlight() : PlayerAbility(0, 0, 1, 1){
 
 Flashlight::~Flashlight(){
     delete a;
-    if (batt != nullptr){
-        delete batt;
+    for (int i = 0; i < batts.size(); i++){
+        if (batts[i] != nullptr){
+            delete batts[i];
+        }
     }
 }
 
@@ -33,6 +36,12 @@ void Flashlight::moveFlashlight(double deltaTime, bool* keyHeld){
 }
 
 void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
+    if (currentBattery >= batts.size()) return;
+    /// TODO: Swap the batteries
+    if (keyPressed[BUTTON_Y]){
+        currentBattery = (currentBattery+1)/batts.size();
+    }
+    Battery* batt = batts[currentBattery];
     if (keyPressed[BUTTON_B] && batt != nullptr) on = !on;
     moveFlashlight(deltaTime, keyHeld);
     if (on && batt == nullptr){
@@ -45,8 +54,8 @@ void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
         double newBatt = batt->getBattery();
         if (newBatt <= 0){
             // If the battery life is 0, turn the flashlight off.
-            delete batt;
-            batt = nullptr;
+            // Don't remove the battery; It can be charged at stations.
+            /// TODO: Create a HUD icon showing that battery is out of life.
             on = false;
         } else if (newBatt < 0.25){
             animTime -= deltaTime;
@@ -99,6 +108,8 @@ double Battery::getBattery(){
 
 void Battery::decreaseBattery(double deltaTime){
     battery -= deltaTime;
+    if (battery <= 0) battery = 0;
+    if (battery >= maxBattery) battery = maxBattery;
 }
 
 void Battery::changeArcColor(Arc* a){
