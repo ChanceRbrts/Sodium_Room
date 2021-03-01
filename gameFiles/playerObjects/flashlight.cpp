@@ -38,12 +38,14 @@ void Flashlight::moveFlashlight(double deltaTime, bool* keyHeld){
 void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
     if (currentBattery >= batts.size()) return;
     /// TODO: Swap the batteries
-    if (keyPressed[BUTTON_Y]){
-        currentBattery = (currentBattery+1)/batts.size();
+    if (keyHeld[BUTTON_Y]){
+        int incr = keyPressed[BUTTON_UP] ? -1 : (keyPressed[BUTTON_DOWN] ? 1 : 0);
+        currentBattery = (currentBattery+incr)/batts.size();
+    } else {
+        moveFlashlight(deltaTime, keyHeld);
     }
     Battery* batt = batts[currentBattery];
     if (keyPressed[BUTTON_B] && batt != nullptr) on = !on;
-    moveFlashlight(deltaTime, keyHeld);
     if (on && batt == nullptr){
         on = false;
     }
@@ -94,6 +96,17 @@ void Flashlight::draw(GLDraw* gld, GLShaders* gls, int layer){
     // However, for now, it will do nothing.
 }
 
+void Flashlight::drawHUD(GLDraw* gld, GLShaders* gls){
+}
+
+void Flashlight::chargeBatteries(double deltaTime){
+    for (int i = 0; i < batts.size(); i++){
+        if (batts[i]->getBattery() < 1.0){
+            batts[i]->decreaseBattery(-5*deltaTime);
+        }
+    }
+}
+
 Battery::Battery(double R, double G, double B, double mB){
     r = R;
     g = G;
@@ -110,6 +123,10 @@ void Battery::decreaseBattery(double deltaTime){
     battery -= deltaTime;
     if (battery <= 0) battery = 0;
     if (battery >= maxBattery) battery = maxBattery;
+}
+
+void Battery::chargeBattery(double deltaTime){
+    decreaseBattery(maxBattery/5*deltaTime);
 }
 
 void Battery::changeArcColor(Arc* a){

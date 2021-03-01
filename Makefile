@@ -53,7 +53,7 @@ gameFiles/instances.a:gameFiles/arc.o gameFiles/instance.o gameFiles/solid.o gam
 		gameFiles/instanceCreator.o main/shaderBox.o gameFiles/shaderboxes/longShaderbox.o\
 		gameFiles/hudObjects/textBox.o gameFiles/hudObjects/abilities.o\
 		gameFiles/gsObjects/rain.o gameFiles/gsObjects/grate.o\
-		gameFiles/gsObjects/lightbox.o\
+		gameFiles/gsObjects/lightbox.o gameFiles/gsObjects/recurring/flashlightCharger.o\
 		gameFiles/gsObjects/area-jungle/honeyPlatform.o gameFiles/gsObjects/area-jungle/pointLight.o\
 		gameFiles/gsObjects/area-jungle/flashlightPodium.o gameFiles/gsObjects/area-jungle/bouncingFruit.o\
 		gameFiles/gsObjects/state-objects/button.o gameFiles/gsObjects/state-objects/keyLock.o\
@@ -103,6 +103,7 @@ clean:
 	cd gameFiles/gsObjects/area-jungle && rm -f *.o *.a
 	cd gameFiles/gsObjects/area-hub && rm -f *.o *.a
 	cd gameFiles/gsObjects/state-objects && rm -f *.o *.a
+	cd gameFiles/gsObjects/recurring && rm -f *.o *.a
 	cd gameFiles/levels && rm -f *.o *.a
 	cd gameFiles/levels/testLevels && rm -f *.o *.a
 	cd gameFiles/levels/jungleLevels && rm -f *.o *.a

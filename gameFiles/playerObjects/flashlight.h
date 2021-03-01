@@ -30,6 +30,10 @@ class Battery {
          */
         void decreaseBattery(double deltaTime);
         /**
+         * Recharges the battery. Every battery should charge within 5 seconds.
+         */
+        void chargeBattery(double deltaTime);
+        /**
          * Changes the arc color depending on the battery color.
          */
         void changeArcColor(Arc* a);
@@ -89,6 +93,17 @@ class Flashlight : public PlayerAbility {
          * @param layer The layer that is currently being drawn to.
          */
         void draw(GLDraw* gld, GLShaders* gls, int layer);
+        /**
+         * This will draw things to the HUD related to the flashlight.
+         * @param gld The GLUtil's draw functions.
+         * @param gls The GLUtil's shader functions.
+         */
+        void drawHUD(GLDraw* gld, GLShaders* gls);
+        /**
+         * This charges all the batteries that are running low.
+         * @param deltaTime The amount of the time in between the previous frame and this frame.
+         */
+        void chargeBatteries(double deltaTime);
 };
 
 #endif

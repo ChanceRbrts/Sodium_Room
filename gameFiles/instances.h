@@ -16,6 +16,7 @@
 #include "gsObjects/rain.h"
 #include "gsObjects/grate.h"
 #include "gsObjects/lightbox.h"
+#include "gsObjects/recurring/flashlightCharger.h"
 #include "gsObjects/state-objects/button.h"
 #include "gsObjects/state-objects/keyLock.h"
 #include "gsObjects/area-hub/fireplace.h"

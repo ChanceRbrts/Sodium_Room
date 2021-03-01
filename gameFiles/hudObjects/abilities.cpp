@@ -26,6 +26,7 @@ void AbilityHandler::update(double deltaTime, bool* keyPressed, bool* keyHeld, I
 
 void AbilityHandler::draw(GLDraw* gld, GLShaders* gls, int layer){
     // Do regular HUD drawing...
+    if (selected == nullptr || selected->i == nullptr) return; 
     ((PlayerAbility*)(selected->i))->drawHUD(gld, gls);
 }
 
