@@ -7,7 +7,7 @@ FlashlightExit::FlashlightExit() : Level(){
 
 std::vector<Instance *> FlashlightExit::makeLevel(std::vector<Instance*> previous){
     previous.push_back(new EnclosedLevel(5, 5, 0, 28, enclosed));
-    previous.push_back(new FlashlightCharger(17, 33));
+    previous.push_back(new FlashlightCharger(17, 33, 0));
     return previous;
 }
 
