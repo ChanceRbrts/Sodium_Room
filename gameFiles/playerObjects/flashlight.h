@@ -24,6 +24,8 @@ class Battery {
         Battery(double R, double G, double B, double mB);
         /// @return The percentage of charge this battery has from 0-1.
         double getBattery();
+        /// @return The color of the battery.
+        pointDouble getColor();
         /**
          * Remove some charge from the battery.
          * @param deltaTime The amount of time in between the previous frame and this frame.
@@ -103,7 +105,7 @@ class Flashlight : public PlayerAbility {
          * This charges all the batteries that are running low.
          * @param deltaTime The amount of the time in between the previous frame and this frame.
          */
-        void chargeBatteries(double deltaTime);
+        std::vector<pointDouble> chargeBatteries(double deltaTime);
 };
 
 #endif

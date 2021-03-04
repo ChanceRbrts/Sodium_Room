@@ -13,6 +13,7 @@ Flashlight::Flashlight() : PlayerAbility(0, 0, 1, 1){
     maxAnimTime = 1/15.0;
     animTime = maxAnimTime;
     facingRight = true;
+    name = "Flashlight";
 }
 
 Flashlight::~Flashlight(){
@@ -99,12 +100,16 @@ void Flashlight::draw(GLDraw* gld, GLShaders* gls, int layer){
 void Flashlight::drawHUD(GLDraw* gld, GLShaders* gls){
 }
 
-void Flashlight::chargeBatteries(double deltaTime){
+std::vector<pointDouble> Flashlight::chargeBatteries(double deltaTime){
+    std::vector<pointDouble> chargingBatteries;
     for (int i = 0; i < batts.size(); i++){
         if (batts[i]->getBattery() < 1.0){
             batts[i]->decreaseBattery(-5*deltaTime);
+            pointDouble colors = batts[i]->getColor();
+            chargingBatteries.push_back(colors);
         }
     }
+    return chargingBatteries;
 }
 
 Battery::Battery(double R, double G, double B, double mB){
@@ -131,4 +136,8 @@ void Battery::chargeBattery(double deltaTime){
 
 void Battery::changeArcColor(Arc* a){
     a->setColor(r, g, b);
+}
+
+pointDouble Battery::getColor(){
+    return (pointDouble){r, g, b};
 }
