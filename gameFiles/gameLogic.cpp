@@ -14,6 +14,7 @@ GameLogic::GameLogic(){
    curSMapID = 0;
    /// TODO: Width and height hardcoded; Fix that.
    loadSuperMap(MAP_MAIN, 0, 0, 640, 480);
+   loadHUD();
 }
 
 GameLogic::~GameLogic(){
@@ -52,18 +53,6 @@ void GameLogic::loadLevel(Level* l, Map* m){
       lev->prev = lastLoaded;
    }
    lastLoaded = lev;
-   if (hud == nullptr){
-      hud = new Instances();
-      hud->next = nullptr;
-      hud->prev = nullptr;
-      hud->i = nullptr;
-      AbilityHandler* aHandler = new AbilityHandler();
-      /// TODO: Find a better home for this.
-      aHandler->addAbility(new Lighter());
-      aHandler->addAbility(new Flashlight());
-      lastHud = hud;
-      lastHud = addToList(lastHud, aHandler);
-   }
    reloadLayers = true;
    /*
    // Start of Removal.
@@ -74,6 +63,19 @@ void GameLogic::loadLevel(Level* l, Map* m){
    lastHud = addToList(lastHud, new TextBox(lines));
    // End of Removal
    */
+}
+
+void GameLogic::loadHUD(){
+   hud = new Instances();
+   hud->next = nullptr;
+   hud->prev = nullptr;
+   hud->i = nullptr;
+   AbilityHandler* aHandler = new AbilityHandler();
+   /// TODO: Find a better home for this.
+   aHandler->addAbility(new Lighter());
+   aHandler->addAbility(new Flashlight());
+   lastHud = hud;
+   lastHud = addToList(hud, aHandler);
 }
 
 void GameLogic::unloadLevel(LevelList* l){
@@ -459,7 +461,7 @@ void GameLogic::draw(GLUtil* glu){
    gld->pushCameraMem(0, 0, gld->getWidth(), gld->getHeight());
    if (hud != nullptr && hud->next != nullptr){
       for (Instances* i = hud->next; i != nullptr; i = i->next){
-         if (i->i == nullptr) return;
+         if (i->i == nullptr) break;
          i->i->draw(glu, 0);
       }
    }

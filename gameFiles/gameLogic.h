@@ -72,6 +72,8 @@ class GameLogic{
       bool reloadLayers;
       /// The current supermap that's being loaded.
       std::vector<Map *> superMap;
+      /// Load the HUD into the world.
+      void loadHUD();
    public:
       /// The constructor of the GameLogic.
       GameLogic();

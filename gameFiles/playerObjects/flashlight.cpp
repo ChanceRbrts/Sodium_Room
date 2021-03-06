@@ -13,7 +13,15 @@ Flashlight::Flashlight() : PlayerAbility(0, 0, 1, 1){
     maxAnimTime = 1/15.0;
     animTime = maxAnimTime;
     facingRight = true;
+    angle = 0;
     name = "Flashlight";
+    if (!TexBook::hasTexture("resources/abilities/flashlight_on.png")){
+        texOn = TexBook::loadTexture("resources/abilities/flashlight_on.png");
+        texOff = TexBook::loadTexture("resources/abilities/flashlight_off.png");
+    } else {
+        texOn = TexBook::getTexture("resources/abilities/flashlight_on.png");
+        texOff = TexBook::getTexture("resources/abilities/flashlight_off.png");
+    }
 }
 
 Flashlight::~Flashlight(){
@@ -84,17 +92,32 @@ void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
     }
     // Figure out which direction the arc is facing.
     newAngle = facingRight ? newAngle : M_PI-newAngle;
+    angle = newAngle;
     a->setAngle(newAngle-M_PI/8, newAngle+M_PI/8);
 }
 
 void Flashlight::fUpdate(double deltaTime){
     double trueX = !on ? x-999999 : x;
-    a->setPosition(trueX, y);
+    a->setPosition(trueX+8*cos(angle), y+8*sin(angle));
 }
 
 void Flashlight::draw(GLDraw* gld, GLShaders* gls, int layer){
     // Eventually, this will draw the flashlight.
     // However, for now, it will do nothing.
+    gld->enableTextures();
+    gld->color(1, 1, 1, 1);
+    gld->bindTexture(on ? texOn : texOff);
+    gld->begin("QUADS");
+    gld->texCoords(0, 0);
+    gld->vertW(-4, -4);
+    gld->texCoords(0, 1);
+    gld->vertW(-4, 4);
+    gld->texCoords(1, 1);
+    gld->vertW(12, 4);
+    gld->texCoords(1, 0);
+    gld->vertW(12, -4);
+    gld->end();
+    gld->disableTextures();
 }
 
 void Flashlight::drawHUD(GLDraw* gld, GLShaders* gls){

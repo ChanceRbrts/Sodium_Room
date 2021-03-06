@@ -27,7 +27,7 @@ void main(void){
     // Everything else will just have a glow color that radiates from the wire.
     float texDiff = sin(PI/2*((visible-0.25)/0.75-abs(tY-cTY)/cTY));
     float wireAlpha = min(max(texDiff, 0), 1)*float(visible >= 0.25);
-    vec4 glowColor = vec4(redCol, greenCol, blueCol, wireAlpha)*float(abs(tY-cTY) > 0.75/16);
+    vec4 glowColor = vec4(redCol, greenCol, blueCol, wireAlpha)*float(abs(tY-cTY) > 0.75/16 || gl_TexCoord[0].x <= 3/116.0 || gl_TexCoord[0].x >= 112/116.0);
     vec4 trueColor = wireColor+glowColor;
     // There should also be kind of a white glow near the center as the visibility 
     /*float wDif = 1/4*visible-abs(tY-cTY);

@@ -51,13 +51,17 @@ class Flashlight : public PlayerAbility {
         /// Whether or not the flashlight is currently on.
         bool on;
         /// The current angle of the flashlight. (From -1 to 1)
-        float upVal;
+        double upVal;
         /// The velocity of the angle of the flashlight when moving it.
-        float angleVel;
+        double angleVel;
+        /// The angle of the flashlight
+        double angle;
         /// The battery that the flashlight currently has.
         std::vector<Battery*> batts;
         /// The current battery.
         int currentBattery;
+        /// The textures of the flashlight for when it's on and off.
+        int texOn, texOff;
         /// When to change the opaqueness of the flashlight. (When it's running low on batteries.)
         double animTime, maxAnimTime;
         /// The current opaqueness of the flashlight.
