@@ -13,6 +13,8 @@ class Battery {
         double battery;
         /// The maximum amount of charge this battery has in seconds.
         double maxBattery;
+        /// The textures of the battery.
+        int intTexture, extTexture;
     public:
         /**
          * The Constructor the Battery.
@@ -39,6 +41,10 @@ class Battery {
          * Changes the arc color depending on the battery color.
          */
         void changeArcColor(Arc* a);
+        /**
+         * Draws the battery as if it's in a HUD.
+         */
+        void drawHUD(GLDraw* gld, GLShaders* gls, double x, double y);
 };
 
 /**

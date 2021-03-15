@@ -494,16 +494,19 @@ class GLDraw{
        * Translates the world on window coordinates.
        * @param x The amount of pixels to translate right.
        * @param y The amount of pixels to translate down.
+       * @param cameraRel Whether or not the camera should be accounted in the transition.
        */
-      void translateW(double x, double y){translateW(x,y,0);};
+      void translateW(double x, double y, bool cameraRel){translateW(x,y,0,cameraRel);};
       /**
        * Translates the world on window coordinates.
        * @param x The amount of pixels to translate right.
        * @param y The amount of pixels to translate down.
        * @param z The amount to translate on the z axis.
+       * @param cameraRel Whether or not the camera should be accounted in the transition.
        */
-      void translateW(double x, double y, double z){
-         translate(x*2/width, -y*2/height, z);
+      void translateW(double x, double y, double z, bool cameraRel){
+         if (!cameraRel) translate(x*2/width, -y*2/height, z);
+         else translate((x-camX)*2/width-1, 1-(y-camY)*2/height);
       }
       /**
        * Translates the world on OpenGL coordinates.

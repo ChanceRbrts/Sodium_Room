@@ -4,7 +4,7 @@ Flashlight::Flashlight() : PlayerAbility(0, 0, 1, 1){
     on = false;
     a = new Arc(0, 0, 8, -M_PI/8, M_PI/8, 1.25, 1.25, 1.25, false);
     upVal = 0;
-    angleVel = 0.5;
+    angleVel = 1;
     // For now, let's assume that the flashlight has a one-time use battery.
     // TODO: Be able to pick other batteries up.
     // batt = new Battery(1.25, 1.25, 1.25, 15);
@@ -84,7 +84,7 @@ void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
     } else {
         a->setAlpha(0);
     }
-    double newAngle = M_PI*7/8*upVal;
+    double newAngle = M_PI*upVal/2;
     if (facingRight && keyHeld[BUTTON_LEFT] && !keyHeld[BUTTON_RIGHT]){
         facingRight = false;
     } else if (!facingRight && !keyHeld[BUTTON_LEFT] && keyHeld[BUTTON_RIGHT]){
@@ -107,20 +107,28 @@ void Flashlight::draw(GLDraw* gld, GLShaders* gls, int layer){
     gld->enableTextures();
     gld->color(1, 1, 1, 1);
     gld->bindTexture(on ? texOn : texOff);
+    gld->pushMatrix();
+    gld->translateW(x, y, true);
+    gld->rotate(-angle*180/M_PI);
     gld->begin("QUADS");
     gld->texCoords(0, 0);
-    gld->vertW(-4, -4);
+    double wid2 = gld->getWidth()/2+gld->camX;
+    double hei2 = gld->getHeight()/2+gld->camY;
+    gld->vertW(-2+wid2, -4+hei2);
     gld->texCoords(0, 1);
-    gld->vertW(-4, 4);
+    gld->vertW(-2+wid2, 4+hei2);
     gld->texCoords(1, 1);
-    gld->vertW(12, 4);
+    gld->vertW(14+wid2, 4+hei2);
     gld->texCoords(1, 0);
-    gld->vertW(12, -4);
+    gld->vertW(14+wid2, -4+hei2);
     gld->end();
+    gld->popMatrix();
     gld->disableTextures();
 }
 
 void Flashlight::drawHUD(GLDraw* gld, GLShaders* gls){
+    Battery* batt = batts[currentBattery];
+    batt->drawHUD(gld, gls, gld->getWidth()-48, 16);
 }
 
 std::vector<pointDouble> Flashlight::chargeBatteries(double deltaTime){
@@ -141,6 +149,13 @@ Battery::Battery(double R, double G, double B, double mB){
     b = B;
     maxBattery = mB;
     battery = maxBattery;
+    if (!TexBook::hasTexture("resources/abilities/battery_shell.png")){
+        extTexture = TexBook::loadTexture("resources/abilities/battery_shell.png");
+        intTexture = TexBook::loadTexture("resources/abilities/battery_interior.png");
+    } else {
+        extTexture = TexBook::getTexture("resources/abilities/battery_shell.png");
+        intTexture = TexBook::getTexture("resources/abilities/battery_interior.png");
+    }
 }
 
 double Battery::getBattery(){
@@ -163,4 +178,33 @@ void Battery::changeArcColor(Arc* a){
 
 pointDouble Battery::getColor(){
     return (pointDouble){r, g, b};
+}
+
+void Battery::drawHUD(GLDraw* gld, GLShaders* gls, double x, double y){
+    if (!(gls->programExists("battery"))){
+        gls->createProgram("", "gameFiles/shaders/abilities/battery", "battery");
+    }
+    gld->enableTextures();
+    gld->bindTexture(extTexture);
+    gld->bindTexture(intTexture, 1);
+    int program = gls->bindShader("battery");
+    gls->addUniform(program, "r", r);
+    gls->addUniform(program, "g", g);
+    gls->addUniform(program, "b", b);
+    gls->addUniform(program, "life", battery/maxBattery);
+    gls->addUniformI(program, "texInt", 1);
+    gld->begin("QUADS");
+    gld->texCoords(0, 0);
+    gld->vertW(x, y);
+    gld->texCoords(0, 1);
+    gld->vertW(x, y+32);
+    gld->texCoords(1, 1);
+    gld->vertW(x+32, y+32);
+    gld->texCoords(1, 0);
+    gld->vertW(x+32, y);
+    gld->end();
+    gls->unbindShader();
+    gld->bindTexture(0);
+    gld->bindTexture(0, 1);
+    gld->disableTextures();
 }
