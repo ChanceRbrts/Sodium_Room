@@ -36,8 +36,10 @@ void TexBook::unloadTexture(std::string tex){
     }
 }
 
-int TexBook::getTexture(std::string tex){
-    if (!hasTexture(tex)) return -1;
+int TexBook::getTexture(std::string tex, bool force){
+    if (!hasTexture(tex)) {
+        return force ? loadTexture(tex) : -1;
+    }
     return texBook.at(tex);
 }
 

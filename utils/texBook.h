@@ -44,7 +44,7 @@ class TexBook{
          * Gets a texture;
          * @param tex The texture to get.
          */
-        static int getTexture(std::string tex);
+        static int getTexture(std::string tex, bool force = true);
         /**
          * Remove all textures.
          */

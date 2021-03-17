@@ -10,12 +10,8 @@ Grate::Grate(double X, double Y, double W) : Instance(X, Y, W, 1){
 }
 
 void Grate::loadTexture(){
-   if (TexBook::hasTexture("resources/misc/grate.png")){
-      changeTexture(TexBook::getTexture("resources/misc/grate.png"), true);
-   } else{
-      int tex = TexBook::loadTexture("resources/misc/grate.png");
-      if (tex != -1) changeTexture(tex, true);
-   }
+   int tex = TexBook::getTexture("resources/misc/grate.png");
+   if (tex != -1) changeTexture(tex, true);
 }
 
 void Grate::draw(GLDraw* gld, GLShaders* gls, int layer){

@@ -15,13 +15,8 @@ Flashlight::Flashlight() : PlayerAbility(0, 0, 1, 1){
     facingRight = true;
     angle = 0;
     name = "Flashlight";
-    if (!TexBook::hasTexture("resources/abilities/flashlight_on.png")){
-        texOn = TexBook::loadTexture("resources/abilities/flashlight_on.png");
-        texOff = TexBook::loadTexture("resources/abilities/flashlight_off.png");
-    } else {
-        texOn = TexBook::getTexture("resources/abilities/flashlight_on.png");
-        texOff = TexBook::getTexture("resources/abilities/flashlight_off.png");
-    }
+    texOn = TexBook::getTexture("resources/abilities/flashlight_on.png");
+    texOff = TexBook::getTexture("resources/abilities/flashlight_off.png");
 }
 
 Flashlight::~Flashlight(){
@@ -149,13 +144,8 @@ Battery::Battery(double R, double G, double B, double mB){
     b = B;
     maxBattery = mB;
     battery = maxBattery;
-    if (!TexBook::hasTexture("resources/abilities/battery_shell.png")){
-        extTexture = TexBook::loadTexture("resources/abilities/battery_shell.png");
-        intTexture = TexBook::loadTexture("resources/abilities/battery_interior.png");
-    } else {
-        extTexture = TexBook::getTexture("resources/abilities/battery_shell.png");
-        intTexture = TexBook::getTexture("resources/abilities/battery_interior.png");
-    }
+    extTexture = TexBook::getTexture("resources/abilities/battery_shell.png");
+    intTexture = TexBook::getTexture("resources/abilities/battery_interior.png");
 }
 
 double Battery::getBattery(){
