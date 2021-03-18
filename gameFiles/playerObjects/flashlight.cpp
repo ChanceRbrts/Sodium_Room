@@ -10,6 +10,7 @@ Flashlight::Flashlight() : PlayerAbility(0, 0, 1, 1){
     // batt = new Battery(1.25, 1.25, 1.25, 15);
     batts.push_back(new Battery(0.4, 0.4, 0.4, 15));
     batts.push_back(new Battery(0, 1, 0, 15));
+    batts.push_back(new Battery(1, 0, 0, 15));
     currentBattery = 0;
     maxAnimTime = 1/15.0;
     animTime = maxAnimTime;
@@ -24,6 +25,12 @@ Flashlight::Flashlight() : PlayerAbility(0, 0, 1, 1){
     menuVisible = 0;
     maxMenuVisible = 0.25;
     needExtra = true;
+    animCurrBatt = 0;
+    animateSpeed = 0;
+    animateTo = 0;
+    shakeAnimation = 0;
+    maxShakeAnimation = 0.25;
+    maxMoveTime = 0.15;
 }
 
 Flashlight::~Flashlight(){
@@ -50,11 +57,30 @@ void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
     if (currentBattery >= batts.size()) return;
     menuVisible -= deltaTime;
     if (menuVisible < 0) menuVisible = 0;
-    /// TODO: Swap the batteries
+    // Swap the batteries.
     if (keyHeld[BUTTON_Y]){
         int incr = keyPressed[BUTTON_UP] ? -1 : (keyPressed[BUTTON_DOWN] ? 1 : 0);
-        currentBattery = (currentBattery+incr)%batts.size();
+        int prevBatt = currentBattery;
+        currentBattery = (currentBattery+batts.size()+incr)%batts.size();
         menuVisible = maxMenuVisible;
+        // If the battery has been changed, start an animation.
+        if (incr != 0 && shakeAnimation <= 0){
+            if (currentBattery == prevBatt){
+                shakeAnimation = maxShakeAnimation;
+            } else {
+                animateTo = currentBattery;
+                // The animation speed moves to the current battery.
+                animateSpeed = (animateTo-animCurrBatt)/maxMoveTime;
+                // However, sometimes wrapping around is faster, so let's calculate that too.
+                bool wrapForwards = animateTo < animCurrBatt;
+                double wrapAnimTo = animateTo+((double)batts.size())*(wrapForwards ? 1 : -1);
+                double wrapAnimSpeed = (wrapAnimTo-animCurrBatt)/maxMoveTime;
+                if (abs(wrapAnimSpeed) < abs(animateSpeed)){
+                    animateSpeed = wrapAnimSpeed;
+                }
+                moveTime = maxMoveTime;
+            }
+        }
     } else {
         moveFlashlight(deltaTime, keyHeld);
     }
@@ -71,7 +97,6 @@ void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
         if (newBatt <= 0){
             // If the battery life is 0, turn the flashlight off.
             // Don't remove the battery; It can be charged at stations.
-            /// TODO: Create a HUD icon showing that battery is out of life.
             on = false;
         } else if (newBatt < 0.25){
             animTime -= deltaTime;
@@ -100,6 +125,26 @@ void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
     angle = newAngle;
     a->setAngle(newAngle-M_PI/8, newAngle+M_PI/8);
     textureID = on ? texOn : texOff;
+    hudAnimation(deltaTime);
+}
+
+void Flashlight::hudAnimation(double deltaTime){
+    // Animate parts of the HUD.
+    // First, if there's screen shake, remove that.
+    if (shakeAnimation > 0){
+        shakeAnimation -= deltaTime;
+        if (shakeAnimation <= 0) shakeAnimation = 0;
+    }
+    // Now, deal with the battery switching animation.
+    if (animateSpeed != 0){
+        animCurrBatt = fmod(animCurrBatt+animateSpeed*deltaTime, batts.size());
+        if (animCurrBatt < 0) animCurrBatt += batts.size();
+        moveTime -= deltaTime;
+        if (moveTime < 0){
+            animateSpeed = 0;
+            animCurrBatt = animateTo;
+        }
+    }
 }
 
 void Flashlight::fUpdate(double deltaTime){
@@ -151,24 +196,28 @@ void Flashlight::drawHUD(GLDraw* gld, GLShaders* gls){
     gld->end();
     // Draw the selected box.
     gld->color(1, 1, 1, 0.5);
-    double selectedY = batts.size() < 3 ? 8+32*currentBattery : 40;
+    double selectedX = 6+6*sin(M_PI*2*shakeAnimation/maxShakeAnimation);
+    double selectedY = batts.size() < 3 ? 6+32*animCurrBatt : 40;
     gld->begin("QUADS");
-    gld->vertW(6, selectedY-2);
-    gld->vertW(6, selectedY+34);
-    gld->vertW(42, selectedY+34);
-    gld->vertW(42, selectedY-2);
+    gld->vertW(selectedX, selectedY);
+    gld->vertW(selectedX, selectedY+36);
+    gld->vertW(selectedX+36, selectedY+36);
+    gld->vertW(selectedX+36, selectedY);
     gld->end();
     // There are two scenarios here.
     // If there's less than three batteries, just draw those.
+    double batX = 8+4*sin(M_PI*2*shakeAnimation/maxShakeAnimation);
     if (batts.size() < 3){
         for (int i = 0; i < batts.size(); i++){
-            batts[i]->drawHUD(gld, gls, 8, 8+32*i);
+            batts[i]->drawHUD(gld, gls, batX, 8+32*i);
         }
     } else {
+        int drawnBatt = (int)(floor(animCurrBatt));
+        double drawnBattOffset = fmod(animCurrBatt, 1);
         // Otherwise, draw the batteries before and after the one we care about.
-        for (int i = 0; i < 3; i++){
-            int realI = (currentBattery+batts.size()+i-1)%(batts.size());
-            batts[realI]->drawHUD(gld, gls, 8, 8+32*i);
+        for (int i = 0; i < 5; i++){
+            int realI = (drawnBatt+batts.size()+i-2)%(batts.size());
+            batts[realI]->drawHUD(gld, gls, batX, 8+32*(i-1-drawnBattOffset));
         }
     }
     hudBox->drawOutBox();

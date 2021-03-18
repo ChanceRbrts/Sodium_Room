@@ -78,12 +78,15 @@ class Flashlight : public PlayerAbility {
         ShaderBox* hudBox;
         /// How long the menu is visible for.
         double menuVisible, maxMenuVisible;
+        double animCurrBatt, animateSpeed, animateTo, maxMoveTime, moveTime;
+        double shakeAnimation, maxShakeAnimation;
         /**
          * Code to move the flashlight up and down.
          * @param deltaTime The amount of time in between the previous frame and this frame.
          * @param keyHeld The array of the keys that are held down.
          */
         void moveFlashlight(double deltaTime, bool* keyHeld);
+        void hudAnimation(double deltaTime);
     public:
         /// The constructor of the flashlight.
         Flashlight();
