@@ -8,7 +8,7 @@ FlashlightCharger::FlashlightCharger(double X, double Y, int area) : Instance(X,
     std::string backTex = "resources/chargers/"+textures[area]+"-back.png";
     std::string frontTex = "resources/chargers/"+textures[area]+".png";
     frontTexture = TexBook::getTexture(frontTex);
-    backTex = TexBook::getTexture(backTex);
+    backTexture = TexBook::getTexture(backTex);
     transitionTime = 0;
     maxTransitionTime = 0.5;
     cyclePoint = 0;

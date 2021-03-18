@@ -24,6 +24,8 @@ class Lighter : public PlayerAbility {
         double cooloffFactor, meltFactor, diminishFactor, incFactor;
         /// Whether or not the Lighter is currently on.
         bool on;
+        /// Textures for the lighter.
+        int texOn, texOff;
         /// Controls how to turn on the Lighter.
         void toggleLight();
         /**

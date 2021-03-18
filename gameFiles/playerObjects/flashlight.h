@@ -74,6 +74,10 @@ class Flashlight : public PlayerAbility {
         double curAlpha;
         /// Whether or not the flashlight should be facing right.
         bool facingRight;
+        /// The shaderbox for the HUD part of the flashlight.
+        ShaderBox* hudBox;
+        /// How long the menu is visible for.
+        double menuVisible, maxMenuVisible;
         /**
          * Code to move the flashlight up and down.
          * @param deltaTime The amount of time in between the previous frame and this frame.
@@ -104,7 +108,7 @@ class Flashlight : public PlayerAbility {
          * @param gls The GLUtil's shader functions.
          * @param layer The layer that is currently being drawn to.
          */
-        void draw(GLDraw* gld, GLShaders* gls, int layer);
+        void drawEX(GLUtil* glu, int layer);
         /**
          * This will draw things to the HUD related to the flashlight.
          * @param gld The GLUtil's draw functions.

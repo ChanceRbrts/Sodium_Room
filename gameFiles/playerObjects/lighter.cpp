@@ -21,6 +21,10 @@ Lighter::Lighter() : PlayerAbility(0, 0, 1, 1){
     solid = false;
     name = "Lighter";
     a->setBlend(false);
+    texOff = TexBook::getTexture("resources/abilities/lighter_icon_off.png");
+    texOn = TexBook::getTexture("resources/abilities/lighter_icon.png");
+    textureID = texOff;
+    iconTexture = texOn;
 }
 
 Lighter::~Lighter(){
@@ -83,6 +87,7 @@ void Lighter::update(double deltaTime, bool* keyPressed, bool* keyHeld){
         cooldown -= deltaTime*cooloffFactor;
         if (cooldown <= 0) cooldown = 0;
     }
+    textureID = on ? texOn : texOff;
 }
 
 void Lighter::fUpdate(double deltaTime){

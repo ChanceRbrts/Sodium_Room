@@ -64,7 +64,7 @@ bool ShaderBox::canDraw(){
          && x+xOffset <= gld->camX+gld->getWidth() && y+yOffset <= gld->camY+gld->getHeight());
 }
 
-void ShaderBox::draw(){
+void ShaderBox::draw(double alpha){
    // Draw only if we're within the bounds of the screen.
    if (canDraw()){
       // Get Shaders ready if we need them.
@@ -84,7 +84,7 @@ void ShaderBox::draw(){
       glu->draw->enableTextures();
       glu->draw->bindTexture(texID);
       // Actually draw the textures.
-      glu->draw->color(1, 1, 1, 1, blend);
+      glu->draw->color(1, 1, 1, alpha, blend);
       glu->draw->begin("QUADS");
       glu->draw->texCoords(0, 1);
       glu->draw->vertW(x+xOffset, y+yOffset);

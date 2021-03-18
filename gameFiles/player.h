@@ -10,6 +10,7 @@ class PlayerAbility : public Instance{
    protected:
       /// An arc that may or may not be associated with the ability.
       Arc* a;
+      int iconTexture;
    public: 
       /**
        * Constructor for the player ability.
@@ -25,6 +26,7 @@ class PlayerAbility : public Instance{
        */
       Arc* getArc(){ return a; };
       virtual void drawHUD(GLDraw* gld, GLShaders* gls){};
+      int getIconTexture(){ return iconTexture; };
 };
 
 /**

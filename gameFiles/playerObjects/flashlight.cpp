@@ -9,6 +9,7 @@ Flashlight::Flashlight() : PlayerAbility(0, 0, 1, 1){
     // TODO: Be able to pick other batteries up.
     // batt = new Battery(1.25, 1.25, 1.25, 15);
     batts.push_back(new Battery(0.4, 0.4, 0.4, 15));
+    batts.push_back(new Battery(0, 1, 0, 15));
     currentBattery = 0;
     maxAnimTime = 1/15.0;
     animTime = maxAnimTime;
@@ -17,6 +18,12 @@ Flashlight::Flashlight() : PlayerAbility(0, 0, 1, 1){
     name = "Flashlight";
     texOn = TexBook::getTexture("resources/abilities/flashlight_on.png");
     texOff = TexBook::getTexture("resources/abilities/flashlight_off.png");
+    textureID = texOff;
+    iconTexture = texOn;
+    hudBox = nullptr;
+    menuVisible = 0;
+    maxMenuVisible = 0.25;
+    needExtra = true;
 }
 
 Flashlight::~Flashlight(){
@@ -41,10 +48,13 @@ void Flashlight::moveFlashlight(double deltaTime, bool* keyHeld){
 
 void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
     if (currentBattery >= batts.size()) return;
+    menuVisible -= deltaTime;
+    if (menuVisible < 0) menuVisible = 0;
     /// TODO: Swap the batteries
     if (keyHeld[BUTTON_Y]){
         int incr = keyPressed[BUTTON_UP] ? -1 : (keyPressed[BUTTON_DOWN] ? 1 : 0);
-        currentBattery = (currentBattery+incr)/batts.size();
+        currentBattery = (currentBattery+incr)%batts.size();
+        menuVisible = maxMenuVisible;
     } else {
         moveFlashlight(deltaTime, keyHeld);
     }
@@ -89,6 +99,7 @@ void Flashlight::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
     newAngle = facingRight ? newAngle : M_PI-newAngle;
     angle = newAngle;
     a->setAngle(newAngle-M_PI/8, newAngle+M_PI/8);
+    textureID = on ? texOn : texOff;
 }
 
 void Flashlight::fUpdate(double deltaTime){
@@ -96,7 +107,11 @@ void Flashlight::fUpdate(double deltaTime){
     a->setPosition(trueX+8*cos(angle), y+8*sin(angle));
 }
 
-void Flashlight::draw(GLDraw* gld, GLShaders* gls, int layer){
+void Flashlight::drawEX(GLUtil* glu, int layer){
+    GLDraw* gld = glu->draw;
+    if (hudBox == nullptr){
+        hudBox = new ShaderBox(0, 0, 1.5, 3.5, "", "", glu);
+    }
     // Eventually, this will draw the flashlight.
     // However, for now, it will do nothing.
     gld->enableTextures();
@@ -124,6 +139,43 @@ void Flashlight::draw(GLDraw* gld, GLShaders* gls, int layer){
 void Flashlight::drawHUD(GLDraw* gld, GLShaders* gls){
     Battery* batt = batts[currentBattery];
     batt->drawHUD(gld, gls, gld->getWidth()-48, 16);
+    // Draw the Battery Menu if needed. (May be moved to a different location?)
+    if (hudBox == nullptr || menuVisible <= 0) return;
+    hudBox->drawOnBox();
+    gld->color(0, 0, 0, 0.5);
+    gld->begin("QUADS");
+    gld->vertW(0, 0);
+    gld->vertW(0, gld->getHeight());
+    gld->vertW(gld->getWidth(), gld->getHeight());
+    gld->vertW(gld->getWidth(), 0);
+    gld->end();
+    // Draw the selected box.
+    gld->color(1, 1, 1, 0.5);
+    double selectedY = batts.size() < 3 ? 8+32*currentBattery : 40;
+    gld->begin("QUADS");
+    gld->vertW(6, selectedY-2);
+    gld->vertW(6, selectedY+34);
+    gld->vertW(42, selectedY+34);
+    gld->vertW(42, selectedY-2);
+    gld->end();
+    // There are two scenarios here.
+    // If there's less than three batteries, just draw those.
+    if (batts.size() < 3){
+        for (int i = 0; i < batts.size(); i++){
+            batts[i]->drawHUD(gld, gls, 8, 8+32*i);
+        }
+    } else {
+        // Otherwise, draw the batteries before and after the one we care about.
+        for (int i = 0; i < 3; i++){
+            int realI = (currentBattery+batts.size()+i-1)%(batts.size());
+            batts[realI]->drawHUD(gld, gls, 8, 8+32*i);
+        }
+    }
+    hudBox->drawOutBox();
+    double wid = gld->getWidth();
+    gld->pushCameraMem(-wid+56, -48, wid, gld->getHeight());
+    hudBox->draw(menuVisible/maxMenuVisible);
+    gld->popCameraMem();
 }
 
 std::vector<pointDouble> Flashlight::chargeBatteries(double deltaTime){

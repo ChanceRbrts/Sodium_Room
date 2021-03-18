@@ -77,7 +77,7 @@ class ShaderBox{
       /// Tells the engine to stop drawing to this frame buffer.
       void drawOutBox();
       /// Draw the frame buffer to the screen.
-      void draw();
+      void draw(double alpha = 1);
       /// Whether or not this shaderbox follows the player.
       bool followPlayer(){ return follow; }
       /// Draw a red sqaure where the frame buffer would be. (Used for debugging)
