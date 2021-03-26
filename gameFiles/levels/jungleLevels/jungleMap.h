@@ -8,6 +8,8 @@
 #include "mothEscort.h"
 #include "mothEscortHoney.h"
 #include "growFruit.h"
+#include "brokenAscend.h"
+#include "treeRoom.h"
 
 #define LEV_JUNG_RAINHALLWAY 0
 #define LEV_JUNG_FLASHLIGHTEXIT 1

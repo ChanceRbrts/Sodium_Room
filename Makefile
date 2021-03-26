@@ -80,6 +80,7 @@ gameFiles/instancesext.a:gameFiles/instancelev.o gameFiles/gsObjects/enclosedLev
 gameFiles/levelsext.a:gameFiles/levels/levels.o gameFiles/levels/testLevels/testHorizontalEnclosed.o\
 		gameFiles/levels/testLevels/testFalseBlocks.o gameFiles/levels/jungleLevels/mothEscort.o\
 		gameFiles/levels/jungleLevels/mothEscortHoney.o gameFiles/levels/jungleLevels/growFruit.o\
+		gameFiles/levels/jungleLevels/brokenAscend.o gameFiles/levels/jungleLevels/treeRoom.o\
 		gameFiles/levels/jungleLevels/jungleMap.o
 	ar -rcs $@ $^
 
