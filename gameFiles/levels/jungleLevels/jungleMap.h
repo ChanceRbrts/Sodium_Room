@@ -10,6 +10,7 @@
 #include "growFruit.h"
 #include "brokenAscend.h"
 #include "treeRoom.h"
+#include "lightboxEscort.h"
 
 #define LEV_JUNG_RAINHALLWAY 0
 #define LEV_JUNG_FLASHLIGHTEXIT 1
@@ -23,6 +24,7 @@
 #define LEV_JUNG_MOTHESCORT2 9
 #define LEV_JUNG_BROKENASCEND 10
 #define LEV_JUNG_TREEROOM 11
+#define LEV_JUNG_LIGHTBOXESCORT 12
 
 /**
  * The map that contains levels corresponding to the jungle/garden area.

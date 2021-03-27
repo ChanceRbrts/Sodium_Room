@@ -79,12 +79,14 @@ void MothBlocks::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
     int arcToFollow = -1;
     double maxBright = 0;
     for (int i = 0; i < arcList.size(); i++){
-        if (arcList[i].defBehavior && maxBright < 3.7){
+        ArcInfo a = arcList[i];
+        bool playerArc = a.defBehavior || (a.id == -1 && a.r+a.g+a.b > 0.9);
+        if (playerArc && maxBright < 3.7){
             arcToFollow = i;
             maxBright = 3.7;
-        } else if (arcList[i].r+arcList[i].g+arcList[i].b > maxBright){
+        } else if (a.r+a.g+a.b > maxBright){
             arcToFollow = i;
-            maxBright = arcList[i].r+arcList[i].g+arcList[i].b;
+            maxBright = a.r+a.g+a.b;
         }
     }
     if (arcToFollow >= 0){

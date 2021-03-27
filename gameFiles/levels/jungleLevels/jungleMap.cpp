@@ -13,4 +13,5 @@ JungleMap::JungleMap(int sID) : Map(sID){
     addLevel(new MothEscort2(), 93, 39);
     addLevel(new BrokenAscend(), 64, 13);
     addLevel(new TreeRoom(), 30, 0);
+    addLevel(new LightBoxEscort(), 85, 0);
 }

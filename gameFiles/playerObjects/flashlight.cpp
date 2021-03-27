@@ -9,8 +9,9 @@ Flashlight::Flashlight() : PlayerAbility(0, 0, 1, 1){
     // TODO: Be able to pick other batteries up.
     // batt = new Battery(1.25, 1.25, 1.25, 15);
     batts.push_back(new Battery(0.4, 0.4, 0.4, 15));
-    batts.push_back(new Battery(0, 1, 0, 15));
     batts.push_back(new Battery(1, 0, 0, 15));
+    batts.push_back(new Battery(0, 1, 0, 15));
+    batts.push_back(new Battery(0, 0, 1, 15));
     currentBattery = 0;
     maxAnimTime = 1/15.0;
     animTime = maxAnimTime;
