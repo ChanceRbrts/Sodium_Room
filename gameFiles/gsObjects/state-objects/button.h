@@ -17,6 +17,8 @@ class Button : public Instance {
         bool multiPress;
         /// Whether the button is currently being pressed down.
         bool pressDown;
+        /// Whether to connect with the state when determining the button press.
+        bool updateState;
         /// Which direction to press the button. (0->down, 1->right, 2->up, 3->left)
         int pressDir;
         /// The threshold for how long an instance can be off a button before it's considered as not pressing it.
@@ -44,6 +46,7 @@ class Button : public Instance {
          * @param deltaTime The time in between this frame and the previous frame.
          */
         void changePress(double deltaTime);
+        void stateChange();
     public:
         /**
          * Constructor for a button push
@@ -51,8 +54,9 @@ class Button : public Instance {
          * @param Y The up-most coordinate of the button (In world coords)
          * @param direction The direction that the button needs to be pressed. (0->down, 1->right, 2->up, 3->left)
          * @param pressedValue The variable that the button interacts with in the game state.
+         * @param updateMe Whether or not to update the button's state when the variable itself changes. 
          */
-        Button(double X, double Y, int direction, std::string pressedValue);
+        Button(double X, double Y, int direction, std::string pressedValue, bool updateMe = true);
         /**
          * Constructor for a button push
          * @param X The left-most coordinate of the button (In world coords)
@@ -60,8 +64,9 @@ class Button : public Instance {
          * @param direction The direction that the button needs to be pressed. (0->down, 1->right, 2->up, 3->left)
          * @param pressedValue The variable that the button interacts with in the game state.
          * @param maxPressed The amount of states a button has. (<= 0 means this can't be pressed multiple times)
+         * @param updateMe Whether or not to update the button's state when the variable itself changes. 
          */
-        Button(double X, double Y, int direction, std::string pressedValue, int maxPressed);
+        Button(double X, double Y, int direction, std::string pressedValue, int maxPressed, bool updateMe = true);
         /**
          * Updates the button.
          * @param deltaTime The time in between this frame and the previous frame.

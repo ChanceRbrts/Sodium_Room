@@ -51,13 +51,6 @@ class Map{
       std::vector<Level *> getUnloadedLevelsInArea(double X, double Y, double W, double H);
       /// The ID to the super map that this map belongs to.
       int superMapID;
-      /**
-       * Translates map coordinates to true coordinates. (Coords with gaps)
-       * @param prevCoord The map coord to translate the gapped coordinates.
-       * @param horizontal Whether or not to use the x-axis vs. the y-axis.
-       * @param reverse If this is true, this goes from true coordinates to map coordinates.
-       */
-      static double translateMapCoord(double prevCoord, bool horizontal, bool reverse);
       /// Using these as a sorted list of doubles.
       static std::map<double, Gap> horizontalMapGap;
       /// Using these as a sorted list of doubles.
@@ -127,6 +120,13 @@ class Map{
        * @param horiz Whether or not the gaps drawn are on the X axis or the Y axis.
        */
       static void drawGaps(GLUtil* glu);
+      /**
+       * Translates map coordinates to true coordinates. (Coords with gaps)
+       * @param prevCoord The map coord to translate the gapped coordinates.
+       * @param horizontal Whether or not to use the x-axis vs. the y-axis.
+       * @param reverse If this is true, this goes from true coordinates to map coordinates.
+       */
+      static double translateMapCoord(double prevCoord, bool horizontal, bool reverse);
 };
 
 #endif

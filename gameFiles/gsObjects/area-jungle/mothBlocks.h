@@ -27,28 +27,50 @@ class MothBlock : public FakeSolid {
          * @param move How much the moth block is moving from 0-1; 1 is completely stationary.
          * @param cX The x position in unit coords of the center of the MothBlocks.
          * @param cY The y position in unit coords of the center of the MothBlocks.
+         * @param reset Whether or not the moth blocks are being reset.
          */
-        void updateBlock(double move, double cX, double cY);
+        void updateBlock(double move, double cX, double cY, bool reset);
 };
 
 class MothBlocks : public InstanceLev {
     private:
         /// The list of Fake Solids that the MothBlocks controls
         std::vector<MothBlock *> fakeSolids;
+        /// The variable name to reset the blocks to.
+        std::string resetVar;
+        /// Determines whether to check if the blocks have reset.
+        bool canReset;
+        /// Determines whether or not the blocks are currently resetting.
+        bool resetting;
         /// Whether or not the Fake Solids have been placed down in a level.
         bool blocksPlacedDown;
         /// Whether or not the Fake Solids CAN be placed down in a level.
         bool canPlaceBlocks;
         /// Internal timers to determine movement of the blocks; move=maxMove means no movement for a while.
         double move, maxMove;
+        /// The starting position of the moth blocks.
+        double startX, startY;
+        /// Used for positioning purposes
+        bool loadedIn;
+        /**
+         * The update code when resetting an arc.
+         * @param deltaTime The time in seconds since the previous frame.
+         */
+        void reset(double deltaTime);
+        /**
+         * The normal behavior of an arc, where the blocks move towards lights.
+         * @param deltaTime The time in seconds since the previous frame.
+         */
+        void moveToArc(double deltaTime);
     public:
         /**
          * Constructor of the Moth Blocks
          * @param X The x position of the left-hand side of the blocks in unit-coords.
          * @param Y The y position of the up-most side of the blocks in unit-coords.
          * @param filename The file name of the level data of the moth blocks.
+         * @param resetName The variable name that determines whether the moth blocks are reset.
          */
-        MothBlocks(double X, double Y, std::string filename);
+        MothBlocks(double X, double Y, std::string filename, std::string resetName = "");
         /// Deconstructor of the moth blocks
         ~MothBlocks();
         /**

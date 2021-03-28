@@ -1,17 +1,19 @@
 #include "button.h"
 
-Button::Button(double X, double Y, int direction, std::string pressedValue) : Instance(X, Y, 2, 1){
+Button::Button(double X, double Y, int direction, std::string pressedValue, bool updateMe) : Instance(X, Y, 2, 1){
     multiPress = false;
     pressedVal = pressedValue;
     maxPress = 1;
     setUp(direction);
+    updateState = updateMe;
 }
 
-Button::Button(double X, double Y, int direction, std::string pressedValue, int maxPressed) : Instance(X, Y, 2, 1){
+Button::Button(double X, double Y, int direction, std::string pressedValue, int maxPressed, bool updateMe) : Instance(X, Y, 2, 1){
     multiPress = (maxPressed > 0);
     maxPress = maxPressed;
     pressedVal = pressedValue;
     setUp(direction);
+    updateState = updateMe;
 }
 
 
@@ -46,7 +48,7 @@ void Button::setUp(int dir){
 }
 
 void Button::unpushCheck(double deltaTime){
-    if (!multiPress) return;
+    if (!multiPress && pressed > 0) return;
     std::map<Instance *, double>::iterator insts = collWith.begin();
     std::vector<Instance *> toRemove;
     // Remove stuff that's no longer colliding with the object.
@@ -76,10 +78,17 @@ void Button::changePress(double deltaTime){
     }
 }
 
+void Button::stateChange(){
+    if (multiPress) pressed = GameState::getSaveI(pressedVal);
+    else pressed = GameState::getSaveB(pressedVal) ? 1 : 0;
+}
+
 void Button::update(double deltaTime, bool* keyPressed, bool* keyHeld){
     dX = 0;
     dY = 0;
     unpushCheck(deltaTime);
+    // If there's state to update, do it here.
+    if (updateState) stateChange();
     if (prevPress != pressDown){
         changePress(deltaTime);
     }
@@ -115,6 +124,6 @@ void Button::makePermanent(){
 }
 
 void Button::changeState(){
-    if (!multiPress) return;
-    pressed = (pressed+1) % maxPress;
+    if (!multiPress) pressed = 1;
+    else pressed = (pressed+1) % maxPress;
 }

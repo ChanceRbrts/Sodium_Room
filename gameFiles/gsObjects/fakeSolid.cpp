@@ -31,6 +31,7 @@ FakeSolid::FakeSolid(float X, float Y, bool hide) : Instance(X, Y, 1, 1){
     pX = 0;
     pY = 0;
     time = 0;
+    collapse = 1;
 }
 
 FakeSolid::~FakeSolid(){
@@ -87,6 +88,7 @@ void FakeSolid::draw(GLDraw* gld, GLShaders* gls, int layer){
     // Get our view coordinates.
     gls->addUniform(program, "displayX", xy.x);
     gls->addUniform(program, "displayY", xy.y);
+    gls->addUniform(program, "collapse", collapse);
     gls->addUniform(program, "unitX", 2/gld->getWidth());
     gls->addUniform(program, "unitY", -2/gld->getHeight());
     // Get our other attributes.

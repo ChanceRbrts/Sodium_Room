@@ -28,6 +28,8 @@ class FakeSolid : public Instance{
         float time;
         /// The colors of the last frame. (Used to see if we need to change the color array)
         float lastR, lastG, lastB;
+        /// The scale of how the blocks are drawn. If 0, the block is collapsed on itself.
+        double collapse;
         /**
          * Check to see if we need to create the shader for our FakeSolid
          * @param gls GLUtil's shader functions.

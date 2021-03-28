@@ -11,20 +11,30 @@ void MothBlock::detach(){
     deleteIfRemoved = true;
 }
 
-void MothBlock::updateBlock(double move, double cX, double cY){
+void MothBlock::updateBlock(double move, double cX, double cY, bool reset){
     remove = move < 1;
     // printf("%f, %f, %f, %f, %f\n", cX, cY, cX+startX*move, cY+startY*move, move);
     x = cX+startX*move;
     y = cY+startY*move;
     // Make it so the blocks are split apart if they are moving.
     if (move < 1){
-        float rad = atan2(pY-y, pX-x);
-        pX += 128*(1-move)*cos(rad);
-        pY += 128*(1-move)*sin(rad);
+        if (!reset){
+            float rad = atan2(pY-y, pX-x);
+            pX += 128*(1-move)*cos(rad);
+            pY += 128*(1-move)*sin(rad);
+            collapse = 1;
+        } else {
+            // From the shader code, 48-96 pixels is the range to do.
+            double curPlayerDist = sqrt(pow(pY-y, 2)+pow(pX-x, 2));
+            if (curPlayerDist > 96) curPlayerDist = 96;
+            pX = curPlayerDist*move+48*(1-move);
+            pY = y;
+            collapse = move;
+        }
     }
 }
 
-MothBlocks::MothBlocks(double X, double Y, std::string filename) : InstanceLev(X, Y, 1, 1){
+MothBlocks::MothBlocks(double X, double Y, std::string filename, std::string resetName) : InstanceLev(X, Y, 1, 1){
     // Initialize our level.
     Level* l = new Level();
     l->filePath = filename;
@@ -50,6 +60,12 @@ MothBlocks::MothBlocks(double X, double Y, std::string filename) : InstanceLev(X
     canPlaceBlocks = true;
     messWithLevel = true;
     name = "Moth Blocks";
+    resetVar = resetName;
+    canReset = resetName.length() > 0;
+    resetting = false;
+    loadedIn = false;
+    startX = 0;
+    startY = 0;
 }
 
 MothBlocks::~MothBlocks(){
@@ -68,7 +84,29 @@ MothBlocks::~MothBlocks(){
     fakeSolids.clear();
 }
 
-void MothBlocks::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
+void MothBlocks::reset(double deltaTime){
+    bool collapsing = GameState::getSaveB(resetVar);
+    if (collapsing){
+        move -= deltaTime*2;
+        if (move < 0){
+            move = 0;
+            // Move to the starting position.
+            GameState::setSaveB(resetVar, false);
+            x = Map::translateMapCoord(startX, true, false);
+            y = Map::translateMapCoord(startY, false, false);
+            dX = 0;
+            dY = 0;
+        }
+    } else {
+        move += deltaTime*1.5;
+        if (move > maxMove){
+            move = maxMove;
+            resetting = false;
+        }
+    }
+}
+
+void MothBlocks::moveToArc(double deltaTime){
     if (canPlaceBlocks && move >= maxMove && !blocksPlacedDown){
         // Place the blocks down!
         for (int i = 0; i < fakeSolids.size(); i++){
@@ -121,12 +159,31 @@ void MothBlocks::update(double deltaTime, bool* keyPressed, bool* keyHeld, Insta
         move -= 4*deltaTime;
         if (move < 0) move = 0;
     }
+}
+
+void MothBlocks::update(double deltaTime, bool* keyPressed, bool* keyHeld, Instance* player){
+    // The first time this is loaded, set the starting positions.
+    if (!loadedIn){
+        loadedIn = true;
+        // Potential bug if the Moth Block starts in an Enclosed Level.
+        startX = Map::translateMapCoord(x, true, true);
+        startY = Map::translateMapCoord(y, false, true);
+    }
+    // Check if this needs to be reset first.
+    if (!resetting && canReset && GameState::getSaveB(resetVar)){
+        resetting = true;
+    }
+    if (resetting){
+        reset(deltaTime);
+    } else {
+        moveToArc(deltaTime);
+    }
     // Update the moth blocks based on the move variable.
     for (int i = 0; i < fakeSolids.size(); i++){
         if (!blocksPlacedDown){
             fakeSolids[i]->update(deltaTime, keyPressed, keyHeld, player);
         }
-        fakeSolids[i]->updateBlock(move/maxMove, x+dX*deltaTime+w/2, y+dY*deltaTime+h/2);
+        fakeSolids[i]->updateBlock(move/maxMove, x+dX*deltaTime+w/2, y+dY*deltaTime+h/2, resetting);
     }
     if (move < maxMove){
         blocksPlacedDown = false;

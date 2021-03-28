@@ -11,6 +11,7 @@ uniform float unitY;
 uniform float displayX;
 uniform float displayY;
 uniform float time;
+uniform float collapse;
 attribute float offset;
 attribute vec2 texture;
 // If true, make floor go away when player is far rather than near.
@@ -61,8 +62,8 @@ void main(void){
     float baseX = pos.x+(xPos*radius+xPosAdd*radius)*16;
     float baseY = pos.y+(yPos*radius+yPosAdd*radius)*16;
     gl_FrontColor = gl_Color;
-    float realX = displayX+baseX*unitX;
-    float realY = displayY+baseY*unitY;
+    float realX = displayX+baseX*unitX*collapse;
+    float realY = displayY+baseY*unitY*collapse;
     texs = texture;
     gl_Position = gl_ModelViewProjectionMatrix*vec4(realX*pos.w, realY*pos.w, 0, pos.w);
 }

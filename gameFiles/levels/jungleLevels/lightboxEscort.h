@@ -12,7 +12,6 @@ class LightBoxEscort : public Level {
         Level* en1;
         Level* en2;
         Level* en3;
-        Level* en4;
         LightBox* lightLower;
         LightBox* lightMiddle;
         LightBox* lightUpper;

@@ -3,9 +3,8 @@
 LightBoxEscort::LightBoxEscort() : Level(){
     filePath = "jungleLevels/lightbox_escort";
     en1 = new BasicLevel("jungleLevels/lightbox_escort_interior", 0, 0, 0.4, 0.4, 0.4);
-    en2 = new BasicLevel("jungleLevels/lightbox_escort_interior", 0, 0, 1, 0, 0);
-    en3 = new BasicLevel("jungleLevels/lightbox_escort_interior", 0, 0, 0, 1, 0);
-    en4 = new BasicLevel("jungleLevels/lightbox_escort_interior", 0, 0, 0, 0, 1);
+    en2 = new BasicLevel("jungleLevels/lightbox_escort_interior", 0, 0, 0.4, 0.4, 0.4);
+    en3 = new BasicLevel("jungleLevels/lightbox_escort_interior", 0, 0, 0.4, 0.4, 0.4);
     lightLower = nullptr;
     lightMiddle = nullptr;
     lightUpper = nullptr;
@@ -18,15 +17,15 @@ std::vector<Instance *> LightBoxEscort::makeLevel(std::vector<Instance*> previou
     previous.push_back(lightLower);
     previous.push_back(lightMiddle);
     previous.push_back(lightUpper);
-    previous.push_back(new MothBlocks(11, 2, "jungleLevels/mothblocks_rightstair"));
+    previous.push_back(new MothBlocks(11, 2, "jungleLevels/mothblocks_rightstair", "jung_lightbox_reset"));
     previous.push_back(new Rain(1, 1, 3, 33, 2));
     previous.push_back(new FlashlightCharger(4, 13, AREA_JUNG));
     // previous.push_back(new FlashlightCharger(26, 5, AREA_JUNG));
     // previous.push_back(new FlashlightCharger(26, 13, AREA_JUNG));
     previous.push_back(new EnclosedLevel(16, 3, 0, 11, en1));
-    previous.push_back(new EnclosedLevel(24, 3, 0, 11, en2));
-    previous.push_back(new EnclosedLevel(32, 3, 0, 11, en3));
-    previous.push_back(new EnclosedLevel(40, 3, 0, 11, en4));
+    previous.push_back(new EnclosedLevel(28, 3, 0, 11, en2));
+    previous.push_back(new EnclosedLevel(40, 3, 0, 11, en3));
+    previous.push_back(new Button(26, 7, 2, "jung_lightbox_reset"));
     return previous;
 }
 
@@ -51,6 +50,11 @@ std::vector<Arc *> LightBoxEscort::createArcs(){
     arcs.push_back(new Arc(11.5, 2.5, 2, -M_PI, M_PI, 1.1, 1.1, 1.1, false));
     arcs.push_back(new Arc(53.5, 12.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
     // Obstacles (To Be Replaced with Objects?)
+    arcs.push_back(new Arc(22.5, 4.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
+    arcs.push_back(new Arc(22.5, 12.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
+    arcs.push_back(new Arc(34, 14, 7, -M_PI*9/16, -M_PI*7/16, 1.3, 1.3, 1.3, false));
+    arcs.push_back(new Arc(46.5, 7, 3, M_PI*7/16, M_PI*9/16, 1.3, 1.3, 1.3, false));
+    /*
     arcs.push_back(new Arc(20.5, 4.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
     arcs.push_back(new Arc(20.5, 8.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
     arcs.push_back(new Arc(28.5, 12.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
@@ -59,6 +63,7 @@ std::vector<Arc *> LightBoxEscort::createArcs(){
     arcs.push_back(new Arc(36.5, 12.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
     arcs.push_back(new Arc(44.5, 4.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
     arcs.push_back(new Arc(44.5, 8.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
+    */
     return arcs;
 }
 
