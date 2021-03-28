@@ -12,6 +12,7 @@ Solid::Solid(double X, double Y, int semiCollRep) : Instance(X, Y, 1, 1){
     g = 0.3*(1-semiColl[COLL_TOP]);
     b = 0.3*(1-semiColl[COLL_BOTTOM]);
     name = "Solid";
+    noArcCol = true;
 }
 
 /*

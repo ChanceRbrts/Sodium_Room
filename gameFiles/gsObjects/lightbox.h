@@ -15,13 +15,14 @@ class LightBox : public Instance {
         float time, maxTime;
         /// The arc that corresponds to a lit lightbox.
         Arc* a;
+        double maxR;
     public:
         /**
          * Constructor for a light box
          * @param X The left-most position of the box in unit coords.
          * @param Y The up-most position of the box in unit coords.
          */ 
-        LightBox(double X, double Y);
+        LightBox(double X, double Y, double rad = 3);
         /// Initializes the drawing layers in which the LightBox will be used.
         std::vector<int> initLayers();
         /**

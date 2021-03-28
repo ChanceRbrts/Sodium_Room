@@ -184,10 +184,12 @@ void GameLogic::update(double deltaTime, GLUtil* glu){
          // However, since not many levels will be loaded at once, this should be fine?
          // It also helps that arc collisions aren't intensive if there's no way 
          // the arc will ever collide with the instance.
-         if (pAr != nullptr) in->i->arcCol(pAr, deltaTime, -1);
-         for (int a = 0; a < arcs.size(); a++){
-            // levID has already been accounted for with the full arc values, so it doesn't need to be included.
-            in->i->arcCol(arcs[a], deltaTime, a);
+         if (!in->i->dontArcCol()){
+            if (pAr != nullptr) in->i->arcCol(pAr, deltaTime, -1);
+            for (int a = 0; a < arcs.size(); a++){
+               // levID has already been accounted for with the full arc values, so it doesn't need to be included.
+               in->i->arcCol(arcs[a], deltaTime, a);
+            }
          }
          // If an instance can mess with the levels, allow it here.
          if (in->i->canMessWithLevel()){

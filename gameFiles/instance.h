@@ -50,6 +50,8 @@ class Instance{
       bool immovable;
       /// Whether or not the instance typically uses solid collisions.
       bool solid;
+      /// True if arc collisions should not include this object.
+      bool noArcCol;
       /// Should always be false except for the player.
       bool playerRef;
       /// Whether or not the instance wants to be deleted/removed from the linked list.
@@ -223,6 +225,8 @@ class Instance{
        * @param o The arc that was collided with.
        */
       void arcCol(Arc* o, double deltaTime, int id);
+      /// @return True if arc collisions should not happen with this instance.
+      bool dontArcCol(){ return noArcCol; };
       /**
        * If a collision happens, this function gets called.
        * This is code you want to get called if something collides with the object.

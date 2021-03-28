@@ -39,6 +39,7 @@ Instance::Instance(double X, double Y, double W, double H){
    deleteIfRemoved = true;
    name = "Instance";
    semiColl = new bool[4]{true, true, true, true};
+   noArcCol = false;
 }
 
 std::vector<int> Instance::initLayers(){

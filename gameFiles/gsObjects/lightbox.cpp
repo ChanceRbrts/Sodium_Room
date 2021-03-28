@@ -1,12 +1,13 @@
 #include "lightbox.h"
 
-LightBox::LightBox(double X, double Y) : Instance(X, Y, 2, 2){
+LightBox::LightBox(double X, double Y, double rad) : Instance(X, Y, 2, 2){
     a = new Arc(X+1, Y+1, 3, -M_PI, M_PI, 1.1, 1.1, 1.1, false);
     a->setR(0);
     lit = false;
     solid = false;
     time = 0;
     maxTime = 0.4;
+    maxR = rad*32;
 }
 
 std::vector<int> LightBox::initLayers(){
@@ -40,7 +41,7 @@ void LightBox::update(double deltaTime, bool* keyPressed, bool* keyHeld){
         if (time < 0) time = 0;
     }
     // Adjust the arc of the lighter.
-    a->setR(96*time/maxTime);
+    a->setR(maxR*time/maxTime);
     if (a->getR() <= 0){
         a->setR(0.01);
     }
