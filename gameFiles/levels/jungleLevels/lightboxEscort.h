@@ -8,6 +8,7 @@ class LightBoxEscort : public Level {
     private:
         std::vector<Instance *> makeLevel(std::vector<Instance*> previous);
         void demakeLevel();
+        void demakeEnd();
         std::vector<CameraObject *> createCameraObjects();
         Level* en1;
         Level* en2;

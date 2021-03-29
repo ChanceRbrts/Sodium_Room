@@ -70,6 +70,8 @@ class Level{
       virtual std::vector<CameraObject*> createCameraObjects();
       /// Do some level-specific de-allocation
       virtual void demakeLevel(){}
+      /// Level-specific de-allocation that needs to be done after all instances are deleted.
+      virtual void demakeEnd(){}
       /**
        * This draws the objects in the room
        * @param glu The GLUtil to use for drawing

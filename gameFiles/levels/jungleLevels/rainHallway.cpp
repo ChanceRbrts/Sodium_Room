@@ -129,3 +129,8 @@ void RainHallwayLevel::demakeLevel(){
     floorOne = nullptr;
     floorTwo = nullptr;
 }
+
+void RainHallwayLevel::demakeEnd(){
+    delete enclosed;
+    enclosed = nullptr;
+}

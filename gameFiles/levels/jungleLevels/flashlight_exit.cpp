@@ -2,13 +2,18 @@
 
 FlashlightExit::FlashlightExit() : Level(){
     filePath = "jungleLevels/flashlightexit";
-    enclosed = new BasicLevel("jungleLevels/flashlightexit_void", 0, 0, 0.4, 0.4, 0.4);
+    enclosed = nullptr;
 }
 
 std::vector<Instance *> FlashlightExit::makeLevel(std::vector<Instance*> previous){
+    enclosed = new BasicLevel("jungleLevels/flashlightexit_void", 0, 0, 0.4, 0.4, 0.4);
     previous.push_back(new EnclosedLevel(5, 5, 0, 28, enclosed));
     previous.push_back(new FlashlightCharger(17, 33, 0));
     return previous;
+}
+
+void FlashlightExit::demakeEnd(){
+    delete enclosed;
 }
 
 std::vector<CameraObject *> FlashlightExit::createCameraObjects(){

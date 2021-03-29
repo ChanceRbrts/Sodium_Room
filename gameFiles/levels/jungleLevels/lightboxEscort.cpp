@@ -2,9 +2,9 @@
 
 LightBoxEscort::LightBoxEscort() : Level(){
     filePath = "jungleLevels/lightbox_escort";
-    en1 = new BasicLevel("jungleLevels/lightbox_escort_interior", 0, 0, 0.4, 0.4, 0.4);
-    en2 = new BasicLevel("jungleLevels/lightbox_escort_interior", 0, 0, 0.4, 0.4, 0.4);
-    en3 = new BasicLevel("jungleLevels/lightbox_escort_interior", 0, 0, 0.4, 0.4, 0.4);
+    en1 = nullptr;
+    en2 = nullptr;
+    en3 = nullptr;
     lightLower = nullptr;
     lightMiddle = nullptr;
     lightUpper = nullptr;
@@ -22,6 +22,9 @@ std::vector<Instance *> LightBoxEscort::makeLevel(std::vector<Instance*> previou
     previous.push_back(new FlashlightCharger(4, 13, AREA_JUNG));
     // previous.push_back(new FlashlightCharger(26, 5, AREA_JUNG));
     // previous.push_back(new FlashlightCharger(26, 13, AREA_JUNG));
+    en1 = new BasicLevel("jungleLevels/lightbox_escort_interior", 0, 0, 0.4, 0.4, 0.4);
+    en2 = new BasicLevel("jungleLevels/lightbox_escort_interior", 0, 0, 0.4, 0.4, 0.4);
+    en3 = new BasicLevel("jungleLevels/lightbox_escort_interior", 0, 0, 0.4, 0.4, 0.4);
     previous.push_back(new EnclosedLevel(16, 3, 0, 11, en1));
     previous.push_back(new EnclosedLevel(28, 3, 0, 11, en2));
     previous.push_back(new EnclosedLevel(40, 3, 0, 11, en3));
@@ -33,6 +36,15 @@ void LightBoxEscort::demakeLevel(){
     lightLower = nullptr;
     lightMiddle = nullptr;
     lightUpper = nullptr;
+}
+
+void LightBoxEscort::demakeEnd(){
+    delete en1;
+    delete en2;
+    delete en3;
+    en1 = nullptr;
+    en2 = nullptr;
+    en3 = nullptr;
 }
 
 std::vector<CameraObject *> LightBoxEscort::createCameraObjects(){
@@ -54,16 +66,6 @@ std::vector<Arc *> LightBoxEscort::createArcs(){
     arcs.push_back(new Arc(22.5, 12.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
     arcs.push_back(new Arc(34, 14, 7, -M_PI*9/16, -M_PI*7/16, 1.3, 1.3, 1.3, false));
     arcs.push_back(new Arc(46.5, 7, 3, M_PI*7/16, M_PI*9/16, 1.3, 1.3, 1.3, false));
-    /*
-    arcs.push_back(new Arc(20.5, 4.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
-    arcs.push_back(new Arc(20.5, 8.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
-    arcs.push_back(new Arc(28.5, 12.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
-    arcs.push_back(new Arc(28.5, 8.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
-    arcs.push_back(new Arc(36.5, 4.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
-    arcs.push_back(new Arc(36.5, 12.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
-    arcs.push_back(new Arc(44.5, 4.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
-    arcs.push_back(new Arc(44.5, 8.5, 2, -M_PI, M_PI, 1.3, 1.3, 1.3, false));
-    */
     return arcs;
 }
 

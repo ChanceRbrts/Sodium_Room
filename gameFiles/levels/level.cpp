@@ -231,6 +231,7 @@ void Level::destroyLevel(){
       delete del->i;
       delete del;
    }
+   demakeEnd();
    // In case we remake this level, we should have it remake our shaderboxes.
    createdShaderboxes = false;
    loaded = false;
