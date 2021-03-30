@@ -14,6 +14,7 @@ std::vector<Instance *> FlashlightExit::makeLevel(std::vector<Instance*> previou
 
 void FlashlightExit::demakeEnd(){
     delete enclosed;
+    enclosed = nullptr;
 }
 
 std::vector<CameraObject *> FlashlightExit::createCameraObjects(){

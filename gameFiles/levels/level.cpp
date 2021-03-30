@@ -278,6 +278,7 @@ bool Level::drawArcs(GLUtil* glu, ShaderBox* mainBox, DualSBox arcOne, DualSBox 
    // Update arcs before using them.
    bool doNotSwap = true;
    for (int i = 0; i < arcs.size(); i++){
+      if (!arcs[i]->canDraw(glu)) continue;
       DualSBox aOne = doNotSwap ? arcOne : arcTwo;
       DualSBox aTwo = doNotSwap ? arcTwo : arcOne;
       arcs[i]->draw(glu, mainBox, aOne, aTwo.first->getTextureID(), aTwo.second->getTextureID());
@@ -286,7 +287,8 @@ bool Level::drawArcs(GLUtil* glu, ShaderBox* mainBox, DualSBox arcOne, DualSBox 
    // See if the player has an arc that needs to be drawn now.
    if (player == nullptr) return doNotSwap;
    PlayerAbility* pA = ((Player *)player)->getAbility();
-   if (pA == nullptr || pA->getArc() == nullptr) return doNotSwap;
+   if (pA == nullptr || pA->getArc() == nullptr || !pA->getArc()->canDraw(glu)) 
+      return doNotSwap;
    // Draw it now.
    DualSBox aOne = doNotSwap ? arcOne : arcTwo;
    DualSBox aTwo = doNotSwap ? arcTwo : arcOne;

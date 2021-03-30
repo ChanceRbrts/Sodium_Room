@@ -108,6 +108,11 @@ class Arc{
          */
         void draw(GLUtil* glu, ShaderBox* mainTex, DualSBox drawTo, int fromTex, int fromAlpha);
         /**
+         * Determines whether or not the arc can even be drawn to the screen.
+         * This is called to avoid a ton of FBO switching when a ton of arcs are being drawn.
+         */
+        bool canDraw(GLUtil* glu);
+        /**
          * This changes the color of the arc.
          * @param R The new red color of the arc.
          * @param G The new green color of the arc.

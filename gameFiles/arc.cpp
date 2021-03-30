@@ -41,6 +41,13 @@ void Arc::setAngle(double D1, double D2){
     changeCenter = true;
 }
 
+bool Arc::canDraw(GLUtil* glu){
+    GLDraw* gld = glu->draw;
+    bool horiz = x+r > gld->camX && x-r < gld->camX+gld->getWidth();
+    bool verti = y+r > gld->camY && y-r < gld->camY+gld->getHeight();
+    return horiz && verti;
+}
+
 void Arc::draw(GLUtil* glu, ShaderBox* mainTex, DualSBox drawTo, int fromTex, int fromAlpha){
     // printf("%f, %f, %f!\n", x, y, r);
     /*
