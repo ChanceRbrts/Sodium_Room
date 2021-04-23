@@ -193,10 +193,14 @@ void Instance::collision(Instance* o, double deltaTime, bool cornerCheck){
             y+dY*deltaTime < o->y+o->dY*deltaTime+o->h && y >= o->y+o->h 
             && x+w+dX*deltaTime*cornerCheck > o->x+o->dX*deltaTime*cornerCheck 
             && x+dX*deltaTime*cornerCheck < o->x+o->w+o->dX*deltaTime*cornerCheck){
-         dY = o->immovable?o->dY:0;
-         o->dY = immovable?dY:0;
-         y = immovable?y:o->y+o->h;
-         o->y = o->immovable?o->y:y-o->h;
+         if (!immovable){
+            dY = o->immovable?o->dY:0;
+            y = o->y+o->h;
+         }
+         if (!o->immovable){
+            o->dY = immovable?dY:0;
+            o->y = y-o->h;
+         }
          collided(o, deltaTime);
          o->collided(this, deltaTime);
          o->onGround = true;
@@ -205,10 +209,14 @@ void Instance::collision(Instance* o, double deltaTime, bool cornerCheck){
             y+h+dY*deltaTime > o->y+o->dY*deltaTime && y+h <= o->y 
             && x+w+dX*deltaTime*cornerCheck > o->x+o->dX*deltaTime*cornerCheck 
             && x+dX*deltaTime*cornerCheck < o->x+o->w+o->dX*deltaTime*cornerCheck){
-         dY = o->immovable?o->dY:0;
-         o->dY = immovable?dY:0;
-         y = immovable?y:o->y-h;
-         o->y = immovable?o->y:y+h;
+         if (!immovable){
+            dY = o->immovable?o->dY:0;
+            y = o->y-h;
+         }
+         if (!o->immovable){
+            o->dY = immovable?dY:0;
+            o->y = y+h;
+         }
          collided(o, deltaTime);
          o->collided(this, deltaTime);
          onGround = true;
@@ -218,10 +226,14 @@ void Instance::collision(Instance* o, double deltaTime, bool cornerCheck){
             x+dX*deltaTime < o->x+o->dX*deltaTime+o->w && x >= o->x+o->w 
             && y+h+dY*deltaTime*cornerCheck > o->y+o->dY*deltaTime*cornerCheck 
             && y+dY*deltaTime*cornerCheck < o->y+o->h+o->dY*deltaTime*cornerCheck){
-         dX = o->immovable?o->dX:0;
-         o->dX = immovable?dX:0;
-         x = immovable?x:o->x+o->w;
-         o->x = o->immovable?o->x:x-o->w;
+         if (!immovable){
+            dX = o->immovable?o->dX:0;
+            x = o->x+o->w;
+         }
+         if (!o->immovable){
+            o->dX = immovable?dX:0;
+            o->x = x-o->w;
+         }
          collided(o, deltaTime);
          o->collided(this, deltaTime);
       } // Check If Colliding with Right of Other Instance
@@ -229,10 +241,14 @@ void Instance::collision(Instance* o, double deltaTime, bool cornerCheck){
             x+w+dX*deltaTime > o->x+o->dX*deltaTime && x+w <= o->x 
             && y+h+dY*deltaTime*cornerCheck > o->y+o->dY*deltaTime*cornerCheck 
             && y+dY*deltaTime*cornerCheck < o->y+o->h+o->dY*deltaTime*cornerCheck){
-         dX = o->immovable?o->dX:0;
-         o->dX = immovable?dX:0;
-         x = immovable?x:o->x-w;
-         o->x = immovable?o->x:x+w;
+         if (!immovable){
+            dX = o->immovable?o->dX:0;
+            x = o->x-w;
+         }
+         if (!o->immovable){
+            o->dX = immovable?dX:0;
+            o->x = x+w;
+         }
          collided(o, deltaTime);
          o->collided(this, deltaTime);
       }
