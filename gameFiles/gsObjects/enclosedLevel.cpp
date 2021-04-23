@@ -62,8 +62,9 @@ void EnclosedLevel::update(double deltaTime, bool* keyPressed, bool* keyHeld, In
         if (openTime < 0) openTime = 0;
     }
     solid = openTime > 0 && openTime < maxOpenTime;
-    if (openHorizontally) w = trueW*openTime/maxOpenTime;
-    else h = trueW*openTime/maxOpenTime;
+    double* wid = openHorizontally?&w:&h;
+    *wid = trueW*openTime/maxOpenTime;
+    *wid = *wid-fmod(*wid, 0.125);
     pushLevel = abs(lastW-(openHorizontally?w:h)) > 0.0001;
 }
 
